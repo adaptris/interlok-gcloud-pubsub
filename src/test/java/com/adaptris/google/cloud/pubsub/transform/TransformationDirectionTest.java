@@ -33,11 +33,11 @@ public class TransformationDirectionTest {
     msg.addMetadata("foo", "bar");
     TransformationDirection.INTERLOK_TO_PUBSUB.transform(msg, new NoOpMetadataFilter());
     ReadContext context = JsonPath.parse(msg.getInputStream(), jsonConfig);
-    assertNotNull(context.read("$.data"));
-    assertEquals("SGVsbG8gV29ybGQ=", context.read("$.data"));
-    assertNotNull(context.read("$.attributes"));
-    assertNotNull(context.read("$.attributes.foo"));
-    assertEquals("bar", context.read("$.attributes.foo"));
+    assertNotNull(context.read("$.messages.[0].data"));
+    assertEquals("SGVsbG8gV29ybGQ=", context.read("$.messages.[0].data"));
+    assertNotNull(context.read("$.messages.[0].attributes"));
+    assertNotNull(context.read("$.messages.[0].attributes.foo"));
+    assertEquals("bar", context.read("$.messages.[0].attributes.foo"));
   }
 
   @Test

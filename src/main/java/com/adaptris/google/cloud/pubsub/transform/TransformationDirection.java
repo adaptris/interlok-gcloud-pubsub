@@ -12,6 +12,7 @@ import com.adaptris.util.KeyValuePairSet;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.util.JsonFormat;
+import com.google.pubsub.v1.PublishRequest;
 import com.google.pubsub.v1.PubsubMessage;
 
 import java.io.IOException;
@@ -56,7 +57,9 @@ public enum TransformationDirection {
         for (MetadataElement e : filtered){
           psmBuilder.putAttributes(e.getKey(), e.getValue());
         }
-        String json = JsonFormat.printer().print(psmBuilder.build());
+        PublishRequest.Builder publishRequest = PublishRequest.newBuilder();
+        publishRequest.addMessages(psmBuilder.build());
+        String json = JsonFormat.printer().print(publishRequest.build());
         message.setPayload(json.getBytes());
       } catch (InvalidProtocolBufferException e) {
         throw new ServiceException(e);
