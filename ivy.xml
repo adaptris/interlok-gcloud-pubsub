@@ -19,11 +19,15 @@
     
   </configurations>
   <publications>
-     <artifact name="example-module" type="jar" ext="jar"/>
+     <artifact name="interlok-gcloud-pubsub" type="jar" ext="jar"  conf="*"/>
+     <artifact name="interlok-gcloud-pubsub" type="pom" ext="pom" conf="*"/>
+     <artifact name="interlok-gcloud-pubsub-javadoc" type="javadoc" ext="zip" conf="javadoc"/>
+     <artifact name="interlok-gcloud-pubsub-examples" type="examples" ext="zip" conf="examples"/>
+     <artifact type="javadoc" ext="jar" conf="javadoc" m:classifier="javadoc"/>
   </publications>
   <dependencies>
-  	<dependency org="com.adaptris" name="adp-core" rev="${adp-core-version}" conf="compile->default" changing="true"/>
-  	<dependency org="com.adaptris" name="adp-stubs" rev="${adp-core-version}" changing="true" conf="test->default"/>
+    <dependency org="com.adaptris" name="adp-core" rev="${adp-core-version}" conf="compile->default" changing="true"/>
+    <dependency org="com.adaptris" name="adp-stubs" rev="${adp-core-version}" changing="true" conf="test->default"/>
     <dependency org="org.slf4j" name="slf4j-api" rev="1.7.24" conf="compile->default" />
     <dependency org="org.slf4j" name="jcl-over-slf4j" rev="1.7.24" conf="compile->default" />
 
@@ -37,8 +41,8 @@
 
 
     <dependency org="junit" name="junit" rev="4.11" conf="test->default"/>
-  	<dependency org="org.slf4j" name="slf4j-log4j12" rev="1.7.24" conf="runtime->default"/>
-  	<dependency org="org.mockito" name="mockito-all" rev="1.9.5" conf="test->default"/>
+    <dependency org="org.slf4j" name="slf4j-log4j12" rev="1.7.24" conf="runtime->default"/>
+    <dependency org="org.mockito" name="mockito-all" rev="1.9.5" conf="test->default"/>
     <dependency org="org.apache.geronimo.specs" name="geronimo-jms_1.1_spec" rev="1.1.1" conf="test->default"/>
 
     <!-- For Various ANT Tasks -->
