@@ -34,21 +34,21 @@ public class GoogleCloudPubSubTransformServiceTest extends TransformServiceExamp
   public void testConstruct(){
     GoogleCloudPubSubTransformService service = new GoogleCloudPubSubTransformService();
     assertNotNull(service.getDirection());
-    assertEquals(TransformationDirection.INTERLOK_TO_PUBSUB, service.getDirection());
+    assertEquals(TransformationDirection.INTERLOK_TO_PUBLISH_REQUEST, service.getDirection());
     assertNotNull(service.getDriver());
     assertTrue(service.getDriver() instanceof  DefaultGoogleCloudPubSubTransformationDriver);
     assertNotNull(service.getMetadataFilter());
     assertTrue(service.getMetadataFilter() instanceof  NoOpMetadataFilter);
-    service = new GoogleCloudPubSubTransformService(TransformationDirection.PUBSUB_TO_INTERLOK);
+    service = new GoogleCloudPubSubTransformService(TransformationDirection.PULL_RESPONSE_TO_INTERLOK);
     assertNotNull(service.getDirection());
-    assertEquals(TransformationDirection.PUBSUB_TO_INTERLOK, service.getDirection());
+    assertEquals(TransformationDirection.PULL_RESPONSE_TO_INTERLOK, service.getDirection());
     assertNotNull(service.getDriver());
     assertTrue(service.getDriver() instanceof  DefaultGoogleCloudPubSubTransformationDriver);
     assertNotNull(service.getMetadataFilter());
     assertTrue(service.getMetadataFilter() instanceof  NoOpMetadataFilter);
-    service = new GoogleCloudPubSubTransformService(TransformationDirection.PUBSUB_TO_INTERLOK, new DefaultGoogleCloudPubSubTransformationDriver());
+    service = new GoogleCloudPubSubTransformService(TransformationDirection.PULL_RESPONSE_TO_INTERLOK, new DefaultGoogleCloudPubSubTransformationDriver());
     assertNotNull(service.getDirection());
-    assertEquals(TransformationDirection.PUBSUB_TO_INTERLOK, service.getDirection());
+    assertEquals(TransformationDirection.PULL_RESPONSE_TO_INTERLOK, service.getDirection());
     assertNotNull(service.getDriver());
     assertTrue(service.getDriver() instanceof  DefaultGoogleCloudPubSubTransformationDriver);
     assertNotNull(service.getMetadataFilter());
@@ -61,11 +61,11 @@ public class GoogleCloudPubSubTransformServiceTest extends TransformServiceExamp
     msg.addMetadata("foo", "bar");
     execute(new GoogleCloudPubSubTransformService(),msg);
     ReadContext context = JsonPath.parse(msg.getInputStream(), jsonConfig);
-    assertNotNull(context.read("$.data"));
-    assertEquals("SGVsbG8gV29ybGQ=", context.read("$.data"));
-    assertNotNull(context.read("$.attributes"));
-    assertNotNull(context.read("$.attributes.foo"));
-    assertEquals("bar", context.read("$.attributes.foo"));
+    assertNotNull(context.read("$.messages.[0].data"));
+    assertEquals("SGVsbG8gV29ybGQ=", context.read("$.messages.[0].data"));
+    assertNotNull(context.read("$.messages.[0].attributes"));
+    assertNotNull(context.read("$.messages.[0].attributes.foo"));
+    assertEquals("bar", context.read("$.messages.[0].attributes.foo"));
   }
 
   @Override

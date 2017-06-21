@@ -18,7 +18,6 @@ import static org.junit.Assert.*;
 
 public class TransformationDirectionTest {
 
-
   private Configuration jsonConfig;
 
   @Before
@@ -28,10 +27,10 @@ public class TransformationDirectionTest {
   }
 
   @Test
-  public void transform_INTERLOK_TO_PUBSUB() throws Exception {
+  public void transform_INTERLOK_TO_PUBLISH_REQUEST() throws Exception {
     final AdaptrisMessage msg = AdaptrisMessageFactory.getDefaultInstance().newMessage("Hello World");
     msg.addMetadata("foo", "bar");
-    TransformationDirection.INTERLOK_TO_PUBSUB.transform(msg, new NoOpMetadataFilter());
+    TransformationDirection.INTERLOK_TO_PUBLISH_REQUEST.transform(msg, new NoOpMetadataFilter());
     ReadContext context = JsonPath.parse(msg.getInputStream(), jsonConfig);
     assertNotNull(context.read("$.messages.[0].data"));
     assertEquals("SGVsbG8gV29ybGQ=", context.read("$.messages.[0].data"));
@@ -41,19 +40,67 @@ public class TransformationDirectionTest {
   }
 
   @Test
-  public void transform_PUBSUB_TO_INTERLOK() throws Exception {
-    final AdaptrisMessage msg = AdaptrisMessageFactory.getDefaultInstance().newMessage(s);
-    TransformationDirection.PUBSUB_TO_INTERLOK.transform(msg, new NoOpMetadataFilter());
-    assertTrue(msg.headersContainsKey("iana.org/language_tag"));
-    assertEquals("en", msg.getMetadataValue("iana.org/language_tag"));
+  public void transform_PULL_RESPONSE_TO_INTERLOK() throws Exception {
+    final AdaptrisMessage msg = AdaptrisMessageFactory.getDefaultInstance().newMessage(pullResponse);
+    TransformationDirection.PULL_RESPONSE_TO_INTERLOK.transform(msg, new NoOpMetadataFilter());
+    assertTrue(msg.headersContainsKey("fsConsumeDir"));
+    assertEquals("/opt/interlok/messages/in/", msg.getMetadataValue("fsConsumeDir"));
     assertEquals("Hello Cloud Pub/Sub! Here is my message!", msg.getContent());
+    assertTrue(msg.headersContainsKey("gcloud_ackId"));
+    assertEquals("projects/interlok-test/subscriptions/mysubscription:1", msg.getMetadataValue("gcloud_ackId"));
+    assertTrue(msg.headersContainsKey("gcloud_messageId"));
+    assertEquals("2", msg.getMetadataValue("gcloud_messageId"));
+    assertTrue(msg.headersContainsKey("gcloud_publishTimeSeconds"));
+    assertEquals("1497951924", msg.getMetadataValue("gcloud_publishTimeSeconds"));
   }
 
-  String s = "{\n" +
-      "      \"attributes\": {\n" +
-      "        \"iana.org/language_tag\": \"en\"\n" +
-      "      },\n" +
-      "      \"data\": \"SGVsbG8gQ2xvdWQgUHViL1N1YiEgSGVyZSBpcyBteSBtZXNzYWdlIQ==\"\n" +
-      "    }";
+  @Test
+  public void transform_PUSH_RESPONSE_TO_INTERLOK() throws Exception {
+    final AdaptrisMessage msg = AdaptrisMessageFactory.getDefaultInstance().newMessage(pushResponse);
+    TransformationDirection.PUSH_RESPONSE_TO_INTERLOK.transform(msg, new NoOpMetadataFilter());
+    assertTrue(msg.headersContainsKey("fsConsumeDir"));
+    assertEquals("/opt/interlok/messages/in/", msg.getMetadataValue("fsConsumeDir"));
+    assertEquals("Hello Cloud Pub/Sub! Here is my message!", msg.getContent());
+    assertTrue(msg.headersContainsKey("gcloud_messageId"));
+    assertEquals("3", msg.getMetadataValue("gcloud_messageId"));
+    assertFalse(msg.headersContainsKey("gcloud_ackId"));
+    assertFalse(msg.headersContainsKey("gcloud_publishTime"));
+  }
 
+  String pullResponse = "{\n" +
+      "    \"receivedMessages\": [\n" +
+      "        {\n" +
+      "            \"ackId\": \"projects/interlok-test/subscriptions/mysubscription:1\",\n" +
+      "            \"message\": {\n" +
+      "                \"attributes\": {\n" +
+      "                    \"fsConsumeDir\": \"/opt/interlok/messages/in/\",\n" +
+      "                    \"fsParentDir\": \"in\",\n" +
+      "                    \"originalname\": \"text.tst\",\n" +
+      "                    \"lastmodified\": \"1497951921000\",\n" +
+      "                    \"fsFileSize\": \"0\",\n" +
+      "                    \"adpnextmlemarkersequence\": \"1\"\n" +
+      "                },\n" +
+      "                \"data\": \"SGVsbG8gQ2xvdWQgUHViL1N1YiEgSGVyZSBpcyBteSBtZXNzYWdlIQ==\",\n" +
+      "                \"messageId\": \"2\",\n" +
+      "                \"publishTime\": \"2017-06-20T09:45:24Z\"\n" +
+      "            }\n" +
+      "        }\n" +
+      "    ]\n" +
+      "}";
+
+  String pushResponse = "{\n" +
+      "  \"message\": {\n" +
+      "    \"data\": \"SGVsbG8gQ2xvdWQgUHViL1N1YiEgSGVyZSBpcyBteSBtZXNzYWdlIQ==\",\n" +
+      "    \"attributes\": {\n" +
+      "      \"adpnextmlemarkersequence\": \"1\",\n" +
+      "      \"fsConsumeDir\": \"/opt\\/interlok/messages/in/\",\n" +
+      "      \"fsFileSize\": \"0\",\n" +
+      "      \"lastmodified\": \"1497960722000\",\n" +
+      "      \"fsParentDir\": \"in\",\n" +
+      "      \"originalname\": \"text.tst\"\n" +
+      "    },\n" +
+      "    \"messageId\": \"3\"\n" +
+      "  },\n" +
+      "  \"subscription\": \"projects/interlok-test/subscriptions/mysubscription\"\n" +
+      "}";
 }

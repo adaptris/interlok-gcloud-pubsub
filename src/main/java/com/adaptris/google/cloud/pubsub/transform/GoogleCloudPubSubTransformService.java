@@ -16,7 +16,7 @@ public class GoogleCloudPubSubTransformService extends ServiceImp {
 
   @AutoPopulated
   @NotNull
-  private TransformationDirection direction = TransformationDirection.INTERLOK_TO_PUBSUB;
+  private TransformationDirection direction = TransformationDirection.INTERLOK_TO_PUBLISH_REQUEST;
 
   @AutoPopulated
   @AdvancedConfig
