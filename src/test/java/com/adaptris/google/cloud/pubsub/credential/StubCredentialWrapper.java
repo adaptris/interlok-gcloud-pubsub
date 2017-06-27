@@ -3,7 +3,6 @@ package com.adaptris.google.cloud.pubsub.credential;
 
 import com.google.auth.oauth2.AccessToken;
 import com.google.auth.oauth2.GoogleCredentials;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.io.IOException;

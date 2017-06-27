@@ -13,7 +13,6 @@ import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.xml.bind.annotation.XmlElement;
 import java.util.EnumSet;
 
 public class GoogleCloudPubSubTransformServiceTest extends TransformServiceExample {
