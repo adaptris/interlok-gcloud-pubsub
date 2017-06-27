@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "interlok-test",
+  "private_key_id": "123",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nABC123\n-----END PRIVATE KEY-----\n",
+  "client_email": "dev@localhost.host",
+  "client_id": "1234",
+  "auth_uri": "https://localhost/o/oauth2/auth",
+  "token_uri": "https://localhost/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://localhost/oauth2/v1/certs",
+  "client_x509_cert_url": "https://localhost/robot/v1/metadata/x509/dev%40localhost.host"
+}
