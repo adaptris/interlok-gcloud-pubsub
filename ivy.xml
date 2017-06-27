@@ -33,10 +33,10 @@
     <dependency org="org.slf4j" name="slf4j-api" rev="1.7.24" conf="compile->default" />
     <dependency org="org.slf4j" name="jcl-over-slf4j" rev="1.7.24" conf="compile->default" />
 
-    <dependency org="com.google.cloud" name="google-cloud-pubsub" rev="0.19.0-alpha" conf="compile->default">
+    <dependency org="com.google.cloud" name="google-cloud-pubsub" rev="0.20.0-beta" conf="compile->default">
       <exclude org="com.fasterxml.jackson.core" name="jackson-databind"/>
     </dependency>
-    
+
     <dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.6.2" conf="compile->default"/>
     
     <dependency org="com.jayway.jsonpath" name="json-path" rev="2.2.0" conf="test->default"/>
