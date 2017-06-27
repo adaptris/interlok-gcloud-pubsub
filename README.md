@@ -1,0 +1,1 @@
+# Interlok Google Cloud Pub/Sub [![Build Status](https://development.adaptris.net/jenkins/job/Interlok-gcloud-pubsub/badge/icon)](https://development.adaptris.net/jenkins/job/Interlok-gcloud-pubsub/)
