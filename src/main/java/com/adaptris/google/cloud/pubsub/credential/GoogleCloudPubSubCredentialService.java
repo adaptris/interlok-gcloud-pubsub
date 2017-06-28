@@ -2,6 +2,7 @@ package com.adaptris.google.cloud.pubsub.credential;
 
 
 import com.adaptris.annotation.AdvancedConfig;
+import com.adaptris.annotation.AutoPopulated;
 import com.adaptris.core.*;
 import com.adaptris.core.fs.FsHelper;
 import com.adaptris.util.text.DateFormatUtil;
@@ -20,8 +21,8 @@ import java.util.List;
 @XStreamAlias("google-cloud-pubsub-credential-service")
 public class GoogleCloudPubSubCredentialService extends ServiceImp {
 
-  public static final String DEFAULT_ACCESS_TOKEN_KEY = "access_token";
-  public static final String DEFAULT_ACCESS_TOKEN_EXPIRATION_KEY = "access_token_expiration";
+  static final String DEFAULT_ACCESS_TOKEN_KEY = "access_token";
+  static final String DEFAULT_ACCESS_TOKEN_EXPIRATION_KEY = "access_token_expiration";
 
   @NotNull
   @Valid
@@ -29,13 +30,17 @@ public class GoogleCloudPubSubCredentialService extends ServiceImp {
 
   @NotNull
   @Valid
-  @XStreamImplicit
+  @XStreamImplicit(itemFieldName = "scope")
   private List<String> scope;
 
   @AdvancedConfig
+  @AutoPopulated
+  @NotNull
   private String accessTokenKey;
 
   @AdvancedConfig
+  @AutoPopulated
+  @NotNull
   private String accessTokenExpirationKey;
 
   private transient CredentialWrapper credentialWrapper = new DefaultCredentialWrapper();
