@@ -1,12 +1,10 @@
-package com.adaptris.google.cloud.pubsub.credential;
+package com.adaptris.google.cloud.credential;
 
 
-import com.adaptris.annotation.AdvancedConfig;
-import com.adaptris.annotation.AutoPopulated;
 import com.adaptris.core.*;
 import com.adaptris.core.fs.FsHelper;
-import com.adaptris.util.text.DateFormatUtil;
-import com.google.auth.oauth2.AccessToken;
+import com.adaptris.core.http.oauth.AccessToken;
+import com.adaptris.core.http.oauth.AccessTokenBuilder;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
@@ -15,14 +13,12 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
-@XStreamAlias("google-cloud-pubsub-credential-service")
-public class GoogleCloudPubSubCredentialService extends ServiceImp {
-
-  static final String DEFAULT_ACCESS_TOKEN_KEY = "access_token";
-  static final String DEFAULT_ACCESS_TOKEN_EXPIRATION_KEY = "access_token_expiration";
+@XStreamAlias("google-cloud-access-token-builder")
+public class GoogleCloudAccessTokenBuilder implements AccessTokenBuilder {
 
   @NotNull
   @Valid
@@ -33,47 +29,34 @@ public class GoogleCloudPubSubCredentialService extends ServiceImp {
   @XStreamImplicit(itemFieldName = "scope")
   private List<String> scope;
 
-  @AdvancedConfig
-  @AutoPopulated
-  @NotNull
-  private String accessTokenKey;
-
-  @AdvancedConfig
-  @AutoPopulated
-  @NotNull
-  private String accessTokenExpirationKey;
-
   private transient CredentialWrapper credentialWrapper = new DefaultCredentialWrapper();
 
-  public GoogleCloudPubSubCredentialService(){
-    setAccessTokenKey(DEFAULT_ACCESS_TOKEN_KEY);
-    setAccessTokenExpirationKey(DEFAULT_ACCESS_TOKEN_EXPIRATION_KEY);
+  public GoogleCloudAccessTokenBuilder(){
   }
 
-  public GoogleCloudPubSubCredentialService(MessageDrivenDestination destination, List<String> scope){
+  public GoogleCloudAccessTokenBuilder(MessageDrivenDestination destination, List<String> scope){
     this();
     setJsonKeyFile(destination);
     setScope(scope);
   }
 
   @Override
-  public void doService(AdaptrisMessage msg) throws ServiceException {
+  public AccessToken build(AdaptrisMessage adaptrisMessage) throws IOException, CoreException {
     try {
-      String destinationUrl = getJsonKeyFile().getDestination(msg);
+      String destinationUrl = getJsonKeyFile().getDestination(adaptrisMessage);
       URL url = FsHelper.createUrlFromString(destinationUrl, true);
       File jsonKey = FsHelper.createFileReference(url);
       GoogleCredentials credential = getCredentialWrapper()
           .fromStreamWithScope(new FileInputStream(jsonKey), getScope());
-      AccessToken accessToken = credential.refreshAccessToken();
-      msg.addMetadata(getAccessTokenKey(), accessToken.getTokenValue());
-      msg.addMetadata(getAccessTokenExpirationKey(), DateFormatUtil.format(accessToken.getExpirationTime()));
+      com.google.auth.oauth2.AccessToken accessToken = credential.refreshAccessToken();
+      return new AccessToken(accessToken.getTokenValue(), accessToken.getExpirationTime().getTime());
     } catch (Exception e) {
       throw new ServiceException("Failed to retrieve credentials", e);
     }
   }
 
   @Override
-  protected void initService() throws CoreException {
+  public void init() throws CoreException {
     if (getJsonKeyFile() == null){
       throw new CoreException("Value for json-key-file is invalid");
     }
@@ -83,12 +66,17 @@ public class GoogleCloudPubSubCredentialService extends ServiceImp {
   }
 
   @Override
-  public void prepare() throws CoreException {
+  public void start() throws CoreException {
 
   }
 
   @Override
-  protected void closeService() {
+  public void stop() {
+
+  }
+
+  @Override
+  public void close() {
 
   }
 
@@ -106,22 +94,6 @@ public class GoogleCloudPubSubCredentialService extends ServiceImp {
 
   public void setScope(List<String> scope) {
     this.scope = scope;
-  }
-
-  public String getAccessTokenKey() {
-    return accessTokenKey;
-  }
-
-  public void setAccessTokenKey(String accessTokenKey) {
-    this.accessTokenKey = accessTokenKey;
-  }
-
-  public String getAccessTokenExpirationKey() {
-    return accessTokenExpirationKey;
-  }
-
-  public void setAccessTokenExpirationKey(String accessTokenExpirationKey) {
-    this.accessTokenExpirationKey = accessTokenExpirationKey;
   }
 
   CredentialWrapper getCredentialWrapper() {

@@ -1,9 +1,11 @@
-package com.adaptris.google.cloud.pubsub.credential;
+package com.adaptris.google.cloud.credential;
 
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.AdaptrisMessageFactory;
 import com.adaptris.core.ConfiguredProduceDestination;
 import com.adaptris.core.CoreException;
+import com.adaptris.core.http.oauth.AccessToken;
+import com.adaptris.core.http.oauth.GetOauthToken;
 import com.adaptris.util.text.DateFormatUtil;
 import org.junit.Test;
 
@@ -13,24 +15,20 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 
 
-public class GoogleCloudPubSubCredentialServiceTest extends CredentialServiceExample {
+public class GoogleCloudAccessTokenBuilderTest extends CredentialServiceExample {
 
-  public GoogleCloudPubSubCredentialServiceTest(String name) {
+  public GoogleCloudAccessTokenBuilderTest(String name) {
     super(name);
   }
 
   @Test
   public void testConstruct() throws Exception {
-    GoogleCloudPubSubCredentialService service = new GoogleCloudPubSubCredentialService();
-    assertNotNull(service.getAccessTokenKey());
-    assertEquals(service.getAccessTokenKey(),GoogleCloudPubSubCredentialService.DEFAULT_ACCESS_TOKEN_KEY);
-    assertNotNull(service.getAccessTokenExpirationKey());
-    assertEquals(service.getAccessTokenExpirationKey(),GoogleCloudPubSubCredentialService.DEFAULT_ACCESS_TOKEN_EXPIRATION_KEY);
+    GoogleCloudAccessTokenBuilder service = new GoogleCloudAccessTokenBuilder();
     assertNull(service.getScope());
     assertNull(service.getJsonKeyFile());
     assertNotNull(service.getCredentialWrapper());
     assertTrue(service.getCredentialWrapper() instanceof DefaultCredentialWrapper);
-    service = new GoogleCloudPubSubCredentialService(new ConfiguredProduceDestination(), Arrays.asList("scope"));
+    service = new GoogleCloudAccessTokenBuilder(new ConfiguredProduceDestination(), Arrays.asList("scope"));
     assertNotNull(service.getScope());
     assertTrue(service.getScope().contains("scope"));
     assertNotNull(service.getJsonKeyFile());
@@ -39,9 +37,9 @@ public class GoogleCloudPubSubCredentialServiceTest extends CredentialServiceExa
 
   @Test
   public void testInitFail() throws Exception {
-    GoogleCloudPubSubCredentialService service = new GoogleCloudPubSubCredentialService();
+    GoogleCloudAccessTokenBuilder service = new GoogleCloudAccessTokenBuilder();
     try {
-      service.initService();
+      service.init();
       fail();
     } catch (CoreException e){
       assertEquals("Value for json-key-file is invalid", e.getMessage());
@@ -50,10 +48,10 @@ public class GoogleCloudPubSubCredentialServiceTest extends CredentialServiceExa
 
   @Test
   public void testInitJsonKeyOnly() throws Exception {
-    GoogleCloudPubSubCredentialService service = new GoogleCloudPubSubCredentialService();
+    GoogleCloudAccessTokenBuilder service = new GoogleCloudAccessTokenBuilder();
     service.setJsonKeyFile(new ConfiguredProduceDestination());
     try {
-      service.initService();
+      service.init();
       fail();
     } catch (CoreException e){
       assertEquals("Value for scope is invalid", e.getMessage());
@@ -62,10 +60,10 @@ public class GoogleCloudPubSubCredentialServiceTest extends CredentialServiceExa
 
   @Test
   public void testInitScopeOnly() throws Exception {
-    GoogleCloudPubSubCredentialService service = new GoogleCloudPubSubCredentialService();
+    GoogleCloudAccessTokenBuilder service = new GoogleCloudAccessTokenBuilder();
     service.setScope(Arrays.asList("scope"));
     try {
-      service.initService();
+      service.init();
       fail();
     } catch (CoreException e){
       assertEquals("Value for json-key-file is invalid", e.getMessage());
@@ -74,10 +72,10 @@ public class GoogleCloudPubSubCredentialServiceTest extends CredentialServiceExa
 
   @Test
   public void testInitOk() throws Exception {
-    GoogleCloudPubSubCredentialService service = new GoogleCloudPubSubCredentialService();
+    GoogleCloudAccessTokenBuilder service = new GoogleCloudAccessTokenBuilder();
     service.setScope(Arrays.asList("scope"));
     service.setJsonKeyFile(new ConfiguredProduceDestination());
-    service.initService();
+    service.init();
     assertNotNull(service.getScope());
     assertTrue(service.getScope().contains("scope"));
     assertNotNull(service.getJsonKeyFile());
@@ -85,26 +83,33 @@ public class GoogleCloudPubSubCredentialServiceTest extends CredentialServiceExa
   }
 
   @Test
-  public void testDoService() throws Exception {
+  public void testBuild() throws Exception {
     AdaptrisMessage msg =  AdaptrisMessageFactory.getDefaultInstance().newMessage("Hello World");
-    URL resource = GoogleCloudPubSubCredentialServiceTest.class.getClassLoader().getResource("interlok.json");
+    URL resource = GoogleCloudAccessTokenBuilderTest.class.getClassLoader().getResource("interlok.json");
     File jsonFile = Paths.get(resource.toURI()).toFile();
-    GoogleCloudPubSubCredentialService service = new GoogleCloudPubSubCredentialService();
+    GoogleCloudAccessTokenBuilder service = new GoogleCloudAccessTokenBuilder();
     service.setCredentialWrapper(new StubCredentialWrapper());
     service.setJsonKeyFile(new ConfiguredProduceDestination("file:///" + jsonFile.getAbsolutePath()));
     service.setScope(Arrays.asList("https://www.googleapis.com/auth/pubsub"));
-    service.doService(msg);
-    assertTrue(msg.headersContainsKey(GoogleCloudPubSubCredentialService.DEFAULT_ACCESS_TOKEN_KEY));
-    assertEquals(msg.getMetadataValue(GoogleCloudPubSubCredentialService.DEFAULT_ACCESS_TOKEN_KEY), StubCredentialWrapper.ACCESS_TOKEN);
-    assertTrue(msg.headersContainsKey(GoogleCloudPubSubCredentialService.DEFAULT_ACCESS_TOKEN_EXPIRATION_KEY));
-    assertEquals(msg.getMetadataValue(GoogleCloudPubSubCredentialService.DEFAULT_ACCESS_TOKEN_EXPIRATION_KEY), DateFormatUtil.format(StubCredentialWrapper.EXPIRATION));
+    AccessToken accessToken = service.build(msg);
+    assertEquals(accessToken.getToken(), StubCredentialWrapper.ACCESS_TOKEN);
+    assertEquals(accessToken.getExpiry(), DateFormatUtil.format(StubCredentialWrapper.EXPIRATION));
   }
 
   @Override
   protected Object retrieveObjectForSampleConfig() {
-    GoogleCloudPubSubCredentialService service = new GoogleCloudPubSubCredentialService();
-    service.setScope(Arrays.asList("https://www.googleapis.com/auth/pubsub"));
-    service.setJsonKeyFile(new ConfiguredProduceDestination("file:////home/matthew/interlok.json"));
+    GetOauthToken service = new GetOauthToken();
+    GoogleCloudAccessTokenBuilder tokenBuilder = new GoogleCloudAccessTokenBuilder();
+    tokenBuilder.setScope(Arrays.asList("https://www.googleapis.com/auth/pubsub"));
+    tokenBuilder.setJsonKeyFile(new ConfiguredProduceDestination("file:////home/matthew/interlok.json"));
+    service.setAccessTokenBuilder(tokenBuilder);
     return service;
   }
+
+  @Override
+  protected String createBaseFileName(Object object) {
+    return super.createBaseFileName(object) + "-GoogleCloudAccessTokenBuilder";
+  }
+
+
 }

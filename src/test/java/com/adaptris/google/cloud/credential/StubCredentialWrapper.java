@@ -1,4 +1,4 @@
-package com.adaptris.google.cloud.pubsub.credential;
+package com.adaptris.google.cloud.credential;
 
 
 import com.google.auth.oauth2.AccessToken;
