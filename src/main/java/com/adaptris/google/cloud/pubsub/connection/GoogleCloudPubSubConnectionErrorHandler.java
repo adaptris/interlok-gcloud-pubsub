@@ -2,7 +2,9 @@ package com.adaptris.google.cloud.pubsub.connection;
 
 import com.adaptris.core.ConnectionErrorHandlerImp;
 import com.adaptris.core.CoreException;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
+@XStreamAlias("google-cloud-pubsub-connection-error-handler")
 public class GoogleCloudPubSubConnectionErrorHandler extends ConnectionErrorHandlerImp {
 
   @Override
