@@ -31,8 +31,8 @@ public class GoogleCloudPubSubPullConsumerTest extends ConsumerCase {
     assertNotNull(consumer.getAckDeadline());
     assertNotNull(consumer.getAckDeadlineSeconds());
     assertNotNull(consumer.getCreateSubscription());
-    assertEquals(6000, consumer.getAckDeadline().toMilliseconds());
-    assertEquals(6, consumer.getAckDeadlineSeconds());
+    assertEquals(10000, consumer.getAckDeadline().toMilliseconds());
+    assertEquals(10, consumer.getAckDeadlineSeconds());
     assertTrue(consumer.getCreateSubscription());
   }
 
@@ -45,7 +45,7 @@ public class GoogleCloudPubSubPullConsumerTest extends ConsumerCase {
     consumer.setDestination(new ConfiguredConsumeDestination("topic"));
     consumer.setAckDeadline(null);
     prepareFail(consumer, "Ack Deadline is invalid");
-    consumer.setAckDeadline(new TimeInterval(6L, TimeUnit.SECONDS));
+    consumer.setAckDeadline(new TimeInterval(10L, TimeUnit.SECONDS));
     consumer.setCreateSubscription(null);
     prepareFail(consumer, "Create Subscription is invalid");
     consumer.setCreateSubscription(true);
@@ -78,8 +78,8 @@ public class GoogleCloudPubSubPullConsumerTest extends ConsumerCase {
   @Test
   public void testAckDeadline(){
     GoogleCloudPubSubPullConsumer consumer = new GoogleCloudPubSubPullConsumer();
-    assertEquals(6000, consumer.getAckDeadline().toMilliseconds());
-    assertEquals(6, consumer.getAckDeadlineSeconds());
+    assertEquals(10000, consumer.getAckDeadline().toMilliseconds());
+    assertEquals(10, consumer.getAckDeadlineSeconds());
     consumer.setAckDeadline(new TimeInterval(20L, TimeUnit.SECONDS));
     assertEquals(20, consumer.getAckDeadlineSeconds());
     assertEquals(20000, consumer.getAckDeadline().toMilliseconds());
