@@ -94,22 +94,31 @@ public class GoogleCloudPubSubPullConsumerTest extends ConsumerCase {
   }
 
   @Test
-  public void testStart() throws Exception{
+  public void testLifecycle() throws Exception{
     GoogleCloudPubSubPullConsumer consumer = new GoogleCloudPubSubPullConsumer();
     consumer.setSubscriptionName("subscription-name");
     consumer.setDestination(new ConfiguredConsumeDestination("topic-name"));
     GoogleCloudPubSubConnection connection = Mockito.mock(GoogleCloudPubSubConnection.class);
+    Mockito.doReturn(connection).when(connection).retrieveConnection(GoogleCloudPubSubConnection.class);
     Mockito.doReturn("project-name").when(connection).getProjectName();
     SubscriptionName subscriptionName = Mockito.mock(SubscriptionName.class);
     Mockito.doReturn(subscriptionName).when(connection).createSubscription(consumer);
     Subscriber subscriber = Mockito.mock(Subscriber.class);
+    Mockito.doReturn(subscriber).when(subscriber).startAsync();
     Mockito.doReturn(subscriber).when(connection).createSubscriber(subscriptionName, consumer);
-    StandaloneConsumer sc = new StandaloneConsumer(connection, consumer);
-//    LifecycleHelper.init(sc);
-//    LifecycleHelper.start(sc);
+    consumer.registerConnection(connection);
+    LifecycleHelper.initAndStart(consumer);
+    LifecycleHelper.stopAndClose(consumer);
+    Mockito.verify(connection, Mockito.times(1)).createSubscription(consumer);
+    Mockito.verify(connection, Mockito.times(1)).createSubscriber(subscriptionName, consumer);
+    Mockito.verify(connection, Mockito.times(1)).getProjectName();
+    Mockito.verify(subscriber, Mockito.times(1)).startAsync();
+    Mockito.verify(subscriber, Mockito.times(1)).awaitRunning();
+    Mockito.verify(subscriber, Mockito.times(1)).stopAsync();
+    Mockito.verify(connection, Mockito.times(1)).deleteSubscription(consumer);
 
   }
-
+  
   @Test
   public void testReceiveMessage() throws Exception {
     GoogleCloudPubSubPullConsumer consumer = new GoogleCloudPubSubPullConsumer();
