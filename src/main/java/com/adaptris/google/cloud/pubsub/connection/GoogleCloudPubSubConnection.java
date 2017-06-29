@@ -18,6 +18,7 @@ import com.google.pubsub.v1.SubscriptionName;
 import com.google.pubsub.v1.TopicName;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import org.apache.commons.lang.StringUtils;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -46,7 +47,15 @@ public class GoogleCloudPubSubConnection extends AdaptrisConnectionImp {
 
   @Override
   protected void prepareConnection() throws CoreException {
-
+    if (StringUtils.isEmpty(getProjectName())){
+      throw new CoreException("Project Name is invalid");
+    }
+    if (StringUtils.isEmpty(getJsonKeyFile())){
+      throw new CoreException("Json Key File is invalid");
+    }
+    if(getScopes() == null || getScopes().size() == 0){
+      throw new CoreException("Scope is invalid");
+    }
   }
 
   @Override
@@ -127,11 +136,4 @@ public class GoogleCloudPubSubConnection extends AdaptrisConnectionImp {
     this.scopes = scopes;
   }
 
-  CredentialBuilder getCredentialBuilder() {
-    return credentialBuilder;
-  }
-
-  void setCredentialBuilder(CredentialBuilder credentialBuilder) {
-    this.credentialBuilder = credentialBuilder;
-  }
 }

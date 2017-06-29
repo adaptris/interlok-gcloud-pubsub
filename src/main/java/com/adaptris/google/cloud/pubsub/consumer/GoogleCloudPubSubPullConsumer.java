@@ -58,11 +58,9 @@ public class GoogleCloudPubSubPullConsumer extends GoogleCloudPubSubConfig imple
     log.trace("PubsubMessage Received [%s]", pubsubMessage.getMessageId());
     AdaptrisMessage adaptrisMessage = defaultIfNull(getMessageFactory()).newMessage(pubsubMessage.getData().toByteArray());
     adaptrisMessage.addMetadata("gcloud_topic", getTopicName());
-    adaptrisMessage.addMetadata("gcloud_projectName", projectName);
+    adaptrisMessage.addMetadata("gcloud_projectName", getProjectName());
     adaptrisMessage.addMetadata("gcloud_subscriptionName", getSubscriptionName());
-    if(pubsubMessage.getMessageId() != null) {
-      adaptrisMessage.addMetadata("gcloud_messageId", pubsubMessage.getMessageId());
-    }
+    adaptrisMessage.addMetadata("gcloud_messageId", pubsubMessage.getMessageId());
     if(pubsubMessage.hasPublishTime()) {
       adaptrisMessage.addMetadata("gcloud_publishTime", String.valueOf(pubsubMessage.getPublishTime().getSeconds()));
     }
@@ -71,5 +69,13 @@ public class GoogleCloudPubSubPullConsumer extends GoogleCloudPubSubConfig imple
     }
     retrieveAdaptrisMessageListener().onAdaptrisMessage(adaptrisMessage);
     consumer.ack();
+  }
+
+  String getProjectName() {
+    return projectName;
+  }
+
+  void setProjectName(String projectName) {
+    this.projectName = projectName;
   }
 }

@@ -1,10 +1,15 @@
 package com.adaptris.google.cloud.pubsub.consumer;
 
 import com.adaptris.core.*;
+import com.adaptris.core.stubs.MockMessageListener;
 import com.adaptris.core.util.LifecycleHelper;
 import com.adaptris.google.cloud.pubsub.connection.GoogleCloudPubSubConnection;
 import com.adaptris.util.TimeInterval;
+import com.google.cloud.pubsub.v1.AckReplyConsumer;
 import com.google.cloud.pubsub.v1.Subscriber;
+import com.google.protobuf.ByteString;
+import com.google.protobuf.Timestamp;
+import com.google.pubsub.v1.PubsubMessage;
 import com.google.pubsub.v1.SubscriptionName;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -95,7 +100,6 @@ public class GoogleCloudPubSubPullConsumerTest extends ConsumerCase {
     consumer.setDestination(new ConfiguredConsumeDestination("topic-name"));
     GoogleCloudPubSubConnection connection = Mockito.mock(GoogleCloudPubSubConnection.class);
     Mockito.doReturn("project-name").when(connection).getProjectName();
-    Mockito.doReturn("project-name").when(connection).getProjectName();
     SubscriptionName subscriptionName = Mockito.mock(SubscriptionName.class);
     Mockito.doReturn(subscriptionName).when(connection).createSubscription(consumer);
     Subscriber subscriber = Mockito.mock(Subscriber.class);
@@ -104,6 +108,58 @@ public class GoogleCloudPubSubPullConsumerTest extends ConsumerCase {
 //    LifecycleHelper.init(sc);
 //    LifecycleHelper.start(sc);
 
+  }
+
+  @Test
+  public void testReceiveMessage() throws Exception {
+    GoogleCloudPubSubPullConsumer consumer = new GoogleCloudPubSubPullConsumer();
+    consumer.setDestination(new ConfiguredConsumeDestination("topic-name"));
+    consumer.setSubscriptionName("subscription-name");
+    consumer.setProjectName("project-name");
+    MockMessageListener stub = new MockMessageListener();
+    consumer.registerAdaptrisMessageListener(stub);
+    ByteString byteString = ByteString.copyFrom("Hello World".getBytes());
+    PubsubMessage psm1 = PubsubMessage.newBuilder()
+        .setData(byteString)
+        .setMessageId("123")
+        .setPublishTime(Timestamp.newBuilder().setSeconds(1497951924L))
+        .putAttributes("prop1", "value1")
+        .putAttributes("prop2", "value2")
+        .build();
+    AckReplyConsumer ackReplyConsumer = Mockito.mock(AckReplyConsumer.class);
+
+    consumer.receiveMessage(psm1, ackReplyConsumer);
+
+    waitForMessages(stub, 1);
+    assertEquals(1,stub.getMessages().size());
+    AdaptrisMessage message1 = stub.getMessages().get(0);
+    assertEquals("Hello World", message1.getContent());
+    assertEquals("topic-name", message1.getMetadataValue("gcloud_topic"));
+    assertEquals("project-name", message1.getMetadataValue("gcloud_projectName"));
+    assertEquals("subscription-name", message1.getMetadataValue("gcloud_subscriptionName"));
+    assertEquals("123", message1.getMetadataValue("gcloud_messageId"));
+    assertEquals("1497951924", message1.getMetadataValue("gcloud_publishTime"));
+    assertEquals("value1", message1.getMetadataValue("prop1"));
+    assertEquals("value2", message1.getMetadataValue("prop2"));
+
+    stub.getMessages().clear();
+
+    PubsubMessage psm2 = PubsubMessage.newBuilder()
+        .setData(byteString)
+        .setMessageId("123")
+        .putAttributes("prop1", "value1")
+        .putAttributes("prop2", "value2").build();
+    consumer.receiveMessage(psm2, ackReplyConsumer);
+    assertEquals(1,stub.getMessages().size());
+    AdaptrisMessage message2 = stub.getMessages().get(0);
+    assertEquals("Hello World", message2.getContent());
+    assertEquals("topic-name", message2.getMetadataValue("gcloud_topic"));
+    assertEquals("project-name", message2.getMetadataValue("gcloud_projectName"));
+    assertEquals("subscription-name", message2.getMetadataValue("gcloud_subscriptionName"));
+    assertEquals("123", message1.getMetadataValue("gcloud_messageId"));
+    assertFalse(message2.headersContainsKey("gcloud_publishTime"));
+    assertEquals("value1", message2.getMetadataValue("prop1"));
+    assertEquals("value2", message2.getMetadataValue("prop2"));
   }
 
 
