@@ -6,21 +6,19 @@ import com.google.auth.oauth2.AccessToken;
 import com.google.auth.oauth2.GoogleCredentials;
 import org.mockito.Mockito;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collection;
 import java.util.Date;
 
 import static org.mockito.Mockito.mock;
 
-class StubCredentialProvider implements CredentialProvider {
+class StubCredentialBuilder implements CredentialBuilder {
 
   static final String ACCESS_TOKEN = "ABC123";
   static final Date EXPIRATION = new Date(0);
 
   GoogleCredentials credentials;
 
-  StubCredentialProvider() throws Exception{
+  StubCredentialBuilder() throws Exception{
     credentials = mock(GoogleCredentials.class);
     Mockito.when(credentials.refreshAccessToken()).thenReturn(new AccessToken(ACCESS_TOKEN, EXPIRATION));
   }

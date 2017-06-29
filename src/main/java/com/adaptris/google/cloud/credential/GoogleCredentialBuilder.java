@@ -9,7 +9,7 @@ import java.io.*;
 import java.net.URL;
 import java.util.Collection;
 
-public class GoogleCredentialProvider implements CredentialProvider {
+public class GoogleCredentialBuilder implements CredentialBuilder {
 
   @Override
   public GoogleCredentials fromStreamWithScope(String jsonFile, Collection<String> scopes) throws CoreException {

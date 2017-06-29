@@ -2,7 +2,6 @@ package com.adaptris.google.cloud.credential;
 
 
 import com.adaptris.core.*;
-import com.adaptris.core.fs.FsHelper;
 import com.adaptris.core.http.oauth.AccessToken;
 import com.adaptris.core.http.oauth.AccessTokenBuilder;
 import com.google.auth.oauth2.GoogleCredentials;
@@ -11,9 +10,7 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.List;
 
 @XStreamAlias("google-cloud-access-token-builder")
@@ -28,7 +25,7 @@ public class GoogleCloudAccessTokenBuilder implements AccessTokenBuilder {
   @XStreamImplicit(itemFieldName = "scope")
   private List<String> scope;
 
-  private transient CredentialProvider credentialProvider = new GoogleCredentialProvider();
+  private transient CredentialBuilder credentialBuilder = new GoogleCredentialBuilder();
 
   public GoogleCloudAccessTokenBuilder(){
   }
@@ -42,7 +39,7 @@ public class GoogleCloudAccessTokenBuilder implements AccessTokenBuilder {
   @Override
   public AccessToken build(AdaptrisMessage adaptrisMessage) throws IOException, CoreException {
     try {
-      GoogleCredentials credential = getCredentialProvider()
+      GoogleCredentials credential = getCredentialBuilder()
           .fromStreamWithScope(getJsonKeyFile().getDestination(adaptrisMessage), getScope());
       com.google.auth.oauth2.AccessToken accessToken = credential.refreshAccessToken();
       return new AccessToken(accessToken.getTokenValue(), accessToken.getExpirationTime().getTime());
@@ -92,11 +89,11 @@ public class GoogleCloudAccessTokenBuilder implements AccessTokenBuilder {
     this.scope = scope;
   }
 
-  CredentialProvider getCredentialProvider() {
-    return credentialProvider;
+  CredentialBuilder getCredentialBuilder() {
+    return credentialBuilder;
   }
 
-  void setCredentialProvider(CredentialProvider credentialProvider) {
-    this.credentialProvider = credentialProvider;
+  void setCredentialBuilder(CredentialBuilder credentialBuilder) {
+    this.credentialBuilder = credentialBuilder;
   }
 }

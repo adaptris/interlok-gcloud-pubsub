@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 
-public interface CredentialProvider {
+public interface CredentialBuilder {
 
   GoogleCredentials fromStreamWithScope(String jsonFile, Collection<String> scopes) throws CoreException;
 }
