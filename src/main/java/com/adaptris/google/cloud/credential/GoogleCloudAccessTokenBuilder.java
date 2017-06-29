@@ -12,7 +12,6 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -29,7 +28,7 @@ public class GoogleCloudAccessTokenBuilder implements AccessTokenBuilder {
   @XStreamImplicit(itemFieldName = "scope")
   private List<String> scope;
 
-  private transient CredentialWrapper credentialWrapper = new DefaultCredentialWrapper();
+  private transient CredentialProvider credentialProvider = new GoogleCredentialProvider();
 
   public GoogleCloudAccessTokenBuilder(){
   }
@@ -43,11 +42,8 @@ public class GoogleCloudAccessTokenBuilder implements AccessTokenBuilder {
   @Override
   public AccessToken build(AdaptrisMessage adaptrisMessage) throws IOException, CoreException {
     try {
-      String destinationUrl = getJsonKeyFile().getDestination(adaptrisMessage);
-      URL url = FsHelper.createUrlFromString(destinationUrl, true);
-      File jsonKey = FsHelper.createFileReference(url);
-      GoogleCredentials credential = getCredentialWrapper()
-          .fromStreamWithScope(new FileInputStream(jsonKey), getScope());
+      GoogleCredentials credential = getCredentialProvider()
+          .fromStreamWithScope(getJsonKeyFile().getDestination(adaptrisMessage), getScope());
       com.google.auth.oauth2.AccessToken accessToken = credential.refreshAccessToken();
       return new AccessToken(accessToken.getTokenValue(), accessToken.getExpirationTime().getTime());
     } catch (Exception e) {
@@ -96,11 +92,11 @@ public class GoogleCloudAccessTokenBuilder implements AccessTokenBuilder {
     this.scope = scope;
   }
 
-  CredentialWrapper getCredentialWrapper() {
-    return credentialWrapper;
+  CredentialProvider getCredentialProvider() {
+    return credentialProvider;
   }
 
-  void setCredentialWrapper(CredentialWrapper credentialWrapper) {
-    this.credentialWrapper = credentialWrapper;
+  void setCredentialProvider(CredentialProvider credentialProvider) {
+    this.credentialProvider = credentialProvider;
   }
 }

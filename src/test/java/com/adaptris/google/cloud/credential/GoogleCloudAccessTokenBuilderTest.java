@@ -26,8 +26,8 @@ public class GoogleCloudAccessTokenBuilderTest extends CredentialServiceExample 
     GoogleCloudAccessTokenBuilder service = new GoogleCloudAccessTokenBuilder();
     assertNull(service.getScope());
     assertNull(service.getJsonKeyFile());
-    assertNotNull(service.getCredentialWrapper());
-    assertTrue(service.getCredentialWrapper() instanceof DefaultCredentialWrapper);
+    assertNotNull(service.getCredentialProvider());
+    assertTrue(service.getCredentialProvider() instanceof GoogleCredentialProvider);
     service = new GoogleCloudAccessTokenBuilder(new ConfiguredProduceDestination(), Arrays.asList("scope"));
     assertNotNull(service.getScope());
     assertTrue(service.getScope().contains("scope"));
@@ -88,12 +88,12 @@ public class GoogleCloudAccessTokenBuilderTest extends CredentialServiceExample 
     URL resource = GoogleCloudAccessTokenBuilderTest.class.getClassLoader().getResource("interlok.json");
     File jsonFile = Paths.get(resource.toURI()).toFile();
     GoogleCloudAccessTokenBuilder service = new GoogleCloudAccessTokenBuilder();
-    service.setCredentialWrapper(new StubCredentialWrapper());
+    service.setCredentialProvider(new StubCredentialProvider());
     service.setJsonKeyFile(new ConfiguredProduceDestination("file:///" + jsonFile.getAbsolutePath()));
     service.setScope(Arrays.asList("https://www.googleapis.com/auth/pubsub"));
     AccessToken accessToken = service.build(msg);
-    assertEquals(accessToken.getToken(), StubCredentialWrapper.ACCESS_TOKEN);
-    assertEquals(accessToken.getExpiry(), DateFormatUtil.format(StubCredentialWrapper.EXPIRATION));
+    assertEquals(accessToken.getToken(), StubCredentialProvider.ACCESS_TOKEN);
+    assertEquals(accessToken.getExpiry(), DateFormatUtil.format(StubCredentialProvider.EXPIRATION));
   }
 
   @Override
