@@ -54,7 +54,6 @@ public class GoogleCloudPubSubPullConsumer extends GoogleCloudPubSubConfig imple
 
   @Override
   public void receiveMessage(PubsubMessage pubsubMessage, AckReplyConsumer consumer) {
-    log.trace("PubsubMessage Received [%s]", pubsubMessage.getMessageId());
     AdaptrisMessage adaptrisMessage = defaultIfNull(getMessageFactory()).newMessage(pubsubMessage.getData().toByteArray());
     adaptrisMessage.addMetadata("gcloud_topic", getTopicName());
     adaptrisMessage.addMetadata("gcloud_projectName", getProjectName());
@@ -66,7 +65,10 @@ public class GoogleCloudPubSubPullConsumer extends GoogleCloudPubSubConfig imple
     for (Map.Entry<String, String> e : pubsubMessage.getAttributesMap().entrySet()) {
       adaptrisMessage.addMetadata(e.getKey(), e.getValue());
     }
+    String oldName = renameThread();
     retrieveAdaptrisMessageListener().onAdaptrisMessage(adaptrisMessage);
+    Thread.currentThread().setName(oldName);
+    log.trace("PubsubMessage Received [{}]", pubsubMessage.getMessageId());
     consumer.ack();
   }
 

@@ -25,7 +25,7 @@ public abstract class GoogleCloudPubSubConfig extends AdaptrisMessageConsumerImp
   private Boolean createSubscription = true;
 
   public GoogleCloudPubSubConfig(){
-    setAckDeadline(new TimeInterval(6L, TimeUnit.SECONDS));
+    setAckDeadline(new TimeInterval(10L, TimeUnit.SECONDS));
   }
 
   @Override

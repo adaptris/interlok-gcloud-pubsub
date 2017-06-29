@@ -78,11 +78,14 @@ public class GoogleCloudPubSubConsumeConnection extends AdaptrisConnectionImp {
   public SubscriptionName createSubscription(GoogleCloudPubSubConfig config) throws CoreException {
     SubscriptionName subscription = SubscriptionName.create(getProjectName(), config.getSubscriptionName());
     if (config.getCreateSubscription()) {
+      log.trace("Creating Subscription [{}] for Project [{}] Topic [{}]", config.getSubscriptionName(), getProjectName(), config.getTopicName());
       TopicName topic = TopicName.create(getProjectName(), config.getTopicName());
       try (SubscriptionAdminClient subscriptionAdminClient = SubscriptionAdminClient.create(SubscriptionAdminSettings.defaultBuilder().setCredentialsProvider(credentialsProvider).build())) {
         subscriptionAdminClient.createSubscription(subscription, topic, PushConfig.getDefaultInstance(), config.getAckDeadlineSeconds());
       } catch (Exception e) {
-        throw new CoreException("Could not create subscription", e);
+        final String message = "Could not create subscription";
+        log.error(message, e);
+        throw new CoreException(message, e);
       }
     }
     return subscription;
@@ -94,6 +97,7 @@ public class GoogleCloudPubSubConsumeConnection extends AdaptrisConnectionImp {
       try (SubscriptionAdminClient subscriptionAdminClient = SubscriptionAdminClient.create(SubscriptionAdminSettings.defaultBuilder().setCredentialsProvider(credentialsProvider).build())) {
         subscriptionAdminClient.deleteSubscription(subscription);
       } catch (Exception e) {
+        log.error("Could not delete subscription", e);
         throw new CoreException("Could not delete subscription", e);
       }
     }
@@ -106,6 +110,7 @@ public class GoogleCloudPubSubConsumeConnection extends AdaptrisConnectionImp {
           new Subscriber.Listener() {
             @Override
             public void failed(Subscriber.State from, Throwable failure) {
+              log.error("Subscriber failed", failure);
               getConnectionErrorHandler().handleConnectionException();
             }
           },
