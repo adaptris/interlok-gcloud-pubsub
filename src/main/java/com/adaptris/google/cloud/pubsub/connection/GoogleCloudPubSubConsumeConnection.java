@@ -24,8 +24,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-@XStreamAlias("google-cloud-pubsub-connection")
-public class GoogleCloudPubSubConnection extends AdaptrisConnectionImp {
+@XStreamAlias("google-cloud-pubsub-consume-connection")
+public class GoogleCloudPubSubConsumeConnection extends AdaptrisConnectionImp {
 
   @NotNull
   @Valid
@@ -101,14 +101,16 @@ public class GoogleCloudPubSubConnection extends AdaptrisConnectionImp {
 
   public Subscriber createSubscriber(SubscriptionName subscription, MessageReceiver receiver) {
     Subscriber subscriber = Subscriber.defaultBuilder(subscription, receiver).setCredentialsProvider(credentialsProvider).build();
-    subscriber.addListener(
-        new Subscriber.Listener() {
-          @Override
-          public void failed(Subscriber.State from, Throwable failure) {
-            log.error("Subscriber encountered a fatal error and is shutting down", failure);
-          }
-        },
-        MoreExecutors.directExecutor());
+    if (getConnectionErrorHandler() instanceof GoogleCloudPubSubConnectionErrorHandler) {
+      subscriber.addListener(
+          new Subscriber.Listener() {
+            @Override
+            public void failed(Subscriber.State from, Throwable failure) {
+              getConnectionErrorHandler().handleConnectionException();
+            }
+          },
+          MoreExecutors.directExecutor());
+    }
     return subscriber;
   }
 

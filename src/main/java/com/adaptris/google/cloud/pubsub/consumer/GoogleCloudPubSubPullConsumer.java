@@ -1,9 +1,8 @@
 package com.adaptris.google.cloud.pubsub.consumer;
 
 import com.adaptris.core.*;
-import com.adaptris.google.cloud.pubsub.connection.GoogleCloudPubSubConnection;
+import com.adaptris.google.cloud.pubsub.connection.GoogleCloudPubSubConsumeConnection;
 import com.google.cloud.pubsub.v1.*;
-import com.google.common.util.concurrent.MoreExecutors;
 import com.google.pubsub.v1.PubsubMessage;
 import com.google.pubsub.v1.SubscriptionName;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -24,7 +23,7 @@ public class GoogleCloudPubSubPullConsumer extends GoogleCloudPubSubConfig imple
 
   @Override
   public void init() throws CoreException {
-    GoogleCloudPubSubConnection connection = retrieveConnection(GoogleCloudPubSubConnection.class);
+    GoogleCloudPubSubConsumeConnection connection = retrieveConnection(GoogleCloudPubSubConsumeConnection.class);
     SubscriptionName subscriptionName = connection.createSubscription(this);
     subscriber = connection.createSubscriber(subscriptionName, this);
     projectName = connection.getProjectName();
@@ -44,7 +43,7 @@ public class GoogleCloudPubSubPullConsumer extends GoogleCloudPubSubConfig imple
 
   @Override
   public void close() {
-    GoogleCloudPubSubConnection connection = retrieveConnection(GoogleCloudPubSubConnection.class);
+    GoogleCloudPubSubConsumeConnection connection = retrieveConnection(GoogleCloudPubSubConsumeConnection.class);
     try {
       connection.deleteSubscription(this);
     } catch (CoreException e) {

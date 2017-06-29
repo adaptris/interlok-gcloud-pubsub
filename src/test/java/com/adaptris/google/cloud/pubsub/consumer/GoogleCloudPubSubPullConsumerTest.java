@@ -3,7 +3,7 @@ package com.adaptris.google.cloud.pubsub.consumer;
 import com.adaptris.core.*;
 import com.adaptris.core.stubs.MockMessageListener;
 import com.adaptris.core.util.LifecycleHelper;
-import com.adaptris.google.cloud.pubsub.connection.GoogleCloudPubSubConnection;
+import com.adaptris.google.cloud.pubsub.connection.GoogleCloudPubSubConsumeConnection;
 import com.adaptris.util.TimeInterval;
 import com.google.cloud.pubsub.v1.AckReplyConsumer;
 import com.google.cloud.pubsub.v1.Subscriber;
@@ -98,8 +98,8 @@ public class GoogleCloudPubSubPullConsumerTest extends ConsumerCase {
     GoogleCloudPubSubPullConsumer consumer = new GoogleCloudPubSubPullConsumer();
     consumer.setSubscriptionName("subscription-name");
     consumer.setDestination(new ConfiguredConsumeDestination("topic-name"));
-    GoogleCloudPubSubConnection connection = Mockito.mock(GoogleCloudPubSubConnection.class);
-    Mockito.doReturn(connection).when(connection).retrieveConnection(GoogleCloudPubSubConnection.class);
+    GoogleCloudPubSubConsumeConnection connection = Mockito.mock(GoogleCloudPubSubConsumeConnection.class);
+    Mockito.doReturn(connection).when(connection).retrieveConnection(GoogleCloudPubSubConsumeConnection.class);
     Mockito.doReturn("project-name").when(connection).getProjectName();
     SubscriptionName subscriptionName = Mockito.mock(SubscriptionName.class);
     Mockito.doReturn(subscriptionName).when(connection).createSubscription(consumer);
@@ -118,7 +118,7 @@ public class GoogleCloudPubSubPullConsumerTest extends ConsumerCase {
     Mockito.verify(connection, Mockito.times(1)).deleteSubscription(consumer);
 
   }
-  
+
   @Test
   public void testReceiveMessage() throws Exception {
     GoogleCloudPubSubPullConsumer consumer = new GoogleCloudPubSubPullConsumer();
@@ -174,7 +174,7 @@ public class GoogleCloudPubSubPullConsumerTest extends ConsumerCase {
 
   @Override
   protected Object retrieveObjectForSampleConfig() {
-    GoogleCloudPubSubConnection conn = new GoogleCloudPubSubConnection();
+    GoogleCloudPubSubConsumeConnection conn = new GoogleCloudPubSubConsumeConnection();
     conn.setScopes(Arrays.asList("https://www.googleapis.com/auth/pubsub"));
     conn.setJsonKeyFile("file:////home/matthew/interlok.json");
     conn.setProjectName("project-name");

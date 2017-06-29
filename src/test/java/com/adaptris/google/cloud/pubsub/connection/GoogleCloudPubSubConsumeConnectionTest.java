@@ -1,7 +1,6 @@
 package com.adaptris.google.cloud.pubsub.connection;
 
 import com.adaptris.core.CoreException;
-import com.adaptris.google.cloud.pubsub.consumer.GoogleCloudPubSubPullConsumer;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -9,11 +8,11 @@ import java.util.Arrays;
 
 import static org.junit.Assert.*;
 
-public class GoogleCloudPubSubConnectionTest {
+public class GoogleCloudPubSubConsumeConnectionTest {
 
   @Test
   public void testPrepareConnection() throws Exception {
-    GoogleCloudPubSubConnection connection = new GoogleCloudPubSubConnection();
+    GoogleCloudPubSubConsumeConnection connection = new GoogleCloudPubSubConsumeConnection();
     prepareFail(connection, "Project Name is invalid");
     connection.setProjectName("");
     prepareFail(connection, "Project Name is invalid");
@@ -29,7 +28,7 @@ public class GoogleCloudPubSubConnectionTest {
     connection.prepareConnection();
   }
 
-  private void prepareFail(GoogleCloudPubSubConnection connection, String message){
+  private void prepareFail(GoogleCloudPubSubConsumeConnection connection, String message){
     try {
       connection.prepareConnection();
       fail();
@@ -40,21 +39,21 @@ public class GoogleCloudPubSubConnectionTest {
 
   @Test
   public void testGetProjectName() throws Exception {
-    GoogleCloudPubSubConnection connection = new GoogleCloudPubSubConnection();
+    GoogleCloudPubSubConsumeConnection connection = new GoogleCloudPubSubConsumeConnection();
     connection.setProjectName("project-name");
     assertEquals("project-name", connection.getProjectName());
   }
 
   @Test
   public void testGetJsonKeyFile() throws Exception {
-    GoogleCloudPubSubConnection connection = new GoogleCloudPubSubConnection();
+    GoogleCloudPubSubConsumeConnection connection = new GoogleCloudPubSubConsumeConnection();
     connection.setJsonKeyFile("/opt/interlok/file.json");
     assertEquals("/opt/interlok/file.json", connection.getJsonKeyFile());
   }
 
   @Test
   public void testGetScopes() throws Exception {
-    GoogleCloudPubSubConnection connection = new GoogleCloudPubSubConnection();
+    GoogleCloudPubSubConsumeConnection connection = new GoogleCloudPubSubConsumeConnection();
     connection.setScopes(Arrays.asList("scope"));
     assertEquals(1, connection.getScopes().size());
     assertEquals("scope", connection.getScopes().get(0));
