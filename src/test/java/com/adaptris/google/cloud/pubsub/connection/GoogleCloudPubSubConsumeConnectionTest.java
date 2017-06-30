@@ -10,7 +10,6 @@ import com.adaptris.google.cloud.pubsub.connection.credentials.KeyFileCredential
 import com.adaptris.google.cloud.pubsub.connection.credentials.NoCredentialsProvider;
 import com.google.api.gax.grpc.InstantiatingChannelProvider;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import static org.junit.Assert.*;
