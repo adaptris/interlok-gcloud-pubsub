@@ -14,7 +14,6 @@ import com.google.pubsub.v1.SubscriptionName;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 public class GoogleCloudPubSubPullConsumerTest extends ConsumerCase {
@@ -175,8 +174,6 @@ public class GoogleCloudPubSubPullConsumerTest extends ConsumerCase {
   @Override
   protected Object retrieveObjectForSampleConfig() {
     GoogleCloudPubSubConsumeConnection conn = new GoogleCloudPubSubConsumeConnection();
-    conn.setScopes(Arrays.asList("https://www.googleapis.com/auth/pubsub"));
-    conn.setJsonKeyFile("file:////home/matthew/interlok.json");
     conn.setProjectName("project-name");
 
     GoogleCloudPubSubPullConsumer cons = new GoogleCloudPubSubPullConsumer();

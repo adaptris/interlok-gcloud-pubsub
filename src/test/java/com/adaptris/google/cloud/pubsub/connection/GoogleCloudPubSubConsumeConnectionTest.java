@@ -1,14 +1,36 @@
 package com.adaptris.google.cloud.pubsub.connection;
 
 import com.adaptris.core.CoreException;
+import com.adaptris.core.util.LifecycleHelper;
+import com.adaptris.google.cloud.pubsub.connection.channel.ChannelProvider;
+import com.adaptris.google.cloud.pubsub.connection.channel.CustomChannelProvider;
+import com.adaptris.google.cloud.pubsub.connection.channel.DefaultChannelProvider;
+import com.adaptris.google.cloud.pubsub.connection.credentials.CredentialsProvider;
+import com.adaptris.google.cloud.pubsub.connection.credentials.KeyFileCredentialsProvider;
+import com.adaptris.google.cloud.pubsub.connection.credentials.NoCredentialsProvider;
+import com.google.api.gax.grpc.InstantiatingChannelProvider;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.Arrays;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import static org.junit.Assert.*;
 
 public class GoogleCloudPubSubConsumeConnectionTest {
+
+  @Test
+  public void testConstruct() throws Exception {
+    GoogleCloudPubSubConsumeConnection connection = new GoogleCloudPubSubConsumeConnection();
+    assertNull(connection.getProjectName());
+    assertNotNull(connection.getChannelProvider());
+    assertTrue(connection.getChannelProvider() instanceof DefaultChannelProvider);
+    assertNotNull(connection.getCredentialsProvider());
+    assertTrue(connection.getCredentialsProvider() instanceof NoCredentialsProvider);
+    connection = new GoogleCloudPubSubConsumeConnection(new CustomChannelProvider());
+    assertTrue(connection.getChannelProvider() instanceof CustomChannelProvider);
+    connection = new GoogleCloudPubSubConsumeConnection(new CustomChannelProvider(), new KeyFileCredentialsProvider());
+    assertTrue(connection.getChannelProvider() instanceof CustomChannelProvider);
+    assertTrue(connection.getCredentialsProvider() instanceof KeyFileCredentialsProvider);
+  }
 
   @Test
   public void testPrepareConnection() throws Exception {
@@ -17,14 +39,6 @@ public class GoogleCloudPubSubConsumeConnectionTest {
     connection.setProjectName("");
     prepareFail(connection, "Project Name is invalid");
     connection.setProjectName("project-name");
-    prepareFail(connection, "Json Key File is invalid");
-    connection.setJsonKeyFile("");
-    prepareFail(connection, "Json Key File is invalid");
-    connection.setJsonKeyFile("/opt/interlok/file.json");
-    prepareFail(connection, "Scope is invalid");
-    connection.setScopes(new ArrayList<String>());
-    prepareFail(connection, "Scope is invalid");
-    connection.setScopes(Arrays.asList("scope"));
     connection.prepareConnection();
   }
 
@@ -45,18 +59,35 @@ public class GoogleCloudPubSubConsumeConnectionTest {
   }
 
   @Test
-  public void testGetJsonKeyFile() throws Exception {
-    GoogleCloudPubSubConsumeConnection connection = new GoogleCloudPubSubConsumeConnection();
-    connection.setJsonKeyFile("/opt/interlok/file.json");
-    assertEquals("/opt/interlok/file.json", connection.getJsonKeyFile());
+  public void testLifeCycleInitStartAndGetGoogleProvider() throws Exception {
+    GoogleCloudPubSubConsumeConnection connection = Mockito.spy(new GoogleCloudPubSubConsumeConnection());
+    connection.setProjectName("project-name");
+    CredentialsProvider credentialsProvider = Mockito.mock(NoCredentialsProvider.class);
+    Mockito.doReturn(new com.google.api.gax.core.NoCredentialsProvider()).when(credentialsProvider).getCredentialsProvider();
+    ChannelProvider channelProvider = Mockito.mock(DefaultChannelProvider.class);
+    Mockito.doReturn(InstantiatingChannelProvider.newBuilder().build()).when(channelProvider).getChannelProvider();
+    connection.setCredentialsProvider(credentialsProvider);
+    connection.setChannelProvider(channelProvider);
+    LifecycleHelper.initAndStart(connection);
+    assertTrue(connection.getGoogleCredentialsProvider() instanceof com.google.api.gax.core.NoCredentialsProvider);
+    assertTrue(connection.getGoogleChannelProvider()instanceof InstantiatingChannelProvider);
+    LifecycleHelper.stopAndClose(connection);
+    Mockito.verify(connection, Mockito.times(1)).initConnection();
+    Mockito.verify(credentialsProvider, Mockito.times(1)).init();
+    Mockito.verify(channelProvider, Mockito.times(1)).init();
+    Mockito.verify(connection, Mockito.times(1)).startConnection();
+    Mockito.verify(credentialsProvider, Mockito.times(1)).start();
+    Mockito.verify(channelProvider, Mockito.times(1)).start();
+    Mockito.verify(credentialsProvider, Mockito.times(1)).getCredentialsProvider();
+    Mockito.verify(channelProvider, Mockito.times(1)).getChannelProvider();
+    Mockito.verify(connection, Mockito.times(1)).stopConnection();
+    Mockito.verify(credentialsProvider, Mockito.times(1)).stop();
+    Mockito.verify(channelProvider, Mockito.times(1)).stop();
+    Mockito.verify(connection, Mockito.times(1)).closeConnection();
+    Mockito.verify(credentialsProvider, Mockito.times(1)).close();
+    Mockito.verify(channelProvider, Mockito.times(1)).close();
   }
 
-  @Test
-  public void testGetScopes() throws Exception {
-    GoogleCloudPubSubConsumeConnection connection = new GoogleCloudPubSubConsumeConnection();
-    connection.setScopes(Arrays.asList("scope"));
-    assertEquals(1, connection.getScopes().size());
-    assertEquals("scope", connection.getScopes().get(0));
-  }
+
 
 }

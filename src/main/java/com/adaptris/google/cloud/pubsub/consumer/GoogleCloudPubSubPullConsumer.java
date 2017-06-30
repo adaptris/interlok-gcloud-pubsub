@@ -1,8 +1,11 @@
 package com.adaptris.google.cloud.pubsub.consumer;
 
-import com.adaptris.core.*;
+import com.adaptris.core.AdaptrisMessage;
+import com.adaptris.core.CoreException;
 import com.adaptris.google.cloud.pubsub.connection.GoogleCloudPubSubConsumeConnection;
-import com.google.cloud.pubsub.v1.*;
+import com.google.cloud.pubsub.v1.AckReplyConsumer;
+import com.google.cloud.pubsub.v1.MessageReceiver;
+import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.pubsub.v1.PubsubMessage;
 import com.google.pubsub.v1.SubscriptionName;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -68,7 +71,6 @@ public class GoogleCloudPubSubPullConsumer extends GoogleCloudPubSubConfig imple
     String oldName = renameThread();
     retrieveAdaptrisMessageListener().onAdaptrisMessage(adaptrisMessage);
     Thread.currentThread().setName(oldName);
-    log.trace("PubsubMessage Received [{}]", pubsubMessage.getMessageId());
     consumer.ack();
   }
 
