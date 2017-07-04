@@ -66,6 +66,8 @@ public class GoogleCloudPubSubConsumeConnectionTest {
     Mockito.doReturn(new com.google.api.gax.core.NoCredentialsProvider()).when(credentialsProvider).getCredentialsProvider();
     ChannelProvider channelProvider = Mockito.mock(DefaultChannelProvider.class);
     Mockito.doReturn(InstantiatingChannelProvider.newBuilder().build()).when(channelProvider).getChannelProvider();
+    Mockito.doNothing().when(connection).initSubscriptionAdminClient();
+    Mockito.doNothing().when(connection).closeSubscriptionAdminClient();
     connection.setCredentialsProvider(credentialsProvider);
     connection.setChannelProvider(channelProvider);
     LifecycleHelper.initAndStart(connection);

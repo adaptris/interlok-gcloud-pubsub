@@ -7,9 +7,12 @@ import com.adaptris.google.cloud.pubsub.connection.channel.ChannelProvider;
 import com.adaptris.google.cloud.pubsub.connection.channel.DefaultChannelProvider;
 import com.adaptris.google.cloud.pubsub.connection.credentials.CredentialsProvider;
 import com.adaptris.google.cloud.pubsub.connection.credentials.NoCredentialsProvider;
+import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
+import com.google.cloud.pubsub.v1.SubscriptionAdminSettings;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.io.IOException;
 
 public abstract class ConsumerConnectionConfig extends AdaptrisConnectionImp {
 
@@ -42,6 +45,8 @@ public abstract class ConsumerConnectionConfig extends AdaptrisConnectionImp {
   @Valid
   private ChannelProvider channelProvider;
 
+  private transient SubscriptionAdminClient subscriptionAdminClient;
+
   public ConsumerConnectionConfig(){
     this(new DefaultChannelProvider());
     connectionState = ConnectionState.Closed;
@@ -61,6 +66,7 @@ public abstract class ConsumerConnectionConfig extends AdaptrisConnectionImp {
     connectionState = ConnectionState.Initialising;
     getCredentialsProvider().init();
     getChannelProvider().init();
+    initSubscriptionAdminClient();
     connectionState = ConnectionState.Initialised;
   }
 
@@ -83,6 +89,7 @@ public abstract class ConsumerConnectionConfig extends AdaptrisConnectionImp {
   @Override
   protected void closeConnection() {
     connectionState = ConnectionState.Closing;
+    closeSubscriptionAdminClient();
     getCredentialsProvider().close();
     getChannelProvider().close();
     connectionState = ConnectionState.Closed;
@@ -115,5 +122,27 @@ public abstract class ConsumerConnectionConfig extends AdaptrisConnectionImp {
 
   public ConnectionState getConnectionState() {
     return connectionState;
+  }
+
+  void initSubscriptionAdminClient() throws CoreException {
+    try {
+      subscriptionAdminClient = SubscriptionAdminClient.create(SubscriptionAdminSettings.defaultBuilder().setChannelProvider(getGoogleChannelProvider()).setCredentialsProvider(getGoogleCredentialsProvider()).build());
+    } catch (IOException e){
+      throw new CoreException("Failed to start SubscriptionAdminClient", e);
+    }
+  }
+
+  void closeSubscriptionAdminClient() {
+    if(subscriptionAdminClient != null){
+      try {
+        subscriptionAdminClient.close();
+      } catch (Exception ignored) {
+        ;
+      }
+    }
+  }
+
+  SubscriptionAdminClient getSubscriptionAdminClient() {
+    return subscriptionAdminClient;
   }
 }

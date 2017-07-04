@@ -30,6 +30,7 @@ public class GoogleCloudPubSubConsumeConnection extends ConsumerConnectionConfig
   @Valid
   private String projectName;
 
+
   public GoogleCloudPubSubConsumeConnection(){
     super();
   }
@@ -50,32 +51,26 @@ public class GoogleCloudPubSubConsumeConnection extends ConsumerConnectionConfig
   }
 
   public Subscription createSubscription(GoogleCloudPubSubConfig config) throws CoreException {
-    try (SubscriptionAdminClient subscriptionAdminClient = subscriptionAdminClient()) {
-      SubscriptionName subscriptionName = SubscriptionName.create(getProjectName(), config.getSubscriptionName());
-      TopicName topic = TopicName.create(getProjectName(), config.getTopicName());
-      try {
-        Subscription subscription = subscriptionAdminClient.getSubscription(subscriptionName);
-        log.trace(String.format("Found existing subscription [%s] for Topic [%s]", config.getSubscriptionName(), subscription.getTopic()));
-        if(!subscription.getTopic().equals(topic.toString())){
-          throw new CoreException(String.format("Existing subscription topics do not match [%s] [%s]", subscription.getTopic(), topic.toString()));
-        }
-        return subscription;
-      } catch (ApiException e){
-        if (Status.Code.NOT_FOUND != e.getStatusCode()){
-          throw e;
+    SubscriptionName subscriptionName = SubscriptionName.create(getProjectName(), config.getSubscriptionName());
+    TopicName topic = TopicName.create(getProjectName(), config.getTopicName());
+    try {
+      Subscription subscription = getSubscriptionAdminClient().getSubscription(subscriptionName);
+      log.trace(String.format("Found existing subscription [%s] for Topic [%s]", config.getSubscriptionName(), subscription.getTopic()));
+      if(!subscription.getTopic().equals(topic.toString())){
+        throw new CoreException(String.format("Existing subscription topics do not match [%s] [%s]", subscription.getTopic(), topic.toString()));
+      }
+      return subscription;
+    } catch (ApiException e){
+      if (Status.Code.NOT_FOUND != e.getStatusCode()){
+        throw e;
+      } else {
+        if (config.getCreateSubscription()){
+          log.trace(String.format("Creating Subscription [%s] Topic [%s]", config.getSubscriptionName(), topic.toString()));
+          return getSubscriptionAdminClient().createSubscription(subscriptionName, topic, PushConfig.getDefaultInstance(), config.getAckDeadlineSeconds());
         } else {
-          if (config.getCreateSubscription()){
-            log.trace(String.format("Creating Subscription [%s] Topic [%s]", config.getSubscriptionName(), topic.toString()));
-            return subscriptionAdminClient.createSubscription(subscriptionName, topic, PushConfig.getDefaultInstance(), config.getAckDeadlineSeconds());
-          } else {
-            throw e;
-          }
+          throw e;
         }
       }
-    } catch (Exception e) {
-      final String message = "Could not create subscription";
-      log.error(message, e);
-      throw new CoreException(message, e);
     }
   }
 
@@ -83,12 +78,7 @@ public class GoogleCloudPubSubConsumeConnection extends ConsumerConnectionConfig
     SubscriptionName subscription = SubscriptionName.create(getProjectName(), config.getSubscriptionName());
     if (config.getCreateSubscription()) {
       log.trace("Deleting Subscription [{}] for Project [{}] Topic [{}]", config.getSubscriptionName(), getProjectName(), config.getTopicName());
-      try (SubscriptionAdminClient subscriptionAdminClient = subscriptionAdminClient()) {
-        subscriptionAdminClient.deleteSubscription(subscription);
-      } catch (Exception e) {
-        log.error("Could not delete subscription", e);
-        throw new CoreException("Could not delete subscription", e);
-      }
+      getSubscriptionAdminClient().deleteSubscription(subscription);
     }
   }
 
@@ -108,9 +98,6 @@ public class GoogleCloudPubSubConsumeConnection extends ConsumerConnectionConfig
     return subscriber;
   }
 
-  SubscriptionAdminClient subscriptionAdminClient() throws IOException {
-    return SubscriptionAdminClient.create(SubscriptionAdminSettings.defaultBuilder().setChannelProvider(getGoogleChannelProvider()).setCredentialsProvider(getGoogleCredentialsProvider()).build());
-  }
 
   public String getProjectName() {
     return projectName;
