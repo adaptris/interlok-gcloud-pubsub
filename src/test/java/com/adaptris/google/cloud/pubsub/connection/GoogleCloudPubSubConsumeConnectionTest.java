@@ -24,6 +24,7 @@ public class GoogleCloudPubSubConsumeConnectionTest {
     assertTrue(connection.getChannelProvider() instanceof DefaultChannelProvider);
     assertNotNull(connection.getCredentialsProvider());
     assertTrue(connection.getCredentialsProvider() instanceof NoCredentialsProvider);
+    assertEquals(connection.getConnectionState(), ConsumerConnectionConfig.ConnectionState.Closed);
     connection = new GoogleCloudPubSubConsumeConnection(new CustomChannelProvider());
     assertTrue(connection.getChannelProvider() instanceof CustomChannelProvider);
     connection = new GoogleCloudPubSubConsumeConnection(new CustomChannelProvider(), new KeyFileCredentialsProvider());
@@ -68,9 +69,11 @@ public class GoogleCloudPubSubConsumeConnectionTest {
     connection.setCredentialsProvider(credentialsProvider);
     connection.setChannelProvider(channelProvider);
     LifecycleHelper.initAndStart(connection);
+    assertFalse(connection.getConnectionState().isStopOrClose());
     assertTrue(connection.getGoogleCredentialsProvider() instanceof com.google.api.gax.core.NoCredentialsProvider);
     assertTrue(connection.getGoogleChannelProvider()instanceof InstantiatingChannelProvider);
     LifecycleHelper.stopAndClose(connection);
+    assertTrue(connection.getConnectionState().isStopOrClose());
     Mockito.verify(connection, Mockito.times(1)).initConnection();
     Mockito.verify(credentialsProvider, Mockito.times(1)).init();
     Mockito.verify(channelProvider, Mockito.times(1)).init();
@@ -87,6 +90,16 @@ public class GoogleCloudPubSubConsumeConnectionTest {
     Mockito.verify(channelProvider, Mockito.times(1)).close();
   }
 
-
+  @Test
+  public void testConnectionStateIsStopOrClose(){
+    assertFalse(ConsumerConnectionConfig.ConnectionState.Initialising.isStopOrClose());
+    assertFalse(ConsumerConnectionConfig.ConnectionState.Initialised.isStopOrClose());
+    assertFalse(ConsumerConnectionConfig.ConnectionState.Starting.isStopOrClose());
+    assertFalse(ConsumerConnectionConfig.ConnectionState.Started.isStopOrClose());
+    assertTrue(ConsumerConnectionConfig.ConnectionState.Stopping.isStopOrClose());
+    assertTrue(ConsumerConnectionConfig.ConnectionState.Stopped.isStopOrClose());
+    assertTrue(ConsumerConnectionConfig.ConnectionState.Closing.isStopOrClose());
+    assertTrue(ConsumerConnectionConfig.ConnectionState.Closed.isStopOrClose());
+  }
 
 }

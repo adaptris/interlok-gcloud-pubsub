@@ -4,7 +4,6 @@ import com.adaptris.annotation.AdvancedConfig;
 import com.adaptris.core.AdaptrisConnectionImp;
 import com.adaptris.core.CoreException;
 import com.adaptris.google.cloud.pubsub.connection.channel.ChannelProvider;
-import com.adaptris.google.cloud.pubsub.connection.channel.CustomChannelProvider;
 import com.adaptris.google.cloud.pubsub.connection.channel.DefaultChannelProvider;
 import com.adaptris.google.cloud.pubsub.connection.credentials.CredentialsProvider;
 import com.adaptris.google.cloud.pubsub.connection.credentials.NoCredentialsProvider;
@@ -13,6 +12,26 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 public abstract class ConsumerConnectionConfig extends AdaptrisConnectionImp {
+
+  enum ConnectionState {
+    Initialising, Initialised, Starting, Started, Stopping(true), Stopped(true), Closing(true), Closed(true);
+
+    final boolean stopOrClose;
+
+    ConnectionState(){
+      this(false);
+    }
+
+    ConnectionState(boolean stopOrClose){
+      this.stopOrClose = stopOrClose;
+    }
+
+    public boolean isStopOrClose() {
+      return stopOrClose;
+    }
+  }
+
+  private ConnectionState connectionState;
 
   @NotNull
   @Valid
@@ -25,6 +44,7 @@ public abstract class ConsumerConnectionConfig extends AdaptrisConnectionImp {
 
   public ConsumerConnectionConfig(){
     this(new DefaultChannelProvider());
+    connectionState = ConnectionState.Closed;
   }
 
   public ConsumerConnectionConfig(ChannelProvider channelProvider){
@@ -38,26 +58,34 @@ public abstract class ConsumerConnectionConfig extends AdaptrisConnectionImp {
 
   @Override
   protected void initConnection() throws CoreException {
+    connectionState = ConnectionState.Initialising;
     getCredentialsProvider().init();
     getChannelProvider().init();
+    connectionState = ConnectionState.Initialised;
   }
 
   @Override
   protected void startConnection() throws CoreException {
+    connectionState = ConnectionState.Starting;
     getCredentialsProvider().start();
     getChannelProvider().start();
+    connectionState = ConnectionState.Started;
   }
 
   @Override
   protected void stopConnection() {
+    connectionState = ConnectionState.Stopping;
     getCredentialsProvider().stop();
     getChannelProvider().stop();
+    connectionState = ConnectionState.Stopped;
   }
 
   @Override
   protected void closeConnection() {
+    connectionState = ConnectionState.Closing;
     getCredentialsProvider().close();
     getChannelProvider().close();
+    connectionState = ConnectionState.Closed;
   }
 
 
@@ -83,5 +111,9 @@ public abstract class ConsumerConnectionConfig extends AdaptrisConnectionImp {
 
   public com.google.api.gax.grpc.ChannelProvider getGoogleChannelProvider() {
     return getChannelProvider().getChannelProvider();
+  }
+
+  public ConnectionState getConnectionState() {
+    return connectionState;
   }
 }
