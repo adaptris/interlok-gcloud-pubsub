@@ -3,7 +3,6 @@ package com.adaptris.google.cloud.pubsub;
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.AdaptrisMessageFactory;
 import com.adaptris.core.metadata.NoOpMetadataFilter;
-import com.adaptris.google.cloud.pubsub.TransformationDirection;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;

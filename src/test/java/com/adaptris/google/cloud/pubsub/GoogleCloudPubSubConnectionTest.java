@@ -2,8 +2,6 @@ package com.adaptris.google.cloud.pubsub;
 
 import com.adaptris.core.CoreException;
 import com.adaptris.core.util.LifecycleHelper;
-import com.adaptris.google.cloud.pubsub.ConnectionConfig;
-import com.adaptris.google.cloud.pubsub.GoogleCloudPubSubConnection;
 import com.adaptris.google.cloud.pubsub.adminclient.SubscriptionAdminClientProvider;
 import com.adaptris.google.cloud.pubsub.adminclient.TopicAdminClientProvider;
 import com.adaptris.google.cloud.pubsub.channel.ChannelProvider;

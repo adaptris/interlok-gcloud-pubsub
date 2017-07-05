@@ -3,8 +3,6 @@ package com.adaptris.google.cloud.pubsub;
 import com.adaptris.core.*;
 import com.adaptris.core.stubs.MockMessageListener;
 import com.adaptris.core.util.LifecycleHelper;
-import com.adaptris.google.cloud.pubsub.GoogleCloudPubSubConnection;
-import com.adaptris.google.cloud.pubsub.GoogleCloudPubSubPullConsumer;
 import com.adaptris.util.TimeInterval;
 import com.google.cloud.pubsub.v1.AckReplyConsumer;
 import com.google.cloud.pubsub.v1.Subscriber;

@@ -5,7 +5,8 @@ import com.adaptris.core.CoreException;
 import com.adaptris.core.fs.FsHelper;
 import com.google.auth.oauth2.GoogleCredentials;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
 import java.net.URL;
 import java.util.Collection;
 

@@ -5,7 +5,6 @@ import com.adaptris.annotation.InputFieldDefault;
 import com.adaptris.core.*;
 import com.adaptris.core.metadata.MetadataFilter;
 import com.adaptris.core.metadata.NoOpMetadataFilter;
-import com.adaptris.google.cloud.pubsub.GoogleCloudPubSubConnection;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.grpc.ApiException;
 import com.google.api.gax.grpc.ChannelProvider;

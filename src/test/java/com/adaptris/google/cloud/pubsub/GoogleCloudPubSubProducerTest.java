@@ -6,8 +6,6 @@ import com.adaptris.core.ProducerCase;
 import com.adaptris.core.StandaloneRequestor;
 import com.adaptris.core.metadata.NoOpMetadataFilter;
 import com.adaptris.core.metadata.RemoveAllMetadataFilter;
-import com.adaptris.google.cloud.pubsub.GoogleCloudPubSubConnection;
-import com.adaptris.google.cloud.pubsub.GoogleCloudPubSubProducer;
 import org.junit.Test;
 
 public class GoogleCloudPubSubProducerTest extends ProducerCase {
