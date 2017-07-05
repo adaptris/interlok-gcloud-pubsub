@@ -2,7 +2,7 @@ package com.adaptris.google.cloud.pubsub.consumer;
 
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.CoreException;
-import com.adaptris.google.cloud.pubsub.connection.GoogleCloudPubSubConsumeConnection;
+import com.adaptris.google.cloud.pubsub.connection.GoogleCloudPubSubConnection;
 import com.google.cloud.pubsub.v1.AckReplyConsumer;
 import com.google.cloud.pubsub.v1.MessageReceiver;
 import com.google.cloud.pubsub.v1.Subscriber;
@@ -15,7 +15,7 @@ import java.util.Map;
 import static com.adaptris.core.AdaptrisMessageFactory.defaultIfNull;
 
 @XStreamAlias("google-cloud-pubsub-pull-consumer")
-public class GoogleCloudPubSubPullConsumer extends GoogleCloudPubSubConfig implements MessageReceiver {
+public class GoogleCloudPubSubPullConsumer extends ConsumeConfig implements MessageReceiver {
 
   private transient Subscriber subscriber = null;
   private transient String projectName;
@@ -26,7 +26,7 @@ public class GoogleCloudPubSubPullConsumer extends GoogleCloudPubSubConfig imple
 
   @Override
   public void init() throws CoreException {
-    GoogleCloudPubSubConsumeConnection connection = retrieveConnection(GoogleCloudPubSubConsumeConnection.class);
+    GoogleCloudPubSubConnection connection = retrieveConnection(GoogleCloudPubSubConnection.class);
     Subscription subscription = connection.createSubscription(this);
     subscriber = connection.createSubscriber(subscription, this);
     projectName = connection.getProjectName();
@@ -46,7 +46,7 @@ public class GoogleCloudPubSubPullConsumer extends GoogleCloudPubSubConfig imple
 
   @Override
   public void close() {
-    GoogleCloudPubSubConsumeConnection connection = retrieveConnection(GoogleCloudPubSubConsumeConnection.class);
+    GoogleCloudPubSubConnection connection = retrieveConnection(GoogleCloudPubSubConnection.class);
     try {
       connection.deleteSubscription(this);
     } catch (CoreException e) {

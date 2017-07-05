@@ -4,12 +4,9 @@ package com.adaptris.google.cloud.pubsub.connection;
 import com.adaptris.core.CoreException;
 import com.adaptris.google.cloud.pubsub.connection.channel.ChannelProvider;
 import com.adaptris.google.cloud.pubsub.connection.credentials.CredentialsProvider;
-import com.adaptris.google.cloud.pubsub.consumer.GoogleCloudPubSubConfig;
+import com.adaptris.google.cloud.pubsub.consumer.ConsumeConfig;
 import com.google.api.gax.grpc.ApiException;
-import com.google.cloud.pubsub.v1.MessageReceiver;
-import com.google.cloud.pubsub.v1.Subscriber;
-import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
-import com.google.cloud.pubsub.v1.SubscriptionAdminSettings;
+import com.google.cloud.pubsub.v1.*;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.pubsub.v1.PushConfig;
 import com.google.pubsub.v1.Subscription;
@@ -21,25 +18,24 @@ import org.apache.commons.lang.StringUtils;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.io.IOException;
 
-@XStreamAlias("google-cloud-pubsub-consume-connection")
-public class GoogleCloudPubSubConsumeConnection extends ConsumerConnectionConfig {
+@XStreamAlias("google-cloud-pubsub-connection")
+public class GoogleCloudPubSubConnection extends ConnectionConfig {
 
   @NotNull
   @Valid
   private String projectName;
 
 
-  public GoogleCloudPubSubConsumeConnection(){
+  public GoogleCloudPubSubConnection(){
     super();
   }
 
-  public GoogleCloudPubSubConsumeConnection(ChannelProvider channelProvider){
+  public GoogleCloudPubSubConnection(ChannelProvider channelProvider){
     super(channelProvider);
   }
 
-  public GoogleCloudPubSubConsumeConnection(ChannelProvider channelProvider, CredentialsProvider credentialsProvider){
+  public GoogleCloudPubSubConnection(ChannelProvider channelProvider, CredentialsProvider credentialsProvider){
     super(channelProvider, credentialsProvider);
   }
 
@@ -50,7 +46,7 @@ public class GoogleCloudPubSubConsumeConnection extends ConsumerConnectionConfig
     }
   }
 
-  public Subscription createSubscription(GoogleCloudPubSubConfig config) throws CoreException {
+  public Subscription createSubscription(ConsumeConfig config) throws CoreException {
     SubscriptionName subscriptionName = SubscriptionName.create(getProjectName(), config.getSubscriptionName());
     TopicName topic = TopicName.create(getProjectName(), config.getTopicName());
     try {
@@ -74,7 +70,7 @@ public class GoogleCloudPubSubConsumeConnection extends ConsumerConnectionConfig
     }
   }
 
-  public void deleteSubscription(GoogleCloudPubSubConfig config) throws CoreException {
+  public void deleteSubscription(ConsumeConfig config) throws CoreException {
     SubscriptionName subscription = SubscriptionName.create(getProjectName(), config.getSubscriptionName());
     if (config.getCreateSubscription()) {
       log.trace("Deleting Subscription [{}] for Project [{}] Topic [{}]", config.getSubscriptionName(), getProjectName(), config.getTopicName());

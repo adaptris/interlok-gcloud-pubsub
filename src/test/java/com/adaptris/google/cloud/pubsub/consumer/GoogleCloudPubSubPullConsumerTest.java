@@ -3,7 +3,7 @@ package com.adaptris.google.cloud.pubsub.consumer;
 import com.adaptris.core.*;
 import com.adaptris.core.stubs.MockMessageListener;
 import com.adaptris.core.util.LifecycleHelper;
-import com.adaptris.google.cloud.pubsub.connection.GoogleCloudPubSubConsumeConnection;
+import com.adaptris.google.cloud.pubsub.connection.GoogleCloudPubSubConnection;
 import com.adaptris.util.TimeInterval;
 import com.google.cloud.pubsub.v1.AckReplyConsumer;
 import com.google.cloud.pubsub.v1.Subscriber;
@@ -97,8 +97,8 @@ public class GoogleCloudPubSubPullConsumerTest extends ConsumerCase {
     GoogleCloudPubSubPullConsumer consumer = new GoogleCloudPubSubPullConsumer();
     consumer.setSubscriptionName("subscription-name");
     consumer.setDestination(new ConfiguredConsumeDestination("topic-name"));
-    GoogleCloudPubSubConsumeConnection connection = Mockito.mock(GoogleCloudPubSubConsumeConnection.class);
-    Mockito.doReturn(connection).when(connection).retrieveConnection(GoogleCloudPubSubConsumeConnection.class);
+    GoogleCloudPubSubConnection connection = Mockito.mock(GoogleCloudPubSubConnection.class);
+    Mockito.doReturn(connection).when(connection).retrieveConnection(GoogleCloudPubSubConnection.class);
     Mockito.doReturn("project-name").when(connection).getProjectName();
     Subscription subscription = Subscription.newBuilder().build();
     Mockito.doReturn(subscription).when(connection).createSubscription(consumer);
@@ -173,7 +173,7 @@ public class GoogleCloudPubSubPullConsumerTest extends ConsumerCase {
 
   @Override
   protected Object retrieveObjectForSampleConfig() {
-    GoogleCloudPubSubConsumeConnection conn = new GoogleCloudPubSubConsumeConnection();
+    GoogleCloudPubSubConnection conn = new GoogleCloudPubSubConnection();
     conn.setProjectName("project-name");
 
     GoogleCloudPubSubPullConsumer cons = new GoogleCloudPubSubPullConsumer();

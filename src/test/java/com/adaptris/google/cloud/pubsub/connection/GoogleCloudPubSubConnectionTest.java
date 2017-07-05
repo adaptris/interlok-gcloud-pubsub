@@ -2,6 +2,8 @@ package com.adaptris.google.cloud.pubsub.connection;
 
 import com.adaptris.core.CoreException;
 import com.adaptris.core.util.LifecycleHelper;
+import com.adaptris.google.cloud.pubsub.connection.adminclient.SubscriptionAdminClientProvider;
+import com.adaptris.google.cloud.pubsub.connection.adminclient.TopicAdminClientProvider;
 import com.adaptris.google.cloud.pubsub.connection.channel.ChannelProvider;
 import com.adaptris.google.cloud.pubsub.connection.channel.CustomChannelProvider;
 import com.adaptris.google.cloud.pubsub.connection.channel.DefaultChannelProvider;
@@ -14,27 +16,27 @@ import org.mockito.Mockito;
 
 import static org.junit.Assert.*;
 
-public class GoogleCloudPubSubConsumeConnectionTest {
+public class GoogleCloudPubSubConnectionTest {
 
   @Test
   public void testConstruct() throws Exception {
-    GoogleCloudPubSubConsumeConnection connection = new GoogleCloudPubSubConsumeConnection();
+    GoogleCloudPubSubConnection connection = new GoogleCloudPubSubConnection();
     assertNull(connection.getProjectName());
     assertNotNull(connection.getChannelProvider());
     assertTrue(connection.getChannelProvider() instanceof DefaultChannelProvider);
     assertNotNull(connection.getCredentialsProvider());
     assertTrue(connection.getCredentialsProvider() instanceof NoCredentialsProvider);
-    assertEquals(connection.getConnectionState(), ConsumerConnectionConfig.ConnectionState.Closed);
-    connection = new GoogleCloudPubSubConsumeConnection(new CustomChannelProvider());
+    assertEquals(connection.getConnectionState(), ConnectionConfig.ConnectionState.Closed);
+    connection = new GoogleCloudPubSubConnection(new CustomChannelProvider());
     assertTrue(connection.getChannelProvider() instanceof CustomChannelProvider);
-    connection = new GoogleCloudPubSubConsumeConnection(new CustomChannelProvider(), new KeyFileCredentialsProvider());
+    connection = new GoogleCloudPubSubConnection(new CustomChannelProvider(), new KeyFileCredentialsProvider());
     assertTrue(connection.getChannelProvider() instanceof CustomChannelProvider);
     assertTrue(connection.getCredentialsProvider() instanceof KeyFileCredentialsProvider);
   }
 
   @Test
   public void testPrepareConnection() throws Exception {
-    GoogleCloudPubSubConsumeConnection connection = new GoogleCloudPubSubConsumeConnection();
+    GoogleCloudPubSubConnection connection = new GoogleCloudPubSubConnection();
     prepareFail(connection, "Project Name is invalid");
     connection.setProjectName("");
     prepareFail(connection, "Project Name is invalid");
@@ -42,7 +44,7 @@ public class GoogleCloudPubSubConsumeConnectionTest {
     connection.prepareConnection();
   }
 
-  private void prepareFail(GoogleCloudPubSubConsumeConnection connection, String message){
+  private void prepareFail(GoogleCloudPubSubConnection connection, String message){
     try {
       connection.prepareConnection();
       fail();
@@ -53,21 +55,23 @@ public class GoogleCloudPubSubConsumeConnectionTest {
 
   @Test
   public void testGetProjectName() throws Exception {
-    GoogleCloudPubSubConsumeConnection connection = new GoogleCloudPubSubConsumeConnection();
+    GoogleCloudPubSubConnection connection = new GoogleCloudPubSubConnection();
     connection.setProjectName("project-name");
     assertEquals("project-name", connection.getProjectName());
   }
 
   @Test
   public void testLifeCycleInitStartAndGetGoogleProvider() throws Exception {
-    GoogleCloudPubSubConsumeConnection connection = Mockito.spy(new GoogleCloudPubSubConsumeConnection());
+    GoogleCloudPubSubConnection connection = Mockito.spy(new GoogleCloudPubSubConnection());
     connection.setProjectName("project-name");
     CredentialsProvider credentialsProvider = Mockito.mock(NoCredentialsProvider.class);
     Mockito.doReturn(new com.google.api.gax.core.NoCredentialsProvider()).when(credentialsProvider).getCredentialsProvider();
     ChannelProvider channelProvider = Mockito.mock(DefaultChannelProvider.class);
     Mockito.doReturn(InstantiatingChannelProvider.newBuilder().build()).when(channelProvider).getChannelProvider();
-    Mockito.doNothing().when(connection).initSubscriptionAdminClient();
-    Mockito.doNothing().when(connection).closeSubscriptionAdminClient();
+    SubscriptionAdminClientProvider subscriptionAdminClientProvider = Mockito.mock(SubscriptionAdminClientProvider.class);
+    TopicAdminClientProvider topicAdminClientProvider = Mockito.mock(TopicAdminClientProvider.class);
+    connection.setSubscriptionAdminClientProvider(subscriptionAdminClientProvider);
+    connection.setTopicAdminClientProvider(topicAdminClientProvider);
     connection.setCredentialsProvider(credentialsProvider);
     connection.setChannelProvider(channelProvider);
     LifecycleHelper.initAndStart(connection);
@@ -79,29 +83,37 @@ public class GoogleCloudPubSubConsumeConnectionTest {
     Mockito.verify(connection, Mockito.times(1)).initConnection();
     Mockito.verify(credentialsProvider, Mockito.times(1)).init();
     Mockito.verify(channelProvider, Mockito.times(1)).init();
+    Mockito.verify(subscriptionAdminClientProvider, Mockito.times(1)).init();
+    Mockito.verify(topicAdminClientProvider, Mockito.times(1)).init();
     Mockito.verify(connection, Mockito.times(1)).startConnection();
     Mockito.verify(credentialsProvider, Mockito.times(1)).start();
     Mockito.verify(channelProvider, Mockito.times(1)).start();
-    Mockito.verify(credentialsProvider, Mockito.times(1)).getCredentialsProvider();
-    Mockito.verify(channelProvider, Mockito.times(1)).getChannelProvider();
+    Mockito.verify(subscriptionAdminClientProvider, Mockito.times(1)).start();
+    Mockito.verify(topicAdminClientProvider, Mockito.times(1)).start();
+    Mockito.verify(credentialsProvider, Mockito.atLeastOnce()).getCredentialsProvider();
+    Mockito.verify(channelProvider, Mockito.atLeastOnce()).getChannelProvider();
     Mockito.verify(connection, Mockito.times(1)).stopConnection();
     Mockito.verify(credentialsProvider, Mockito.times(1)).stop();
     Mockito.verify(channelProvider, Mockito.times(1)).stop();
+    Mockito.verify(subscriptionAdminClientProvider, Mockito.times(1)).stop();
+    Mockito.verify(topicAdminClientProvider, Mockito.times(1)).stop();
     Mockito.verify(connection, Mockito.times(1)).closeConnection();
     Mockito.verify(credentialsProvider, Mockito.times(1)).close();
     Mockito.verify(channelProvider, Mockito.times(1)).close();
+    Mockito.verify(subscriptionAdminClientProvider, Mockito.times(1)).close();
+    Mockito.verify(topicAdminClientProvider, Mockito.times(1)).close();
   }
 
   @Test
   public void testConnectionStateIsStopOrClose(){
-    assertFalse(ConsumerConnectionConfig.ConnectionState.Initialising.isStopOrClose());
-    assertFalse(ConsumerConnectionConfig.ConnectionState.Initialised.isStopOrClose());
-    assertFalse(ConsumerConnectionConfig.ConnectionState.Starting.isStopOrClose());
-    assertFalse(ConsumerConnectionConfig.ConnectionState.Started.isStopOrClose());
-    assertTrue(ConsumerConnectionConfig.ConnectionState.Stopping.isStopOrClose());
-    assertTrue(ConsumerConnectionConfig.ConnectionState.Stopped.isStopOrClose());
-    assertTrue(ConsumerConnectionConfig.ConnectionState.Closing.isStopOrClose());
-    assertTrue(ConsumerConnectionConfig.ConnectionState.Closed.isStopOrClose());
+    assertFalse(ConnectionConfig.ConnectionState.Initialising.isStopOrClose());
+    assertFalse(ConnectionConfig.ConnectionState.Initialised.isStopOrClose());
+    assertFalse(ConnectionConfig.ConnectionState.Starting.isStopOrClose());
+    assertFalse(ConnectionConfig.ConnectionState.Started.isStopOrClose());
+    assertTrue(ConnectionConfig.ConnectionState.Stopping.isStopOrClose());
+    assertTrue(ConnectionConfig.ConnectionState.Stopped.isStopOrClose());
+    assertTrue(ConnectionConfig.ConnectionState.Closing.isStopOrClose());
+    assertTrue(ConnectionConfig.ConnectionState.Closed.isStopOrClose());
   }
 
 }

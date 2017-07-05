@@ -3,18 +3,19 @@ package com.adaptris.google.cloud.pubsub.connection;
 import com.adaptris.annotation.AdvancedConfig;
 import com.adaptris.core.AdaptrisConnectionImp;
 import com.adaptris.core.CoreException;
+import com.adaptris.google.cloud.pubsub.connection.adminclient.SubscriptionAdminClientProvider;
+import com.adaptris.google.cloud.pubsub.connection.adminclient.TopicAdminClientProvider;
 import com.adaptris.google.cloud.pubsub.connection.channel.ChannelProvider;
 import com.adaptris.google.cloud.pubsub.connection.channel.DefaultChannelProvider;
 import com.adaptris.google.cloud.pubsub.connection.credentials.CredentialsProvider;
 import com.adaptris.google.cloud.pubsub.connection.credentials.NoCredentialsProvider;
 import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
-import com.google.cloud.pubsub.v1.SubscriptionAdminSettings;
+import com.google.cloud.pubsub.v1.TopicAdminClient;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.io.IOException;
 
-public abstract class ConsumerConnectionConfig extends AdaptrisConnectionImp {
+abstract class ConnectionConfig extends AdaptrisConnectionImp {
 
   enum ConnectionState {
     Initialising, Initialised, Starting, Started, Stopping(true), Stopped(true), Closing(true), Closed(true);
@@ -34,7 +35,7 @@ public abstract class ConsumerConnectionConfig extends AdaptrisConnectionImp {
     }
   }
 
-  private ConnectionState connectionState;
+  private transient ConnectionState connectionState;
 
   @NotNull
   @Valid
@@ -45,18 +46,19 @@ public abstract class ConsumerConnectionConfig extends AdaptrisConnectionImp {
   @Valid
   private ChannelProvider channelProvider;
 
-  private transient SubscriptionAdminClient subscriptionAdminClient;
+  private transient SubscriptionAdminClientProvider subscriptionAdminClientProvider = new SubscriptionAdminClientProvider();
+  private transient TopicAdminClientProvider topicAdminClientProvider = new TopicAdminClientProvider();
 
-  public ConsumerConnectionConfig(){
+  public ConnectionConfig(){
     this(new DefaultChannelProvider());
     connectionState = ConnectionState.Closed;
   }
 
-  public ConsumerConnectionConfig(ChannelProvider channelProvider){
+  public ConnectionConfig(ChannelProvider channelProvider){
     this(channelProvider, new NoCredentialsProvider());
   }
 
-  public ConsumerConnectionConfig(ChannelProvider channelProvider, CredentialsProvider credentialsProvider){
+  public ConnectionConfig(ChannelProvider channelProvider, CredentialsProvider credentialsProvider){
     setCredentialsProvider(credentialsProvider);
     setChannelProvider(channelProvider);
   }
@@ -66,7 +68,12 @@ public abstract class ConsumerConnectionConfig extends AdaptrisConnectionImp {
     connectionState = ConnectionState.Initialising;
     getCredentialsProvider().init();
     getChannelProvider().init();
-    initSubscriptionAdminClient();
+    subscriptionAdminClientProvider.setChannelProvider(getGoogleChannelProvider());
+    subscriptionAdminClientProvider.setCredentialsProvider(getGoogleCredentialsProvider());
+    topicAdminClientProvider.setChannelProvider(getGoogleChannelProvider());
+    topicAdminClientProvider.setCredentialsProvider(getGoogleCredentialsProvider());
+    subscriptionAdminClientProvider.init();
+    topicAdminClientProvider.init();
     connectionState = ConnectionState.Initialised;
   }
 
@@ -75,6 +82,8 @@ public abstract class ConsumerConnectionConfig extends AdaptrisConnectionImp {
     connectionState = ConnectionState.Starting;
     getCredentialsProvider().start();
     getChannelProvider().start();
+    subscriptionAdminClientProvider.start();
+    topicAdminClientProvider.start();
     connectionState = ConnectionState.Started;
   }
 
@@ -83,15 +92,18 @@ public abstract class ConsumerConnectionConfig extends AdaptrisConnectionImp {
     connectionState = ConnectionState.Stopping;
     getCredentialsProvider().stop();
     getChannelProvider().stop();
+    subscriptionAdminClientProvider.stop();
+    topicAdminClientProvider.stop();
     connectionState = ConnectionState.Stopped;
   }
 
   @Override
   protected void closeConnection() {
     connectionState = ConnectionState.Closing;
-    closeSubscriptionAdminClient();
     getCredentialsProvider().close();
     getChannelProvider().close();
+    subscriptionAdminClientProvider.close();
+    topicAdminClientProvider.close();
     connectionState = ConnectionState.Closed;
   }
 
@@ -124,25 +136,19 @@ public abstract class ConsumerConnectionConfig extends AdaptrisConnectionImp {
     return connectionState;
   }
 
-  void initSubscriptionAdminClient() throws CoreException {
-    try {
-      subscriptionAdminClient = SubscriptionAdminClient.create(SubscriptionAdminSettings.defaultBuilder().setChannelProvider(getGoogleChannelProvider()).setCredentialsProvider(getGoogleCredentialsProvider()).build());
-    } catch (IOException e){
-      throw new CoreException("Failed to start SubscriptionAdminClient", e);
-    }
+  void setSubscriptionAdminClientProvider(SubscriptionAdminClientProvider subscriptionAdminClientProvider) {
+    this.subscriptionAdminClientProvider = subscriptionAdminClientProvider;
   }
 
-  void closeSubscriptionAdminClient() {
-    if(subscriptionAdminClient != null){
-      try {
-        subscriptionAdminClient.close();
-      } catch (Exception ignored) {
-        ;
-      }
-    }
+  void setTopicAdminClientProvider(TopicAdminClientProvider topicAdminClientProvider) {
+    this.topicAdminClientProvider = topicAdminClientProvider;
   }
 
-  SubscriptionAdminClient getSubscriptionAdminClient() {
-    return subscriptionAdminClient;
+  public SubscriptionAdminClient getSubscriptionAdminClient() {
+    return subscriptionAdminClientProvider.getSubscriptionAdminClient();
+  }
+
+  public TopicAdminClient getTopicAdminClient(){
+    return topicAdminClientProvider.getTopicAdminClient();
   }
 }

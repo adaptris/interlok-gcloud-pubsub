@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 
 import static java.lang.Math.toIntExact;
 
-public abstract class GoogleCloudPubSubConfig extends AdaptrisMessageConsumerImp {
+public abstract class ConsumeConfig extends AdaptrisMessageConsumerImp {
 
   @NotNull
   @Valid
@@ -24,7 +24,7 @@ public abstract class GoogleCloudPubSubConfig extends AdaptrisMessageConsumerImp
   @Valid
   private Boolean createSubscription = true;
 
-  public GoogleCloudPubSubConfig(){
+  public ConsumeConfig(){
     setAckDeadline(new TimeInterval(10L, TimeUnit.SECONDS));
   }
 
