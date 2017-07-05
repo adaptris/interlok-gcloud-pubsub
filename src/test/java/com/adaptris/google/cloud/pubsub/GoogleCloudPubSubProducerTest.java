@@ -17,7 +17,7 @@ public class GoogleCloudPubSubProducerTest extends ProducerCase {
   @Test
   public void testConstruct() throws Exception {
     GoogleCloudPubSubProducer producer = new GoogleCloudPubSubProducer();
-    assertEquals(Boolean.TRUE, producer.getCreateTopic());
+    assertEquals(Boolean.FALSE, producer.getCreateTopic());
     assertTrue(producer.getMetadataFilter() instanceof NoOpMetadataFilter);
   }
 
@@ -35,9 +35,9 @@ public class GoogleCloudPubSubProducerTest extends ProducerCase {
   @Test
   public void testCreateTopic() throws Exception {
     GoogleCloudPubSubProducer producer = new GoogleCloudPubSubProducer();
-    assertEquals(Boolean.TRUE, producer.getCreateTopic());
-    producer.setCreateTopic(false);
     assertEquals(Boolean.FALSE, producer.getCreateTopic());
+    producer.setCreateTopic(true);
+    assertEquals(Boolean.TRUE, producer.getCreateTopic());
   }
 
   @Test

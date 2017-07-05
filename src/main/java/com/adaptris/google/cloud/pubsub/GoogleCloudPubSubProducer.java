@@ -5,6 +5,7 @@ import com.adaptris.annotation.InputFieldDefault;
 import com.adaptris.core.*;
 import com.adaptris.core.metadata.MetadataFilter;
 import com.adaptris.core.metadata.NoOpMetadataFilter;
+import com.google.api.core.ApiFuture;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.grpc.ApiException;
 import com.google.api.gax.grpc.ChannelProvider;
@@ -12,7 +13,6 @@ import com.google.cloud.pubsub.v1.Publisher;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.protobuf.ByteString;
 import com.google.pubsub.v1.PubsubMessage;
-import com.google.pubsub.v1.Topic;
 import com.google.pubsub.v1.TopicName;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import io.grpc.Status;
@@ -20,13 +20,14 @@ import io.grpc.Status;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 @XStreamAlias("google-cloud-pubsub-producer")
 public class GoogleCloudPubSubProducer extends ProduceOnlyProducerImp {
 
   @Valid
   @NotNull
-  @InputFieldDefault(value = "true")
+  @InputFieldDefault(value = "false")
   private Boolean createTopic;
 
   @Valid
@@ -41,20 +42,20 @@ public class GoogleCloudPubSubProducer extends ProduceOnlyProducerImp {
 
   public GoogleCloudPubSubProducer() {
     setMetadataFilter(new NoOpMetadataFilter());
-    setCreateTopic(true);
+    setCreateTopic(false);
   }
 
   @Override
   public void produce(AdaptrisMessage adaptrisMessage, ProduceDestination produceDestination) throws ProduceException {
     Publisher publisher = null;
     try {
-      Topic topic = createOrGetTopic(adaptrisMessage);
-      publisher = Publisher.defaultBuilder(topic.getNameAsTopicName())
+      publisher = Publisher.defaultBuilder(createOrGetTopicName(adaptrisMessage))
           .setChannelProvider(channelProvider)
           .setCredentialsProvider(credentialsProvider)
           .build();
-      publisher.publish(createPubsubMessage(adaptrisMessage));
-    } catch (IOException | CoreException e) {
+      ApiFuture<String> messageId = publisher.publish(createPubsubMessage(adaptrisMessage));
+      log.debug(String.format("Published with message ID: %s", messageId.get()));
+    } catch (IOException | CoreException | InterruptedException | ExecutionException e) {
       throw new ProduceException(e);
     } finally {
       if (publisher != null){
@@ -67,19 +68,18 @@ public class GoogleCloudPubSubProducer extends ProduceOnlyProducerImp {
     }
   }
 
-  private Topic createOrGetTopic(AdaptrisMessage adaptrisMessage) throws CoreException {
+  private TopicName createOrGetTopicName(AdaptrisMessage adaptrisMessage) throws CoreException {
     TopicName topicName = TopicName.create(projectName, getDestination().getDestination(adaptrisMessage));
+    if(!getCreateTopic()){
+      return topicName;
+    }
     try {
-      return topicAdminClient.getTopic(topicName);
+      return topicAdminClient.getTopic(topicName).getNameAsTopicName();
     } catch (ApiException e) {
       if (Status.Code.NOT_FOUND != e.getStatusCode()) {
         throw e;
       } else {
-        if (getCreateTopic()) {
-          return topicAdminClient.createTopic(topicName);
-        } else {
-          throw e;
-        }
+        return topicAdminClient.createTopic(topicName).getNameAsTopicName();
       }
     }
   }
