@@ -2,6 +2,7 @@ package com.adaptris.google.cloud.pubsub;
 
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.AdaptrisMessageFactory;
+import com.adaptris.core.ServiceException;
 import com.adaptris.core.metadata.NoOpMetadataFilter;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
@@ -54,6 +55,12 @@ public class TransformationDirectionTest {
     assertEquals("1497951924", msg.getMetadataValue("gcloud_publishTimeSeconds"));
   }
 
+  @Test(expected = ServiceException.class)
+  public void transform_PULL_RESPONSE_TO_INTERLOK_Exception() throws Exception {
+    final AdaptrisMessage msg = AdaptrisMessageFactory.getDefaultInstance().newMessage(pullResponseInvalid);
+    TransformationDirection.PULL_RESPONSE_TO_INTERLOK.transform(msg, new NoOpMetadataFilter());
+  }
+
   @Test
   public void transform_PUSH_RESPONSE_TO_INTERLOK() throws Exception {
     final AdaptrisMessage msg = AdaptrisMessageFactory.getDefaultInstance().newMessage(pushResponse);
@@ -69,6 +76,43 @@ public class TransformationDirectionTest {
 
   String pullResponse = "{\n" +
       "    \"receivedMessages\": [\n" +
+      "        {\n" +
+      "            \"ackId\": \"projects/interlok-test/subscriptions/mysubscription:1\",\n" +
+      "            \"message\": {\n" +
+      "                \"attributes\": {\n" +
+      "                    \"fsConsumeDir\": \"/opt/interlok/messages/in/\",\n" +
+      "                    \"fsParentDir\": \"in\",\n" +
+      "                    \"originalname\": \"text.tst\",\n" +
+      "                    \"lastmodified\": \"1497951921000\",\n" +
+      "                    \"fsFileSize\": \"0\",\n" +
+      "                    \"adpnextmlemarkersequence\": \"1\"\n" +
+      "                },\n" +
+      "                \"data\": \"SGVsbG8gQ2xvdWQgUHViL1N1YiEgSGVyZSBpcyBteSBtZXNzYWdlIQ==\",\n" +
+      "                \"messageId\": \"2\",\n" +
+      "                \"publishTime\": \"2017-06-20T09:45:24Z\"\n" +
+      "            }\n" +
+      "        }\n" +
+      "    ]\n" +
+      "}";
+
+  String pullResponseInvalid = "{\n" +
+      "    \"receivedMessages\": [\n" +
+      "        {\n" +
+      "            \"ackId\": \"projects/interlok-test/subscriptions/mysubscription:1\",\n" +
+      "            \"message\": {\n" +
+      "                \"attributes\": {\n" +
+      "                    \"fsConsumeDir\": \"/opt/interlok/messages/in/\",\n" +
+      "                    \"fsParentDir\": \"in\",\n" +
+      "                    \"originalname\": \"text.tst\",\n" +
+      "                    \"lastmodified\": \"1497951921000\",\n" +
+      "                    \"fsFileSize\": \"0\",\n" +
+      "                    \"adpnextmlemarkersequence\": \"1\"\n" +
+      "                },\n" +
+      "                \"data\": \"SGVsbG8gQ2xvdWQgUHViL1N1YiEgSGVyZSBpcyBteSBtZXNzYWdlIQ==\",\n" +
+      "                \"messageId\": \"2\",\n" +
+      "                \"publishTime\": \"2017-06-20T09:45:24Z\"\n" +
+      "            }\n" +
+      "        },\n" +
       "        {\n" +
       "            \"ackId\": \"projects/interlok-test/subscriptions/mysubscription:1\",\n" +
       "            \"message\": {\n" +

@@ -1,7 +1,9 @@
 package com.adaptris.google.cloud.pubsub;
 
+import com.adaptris.core.ConfiguredConsumeDestination;
 import com.adaptris.core.CoreException;
 import com.adaptris.core.util.LifecycleHelper;
+import com.adaptris.google.cloud.pubsub.adminclient.AdminClientProvider;
 import com.adaptris.google.cloud.pubsub.adminclient.SubscriptionAdminClientProvider;
 import com.adaptris.google.cloud.pubsub.adminclient.TopicAdminClientProvider;
 import com.adaptris.google.cloud.pubsub.channel.ChannelProvider;
@@ -11,6 +13,7 @@ import com.adaptris.google.cloud.pubsub.credentials.CredentialsProvider;
 import com.adaptris.google.cloud.pubsub.credentials.KeyFileCredentialsProvider;
 import com.adaptris.google.cloud.pubsub.credentials.NoCredentialsProvider;
 import com.google.api.gax.grpc.InstantiatingChannelProvider;
+import com.google.cloud.pubsub.v1.TopicAdminClient;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -114,6 +117,24 @@ public class GoogleCloudPubSubConnectionTest {
     assertTrue(ConnectionConfig.ConnectionState.Stopped.isStopOrClose());
     assertTrue(ConnectionConfig.ConnectionState.Closing.isStopOrClose());
     assertTrue(ConnectionConfig.ConnectionState.Closed.isStopOrClose());
+  }
+
+  @Test
+  public void testGetSubscriptionAdminClient(){
+    GoogleCloudPubSubConnection connection = new GoogleCloudPubSubConnection();
+    SubscriptionAdminClientProvider provider = Mockito.mock(SubscriptionAdminClientProvider.class);
+    connection.setSubscriptionAdminClientProvider(provider);
+    connection.getSubscriptionAdminClient();
+    Mockito.verify(provider, Mockito.times(1)).getSubscriptionAdminClient();
+  }
+
+  @Test
+  public void testGetTopicAdminClient(){
+    GoogleCloudPubSubConnection connection = new GoogleCloudPubSubConnection();
+    TopicAdminClientProvider provider = Mockito.mock(TopicAdminClientProvider.class);
+    connection.setTopicAdminClientProvider(provider);
+    connection.getTopicAdminClient();
+    Mockito.verify(provider, Mockito.times(1)).getTopicAdminClient();
   }
 
 }

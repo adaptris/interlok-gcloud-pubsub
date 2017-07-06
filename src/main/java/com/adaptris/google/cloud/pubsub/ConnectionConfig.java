@@ -136,11 +136,15 @@ abstract class ConnectionConfig extends AdaptrisConnectionImp {
     return connectionState;
   }
 
-  void setSubscriptionAdminClientProvider(SubscriptionAdminClientProvider subscriptionAdminClientProvider) {
+  void setConnectionState(ConnectionState connectionState) {
+    this.connectionState = connectionState;
+  }
+
+  public void setSubscriptionAdminClientProvider(SubscriptionAdminClientProvider subscriptionAdminClientProvider) {
     this.subscriptionAdminClientProvider = subscriptionAdminClientProvider;
   }
 
-  void setTopicAdminClientProvider(TopicAdminClientProvider topicAdminClientProvider) {
+  public void setTopicAdminClientProvider(TopicAdminClientProvider topicAdminClientProvider) {
     this.topicAdminClientProvider = topicAdminClientProvider;
   }
 

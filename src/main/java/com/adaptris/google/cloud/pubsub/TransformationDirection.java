@@ -26,27 +26,6 @@ import java.io.IOException;
  */
 public enum TransformationDirection {
 
-//  /**
-//   * Google Cloud Pub/Sub JSON to Interlok Message.
-//   */
-//  @InputFieldHint(friendly = "Google Cloud Pub/Sub JSON to Interlok Message")
-//  PUBSUB_TO_INTERLOK {
-//    @Override
-//    public void transform(AdaptrisMessage message, MetadataFilter metadataFilter) throws ServiceException {
-//      try {
-//        PubsubMessage.Builder pubsubMessage = PubsubMessage.newBuilder();
-//        JsonFormat.parser().merge(new String(message.getPayload()), pubsubMessage);
-//        MetadataCollection filtered = metadataFilter.filter(MetadataHelper.convertFromProperties(KeyValuePairBag.asProperties(new KeyValuePairSet(pubsubMessage.getAttributesMap()))));
-//        for (MetadataElement e : filtered) {
-//          message.addMetadata(e);
-//        }
-//        message.setPayload(pubsubMessage.getData().toByteArray());
-//      } catch (IOException e){
-//        throw new ServiceException(e);
-//      }
-//    }
-//  },
-
   /**
    * Interlok Message to Publish Request
    */
@@ -82,8 +61,8 @@ public enum TransformationDirection {
       try {
         PullResponse.Builder pullResponse = PullResponse.newBuilder();
         JsonFormat.parser().merge(new String(message.getPayload()), pullResponse);
-        if (pullResponse.getReceivedMessagesCount() < 1){
-          //log debug
+        if (pullResponse.getReceivedMessagesCount() != 1) {
+          throw new ServiceException("Pull Response can only contain one message");
         }
         ReceivedMessage receivedMessage = pullResponse.getReceivedMessages(0);
         message.addMetadata("gcloud_ackId", receivedMessage.getAckId());
@@ -123,9 +102,7 @@ public enum TransformationDirection {
     for (MetadataElement e : filtered) {
       message.addMetadata(e);
     }
-    if(pubsubMessage.getMessageId() != null) {
-      message.addMetadata("gcloud_messageId", pubsubMessage.getMessageId());
-    }
+    message.addMetadata("gcloud_messageId", pubsubMessage.getMessageId());
     if(pubsubMessage.hasPublishTime()) {
       message.addMetadata("gcloud_publishTimeSeconds", String.valueOf(pubsubMessage.getPublishTime().getSeconds()));
     }
