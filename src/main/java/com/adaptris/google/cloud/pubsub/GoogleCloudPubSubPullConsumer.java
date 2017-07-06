@@ -67,10 +67,14 @@ public class GoogleCloudPubSubPullConsumer extends ConsumeConfig implements Mess
     for (Map.Entry<String, String> e : pubsubMessage.getAttributesMap().entrySet()) {
       adaptrisMessage.addMetadata(e.getKey(), e.getValue());
     }
+    if(getAutoAcknowledge()) {
+      consumer.ack();
+    } else {
+      adaptrisMessage.addObjectHeader(Constants.REPLY_KEY, consumer);
+    }
     String oldName = renameThread();
     retrieveAdaptrisMessageListener().onAdaptrisMessage(adaptrisMessage);
     Thread.currentThread().setName(oldName);
-    consumer.ack();
   }
 
   String getProjectName() {

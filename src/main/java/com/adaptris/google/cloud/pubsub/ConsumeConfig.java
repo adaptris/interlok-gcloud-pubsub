@@ -24,6 +24,10 @@ public abstract class ConsumeConfig extends AdaptrisMessageConsumerImp {
   @Valid
   private Boolean createSubscription = true;
 
+  @NotNull
+  @Valid
+  private Boolean autoAcknowledge = true;
+
   public ConsumeConfig(){
     setAckDeadline(new TimeInterval(10L, TimeUnit.SECONDS));
   }
@@ -41,6 +45,9 @@ public abstract class ConsumeConfig extends AdaptrisMessageConsumerImp {
     }
     if(getCreateSubscription() == null){
       throw new CoreException("Create Subscription is invalid");
+    }
+    if(getAutoAcknowledge() == null){
+      throw new CoreException("Auto Acknowledge is invalid");
     }
   }
 
@@ -66,6 +73,14 @@ public abstract class ConsumeConfig extends AdaptrisMessageConsumerImp {
 
   public void setCreateSubscription(Boolean createSubscription) {
     this.createSubscription = createSubscription;
+  }
+
+  public Boolean getAutoAcknowledge() {
+    return autoAcknowledge;
+  }
+
+  public void setAutoAcknowledge(Boolean autoAcknowledge) {
+    this.autoAcknowledge = autoAcknowledge;
   }
 
   public String getTopicName() {
