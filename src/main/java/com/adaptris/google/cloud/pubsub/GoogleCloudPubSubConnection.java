@@ -58,13 +58,13 @@ public class GoogleCloudPubSubConnection extends ConnectionConfig {
       return subscription;
     } catch (ApiException e){
       if (Status.Code.NOT_FOUND != e.getStatusCode()){
-        throw e;
+        throw new CoreException("Failed to retrieve Topic", e);
       } else {
         if (config.getCreateSubscription()){
           log.trace(String.format("Creating Subscription [%s] Topic [%s]", config.getSubscriptionName(), topic.toString()));
           return getSubscriptionAdminClient().createSubscription(subscriptionName, topic, PushConfig.getDefaultInstance(), config.getAckDeadlineSeconds());
         } else {
-          throw e;
+          throw new CoreException("Failed to retrieve Topic", e);
         }
       }
     }

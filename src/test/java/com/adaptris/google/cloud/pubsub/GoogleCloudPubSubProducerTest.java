@@ -1,11 +1,9 @@
 package com.adaptris.google.cloud.pubsub;
 
-import com.adaptris.core.ConfiguredProduceDestination;
-import com.adaptris.core.CoreException;
-import com.adaptris.core.ProducerCase;
-import com.adaptris.core.StandaloneRequestor;
+import com.adaptris.core.*;
 import com.adaptris.core.metadata.NoOpMetadataFilter;
 import com.adaptris.core.metadata.RemoveAllMetadataFilter;
+import com.google.pubsub.v1.PubsubMessage;
 import org.junit.Test;
 
 public class GoogleCloudPubSubProducerTest extends ProducerCase {
@@ -55,6 +53,17 @@ public class GoogleCloudPubSubProducerTest extends ProducerCase {
     } catch (CoreException expected){
       assertEquals(message, expected.getMessage());
     }
+  }
+
+  @Test
+  public void testCreatePubsubMessage() throws Exception{
+    GoogleCloudPubSubProducer producer = new GoogleCloudPubSubProducer();
+    final AdaptrisMessage msg = AdaptrisMessageFactory.getDefaultInstance().newMessage("Hello World");
+    msg.addMetadata("foo", "bar");
+    PubsubMessage pusubMessage = producer.createPubsubMessage(msg);
+    assertEquals("Hello World", new String(pusubMessage.getData().toByteArray()));
+    assertTrue(pusubMessage.getAttributesMap().containsKey("foo"));
+    assertEquals("bar", pusubMessage.getAttributesMap().get("foo"));
   }
 
   @Override

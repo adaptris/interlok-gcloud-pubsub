@@ -56,7 +56,7 @@ public class GoogleCloudPubSubProducer extends ProduceOnlyProducerImp {
       ApiFuture<String> messageId = publisher.publish(createPubsubMessage(adaptrisMessage));
       log.debug(String.format("Published with message ID: %s", messageId.get()));
     } catch (IOException | CoreException | InterruptedException | ExecutionException e) {
-      throw new ProduceException(e);
+      throw new ProduceException("Failed to Produce Message", e);
     } finally {
       if (publisher != null){
         try {
@@ -68,7 +68,7 @@ public class GoogleCloudPubSubProducer extends ProduceOnlyProducerImp {
     }
   }
 
-  private TopicName createOrGetTopicName(AdaptrisMessage adaptrisMessage) throws CoreException {
+  TopicName createOrGetTopicName(AdaptrisMessage adaptrisMessage) throws CoreException {
     TopicName topicName = TopicName.create(projectName, getDestination().getDestination(adaptrisMessage));
     if(!getCreateTopic()){
       return topicName;
@@ -77,14 +77,14 @@ public class GoogleCloudPubSubProducer extends ProduceOnlyProducerImp {
       return topicAdminClient.getTopic(topicName).getNameAsTopicName();
     } catch (ApiException e) {
       if (Status.Code.NOT_FOUND != e.getStatusCode()) {
-        throw e;
+        throw new CoreException("Failed to get Topic", e);
       } else {
         return topicAdminClient.createTopic(topicName).getNameAsTopicName();
       }
     }
   }
 
-  private PubsubMessage createPubsubMessage(AdaptrisMessage adaptrisMessage){
+  PubsubMessage createPubsubMessage(AdaptrisMessage adaptrisMessage){
     ByteString byteString = ByteString.copyFrom(adaptrisMessage.getPayload());
     PubsubMessage.Builder psmBuilder = PubsubMessage.newBuilder().setData(byteString);
     MetadataCollection filtered = getMetadataFilter().filter(adaptrisMessage);
