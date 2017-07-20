@@ -173,6 +173,7 @@ public class PubsubProducerTest extends ServiceHelperBase {
         .addMessageIds("1234")
         .build();
     mockPublisher.addResponse(expectedResponse);
+    mockPublisher.addResponse(expectedResponse);
 
     GoogleCloudPubSubConnection connection = new GoogleCloudPubSubConnection();
     TopicAdminClientProvider provider = Mockito.mock(TopicAdminClientProvider.class);
@@ -194,11 +195,13 @@ public class PubsubProducerTest extends ServiceHelperBase {
     final AdaptrisMessage msg = AdaptrisMessageFactory.getDefaultInstance().newMessage("Hello World");
     msg.addMetadata("foo", "bar");
     producer.produce(msg);
+    producer.produce(msg);
+    assertEquals(1, producer.getPublisherCache().size());
     producer.stop();
     producer.close();
 
     List<GeneratedMessageV3> actualRequests = mockPublisher.getRequests();
-    assertEquals(1, actualRequests.size());
+    assertEquals(2, actualRequests.size());
 
     PublishRequest actualRequest = (PublishRequest) actualRequests.get(0);
     assertEquals(String.format("projects/%s/topics/%s", PROJECT, TOPIC), actualRequest.getTopic());
