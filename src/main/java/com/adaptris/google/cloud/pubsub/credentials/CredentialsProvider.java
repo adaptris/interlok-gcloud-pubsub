@@ -9,13 +9,8 @@ public abstract class CredentialsProvider implements ComponentLifecycle {
 
   abstract com.google.api.gax.core.CredentialsProvider createCredentialsProvider() throws CoreException;
 
-  void validateArguments() throws CoreException {
-
-  }
-
   @Override
   public void init() throws CoreException {
-    validateArguments();
     setCredentialsProvider(createCredentialsProvider());
   }
 

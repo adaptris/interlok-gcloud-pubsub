@@ -2,10 +2,6 @@ package com.adaptris.google.cloud.credential;
 
 import com.adaptris.core.CoreException;
 import com.adaptris.core.util.LifecycleHelper;
-import com.adaptris.google.cloud.pubsub.credentials.CredentialsProvider;
-import com.adaptris.google.cloud.pubsub.credentials.KeyFileCredentialsProvider;
-import com.google.api.gax.core.FixedCredentialsProvider;
-import com.google.auth.oauth2.GoogleCredentials;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -14,7 +10,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 
 public class KeyFileCredentialsTest {

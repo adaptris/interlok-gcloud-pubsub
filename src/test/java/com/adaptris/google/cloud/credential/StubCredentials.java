@@ -10,14 +10,14 @@ import java.util.Date;
 
 import static org.mockito.Mockito.mock;
 
-class StubCredentialBuilder implements Credentials {
+public class StubCredentials implements Credentials {
 
   static final String ACCESS_TOKEN = "ABC123";
   static final Date EXPIRATION = new Date(0);
 
   GoogleCredentials credentials;
 
-  StubCredentialBuilder() throws Exception{
+  public StubCredentials() throws Exception{
     credentials = mock(GoogleCredentials.class);
     Mockito.when(credentials.refreshAccessToken()).thenReturn(new AccessToken(ACCESS_TOKEN, EXPIRATION));
   }

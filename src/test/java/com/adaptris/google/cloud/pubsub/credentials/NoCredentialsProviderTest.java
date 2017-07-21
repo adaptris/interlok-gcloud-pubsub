@@ -16,7 +16,6 @@ public class NoCredentialsProviderTest {
     assertTrue(provider.getCredentialsProvider() instanceof com.google.api.gax.core.NoCredentialsProvider);
     Mockito.verify(provider,Mockito.times(1)).init();
     Mockito.verify(provider,Mockito.times(1)).start();
-    Mockito.verify(provider,Mockito.times(1)).validateArguments();
     Mockito.verify(provider,Mockito.times(1)).setCredentialsProvider(Mockito.any(com.google.api.gax.core.NoCredentialsProvider.class));
   }
 
@@ -26,7 +25,6 @@ public class NoCredentialsProviderTest {
     LifecycleHelper.stopAndClose(provider);
     Mockito.verify(provider,Mockito.times(1)).stop();
     Mockito.verify(provider,Mockito.times(1)).close();
-    Mockito.verify(provider,Mockito.never()).validateArguments();
     Mockito.verify(provider,Mockito.never()).setCredentialsProvider(Mockito.any(com.google.api.gax.core.NoCredentialsProvider.class));
   }
 

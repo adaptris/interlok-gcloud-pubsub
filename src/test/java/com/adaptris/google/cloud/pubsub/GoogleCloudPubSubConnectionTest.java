@@ -1,19 +1,16 @@
 package com.adaptris.google.cloud.pubsub;
 
-import com.adaptris.core.ConfiguredConsumeDestination;
 import com.adaptris.core.CoreException;
 import com.adaptris.core.util.LifecycleHelper;
-import com.adaptris.google.cloud.pubsub.adminclient.AdminClientProvider;
 import com.adaptris.google.cloud.pubsub.adminclient.SubscriptionAdminClientProvider;
 import com.adaptris.google.cloud.pubsub.adminclient.TopicAdminClientProvider;
 import com.adaptris.google.cloud.pubsub.channel.ChannelProvider;
 import com.adaptris.google.cloud.pubsub.channel.CustomChannelProvider;
 import com.adaptris.google.cloud.pubsub.channel.DefaultChannelProvider;
 import com.adaptris.google.cloud.pubsub.credentials.CredentialsProvider;
-import com.adaptris.google.cloud.pubsub.credentials.KeyFileCredentialsProvider;
+import com.adaptris.google.cloud.pubsub.credentials.FixedCredentialsProvider;
 import com.adaptris.google.cloud.pubsub.credentials.NoCredentialsProvider;
 import com.google.api.gax.grpc.InstantiatingChannelProvider;
-import com.google.cloud.pubsub.v1.TopicAdminClient;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -32,9 +29,9 @@ public class GoogleCloudPubSubConnectionTest {
     assertEquals(connection.getConnectionState(), ConnectionConfig.ConnectionState.Closed);
     connection = new GoogleCloudPubSubConnection(new CustomChannelProvider());
     assertTrue(connection.getChannelProvider() instanceof CustomChannelProvider);
-    connection = new GoogleCloudPubSubConnection(new CustomChannelProvider(), new KeyFileCredentialsProvider());
+    connection = new GoogleCloudPubSubConnection(new CustomChannelProvider(), new FixedCredentialsProvider());
     assertTrue(connection.getChannelProvider() instanceof CustomChannelProvider);
-    assertTrue(connection.getCredentialsProvider() instanceof KeyFileCredentialsProvider);
+    assertTrue(connection.getCredentialsProvider() instanceof FixedCredentialsProvider);
   }
 
   @Test
