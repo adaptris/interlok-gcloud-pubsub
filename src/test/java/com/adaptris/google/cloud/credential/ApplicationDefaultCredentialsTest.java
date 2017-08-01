@@ -2,15 +2,14 @@ package com.adaptris.google.cloud.credential;
 
 import com.adaptris.core.CoreException;
 import com.adaptris.core.util.LifecycleHelper;
-import com.google.auth.oauth2.GoogleCredentials;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 
 public class ApplicationDefaultCredentialsTest {
@@ -58,6 +57,14 @@ public class ApplicationDefaultCredentialsTest {
   public void testGetScopes() throws Exception {
     ApplicationDefaultCredentials credentials = new ApplicationDefaultCredentials();
     credentials.setScopes(Collections.singletonList("scope"));
+    assertEquals(1, credentials.getScopes().size());
+    assertEquals("scope", credentials.getScopes().get(0));
+  }
+
+
+  @Test
+  public void testConstruct() throws Exception {
+    ApplicationDefaultCredentials credentials = new ApplicationDefaultCredentials("scope");
     assertEquals(1, credentials.getScopes().size());
     assertEquals("scope", credentials.getScopes().get(0));
   }

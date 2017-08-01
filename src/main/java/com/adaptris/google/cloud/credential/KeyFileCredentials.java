@@ -20,6 +20,14 @@ public class KeyFileCredentials extends ScopedCredentials {
   @Valid
   private String jsonKeyFile;
 
+  public KeyFileCredentials(){
+    super();
+  }
+
+  public KeyFileCredentials(String... scopes){
+    super(scopes);
+  }
+
   @Override
   void validateArguments() throws CoreException {
     if (StringUtils.isEmpty(getJsonKeyFile())){

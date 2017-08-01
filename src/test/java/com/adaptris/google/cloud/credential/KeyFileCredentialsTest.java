@@ -78,4 +78,11 @@ public class KeyFileCredentialsTest {
     assertEquals("scope", credentials.getScopes().get(0));
   }
 
+  @Test
+  public void testConstruct() throws Exception {
+    KeyFileCredentials credentials = new KeyFileCredentials("scope");
+    assertEquals(1, credentials.getScopes().size());
+    assertEquals("scope", credentials.getScopes().get(0));
+  }
+
 }

@@ -5,6 +5,7 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.Arrays;
 import java.util.List;
 
 public abstract class ScopedCredentials implements Credentials {
@@ -13,6 +14,13 @@ public abstract class ScopedCredentials implements Credentials {
   @Valid
   @XStreamImplicit(itemFieldName = "scope")
   private List<String> scopes;
+
+  public ScopedCredentials() {
+  }
+
+  public ScopedCredentials(String... scopes){
+    setScopes(Arrays.asList(scopes));
+  }
 
   void validateArguments() throws CoreException {
     if(getScopes() == null || getScopes().size() == 0){

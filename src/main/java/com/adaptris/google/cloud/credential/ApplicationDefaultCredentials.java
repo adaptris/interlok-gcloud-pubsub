@@ -9,6 +9,14 @@ import java.io.IOException;
 @XStreamAlias("application-default-credentials")
 public class ApplicationDefaultCredentials extends ScopedCredentials {
 
+  public ApplicationDefaultCredentials(){
+    super();
+  }
+
+  public ApplicationDefaultCredentials(String... scopes){
+    super(scopes);
+  }
+
   @Override
   public GoogleCredentials build() throws CoreException {
     try {
