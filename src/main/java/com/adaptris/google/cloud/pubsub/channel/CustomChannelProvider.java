@@ -48,7 +48,11 @@ public class CustomChannelProvider extends ChannelProvider {
 
   @Override
   com.google.api.gax.grpc.ChannelProvider createChannelProvider() {
-    ManagedChannel channel = ManagedChannelBuilder.forTarget(getAddress()).usePlaintext(getUsePlaintext()).build();
+    ManagedChannel channel = ManagedChannelBuilder
+        .forTarget(getAddress())
+        .usePlaintext(getUsePlaintext())
+        .maxInboundMessageSize(MAX_INBOUND_MESSAGE_SIZE)
+        .build();
     return FixedChannelProvider.create(channel);
   }
 
