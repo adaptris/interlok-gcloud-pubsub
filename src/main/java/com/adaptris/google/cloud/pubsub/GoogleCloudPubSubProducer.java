@@ -20,6 +20,7 @@ import io.grpc.Status;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 @XStreamAlias("google-cloud-pubsub-producer")
@@ -32,6 +33,10 @@ public class GoogleCloudPubSubProducer extends ProduceOnlyProducerImp {
 
   @Valid
   @NotNull
+  private Integer publisherCacheLimit;
+
+  @Valid
+  @NotNull
   @AdvancedConfig
   private MetadataFilter metadataFilter = new NoOpMetadataFilter();
 
@@ -39,32 +44,34 @@ public class GoogleCloudPubSubProducer extends ProduceOnlyProducerImp {
   private transient ChannelProvider channelProvider;
   private transient String projectName;
   private transient TopicAdminClient topicAdminClient;
+  private transient Map<String, Publisher> publisherCache;
 
   public GoogleCloudPubSubProducer() {
     setMetadataFilter(new NoOpMetadataFilter());
     setCreateTopic(false);
+    setPublisherCacheLimit(PublisherMap.DEFAULT_MAX_ENTRIES);
   }
 
   @Override
   public void produce(AdaptrisMessage adaptrisMessage, ProduceDestination produceDestination) throws ProduceException {
-    Publisher publisher = null;
     try {
-      publisher = Publisher.defaultBuilder(createOrGetTopicName(adaptrisMessage))
-          .setChannelProvider(channelProvider)
-          .setCredentialsProvider(credentialsProvider)
-          .build();
+      String key = getDestination().getDestination(adaptrisMessage);
+      Publisher publisher;
+      if (publisherCache.containsKey(key)){
+        log.trace(String.format("Found publisher for key [%s]", key));
+        publisher = publisherCache.get(key);
+      } else {
+        log.trace(String.format("No publisher found for key [%s]", key));
+        publisher = Publisher.defaultBuilder(createOrGetTopicName(adaptrisMessage))
+            .setChannelProvider(channelProvider)
+            .setCredentialsProvider(credentialsProvider)
+            .build();
+        publisherCache.put(key, publisher);
+      }
       ApiFuture<String> messageId = publisher.publish(createPubsubMessage(adaptrisMessage));
       log.debug(String.format("Published with message ID: %s", messageId.get()));
     } catch (IOException | CoreException | InterruptedException | ExecutionException e) {
       throw new ProduceException("Failed to Produce Message", e);
-    } finally {
-      if (publisher != null){
-        try {
-          publisher.shutdown();
-        } catch (Exception e) {
-          log.debug("Publisher failed to shutdown", e);
-        }
-      }
     }
   }
 
@@ -102,6 +109,9 @@ public class GoogleCloudPubSubProducer extends ProduceOnlyProducerImp {
     if(getMetadataFilter() == null){
       throw new CoreException("metadata-filter is invalid");
     }
+    if(getPublisherCacheLimit() == null){
+      throw new CoreException("publisher-cache-limit is invalid");
+    }
   }
 
   @Override
@@ -111,6 +121,7 @@ public class GoogleCloudPubSubProducer extends ProduceOnlyProducerImp {
     credentialsProvider = connection.getGoogleCredentialsProvider();
     projectName = connection.getProjectName();
     topicAdminClient = connection.getTopicAdminClient();
+    publisherCache = new PublisherMap(getPublisherCacheLimit());
   }
 
   @Override
@@ -125,7 +136,15 @@ public class GoogleCloudPubSubProducer extends ProduceOnlyProducerImp {
 
   @Override
   public void close() {
-
+    for (Map.Entry<String, Publisher> publisherEntry : publisherCache.entrySet()) {
+      if (publisherEntry.getValue() != null) {
+        try {
+          publisherEntry.getValue().shutdown();
+        } catch (Exception e) {
+          log.debug("Publisher failed to shutdown", e);
+        }
+      }
+    }
   }
 
   public void setCreateTopic(Boolean createTopic) {
@@ -142,5 +161,21 @@ public class GoogleCloudPubSubProducer extends ProduceOnlyProducerImp {
 
   public MetadataFilter getMetadataFilter() {
     return metadataFilter;
+  }
+
+  public void setPublisherCacheLimit(Integer publisherCacheLimit) {
+    this.publisherCacheLimit = publisherCacheLimit;
+  }
+
+  public Integer getPublisherCacheLimit() {
+    return publisherCacheLimit;
+  }
+
+  Map<String, Publisher> getPublisherCache() {
+    return publisherCache;
+  }
+
+  void setPublisherCache(Map<String, Publisher> publisherCache) {
+    this.publisherCache = publisherCache;
   }
 }

@@ -3,6 +3,8 @@ package com.adaptris.google.cloud.pubsub;
 import com.adaptris.core.*;
 import com.adaptris.core.stubs.MockMessageListener;
 import com.adaptris.core.util.LifecycleHelper;
+import com.adaptris.google.cloud.credential.ApplicationDefaultCredentials;
+import com.adaptris.google.cloud.pubsub.credentials.FixedCredentialsProvider;
 import com.adaptris.util.TimeInterval;
 import com.google.cloud.pubsub.v1.AckReplyConsumer;
 import com.google.cloud.pubsub.v1.Subscriber;
@@ -273,6 +275,7 @@ public class GoogleCloudPubSubPullConsumerTest extends ConsumerCase {
   protected Object retrieveObjectForSampleConfig() {
     GoogleCloudPubSubConnection conn = new GoogleCloudPubSubConnection();
     conn.setProjectName("project-name");
+    conn.setCredentialsProvider(new FixedCredentialsProvider(new ApplicationDefaultCredentials("https://www.googleapis.com/auth/pubsub")));
 
     GoogleCloudPubSubPullConsumer cons = new GoogleCloudPubSubPullConsumer();
     cons.setSubscriptionName("subscription-name");

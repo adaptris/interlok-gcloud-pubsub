@@ -8,6 +8,8 @@ public class DefaultChannelProvider extends ChannelProvider {
 
   @Override
   com.google.api.gax.grpc.ChannelProvider createChannelProvider() {
-    return SubscriptionAdminSettings.defaultChannelProviderBuilder().build();
+    return SubscriptionAdminSettings.defaultChannelProviderBuilder()
+        .setMaxInboundMessageSize(MAX_INBOUND_MESSAGE_SIZE)
+        .build();
   }
 }

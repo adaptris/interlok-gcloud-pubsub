@@ -3,47 +3,35 @@ package com.adaptris.google.cloud.credential;
 
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.CoreException;
-import com.adaptris.core.MessageDrivenDestination;
 import com.adaptris.core.ServiceException;
 import com.adaptris.core.http.oauth.AccessToken;
 import com.adaptris.core.http.oauth.AccessTokenBuilder;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
-import java.util.List;
 
 @XStreamAlias("google-cloud-access-token-builder")
 public class GoogleCloudAccessTokenBuilder implements AccessTokenBuilder {
 
   @NotNull
   @Valid
-  private MessageDrivenDestination jsonKeyFile;
-
-  @NotNull
-  @Valid
-  @XStreamImplicit(itemFieldName = "scope")
-  private List<String> scope;
-
-  private transient CredentialBuilder credentialBuilder = new GoogleCredentialBuilder();
+  private Credentials credentials;
 
   public GoogleCloudAccessTokenBuilder(){
+    setCredentials(new ApplicationDefaultCredentials());
   }
 
-  public GoogleCloudAccessTokenBuilder(MessageDrivenDestination destination, List<String> scope){
-    this();
-    setJsonKeyFile(destination);
-    setScope(scope);
+  public GoogleCloudAccessTokenBuilder(Credentials credentials){
+    setCredentials(credentials);
   }
 
   @Override
   public AccessToken build(AdaptrisMessage adaptrisMessage) throws IOException, CoreException {
     try {
-      GoogleCredentials credential = getCredentialBuilder()
-          .fromStreamWithScope(getJsonKeyFile().getDestination(adaptrisMessage), getScope());
+      GoogleCredentials credential = getCredentials().build();
       com.google.auth.oauth2.AccessToken accessToken = credential.refreshAccessToken();
       return new AccessToken(accessToken.getTokenValue(), accessToken.getExpirationTime().getTime());
     } catch (Exception e) {
@@ -53,50 +41,29 @@ public class GoogleCloudAccessTokenBuilder implements AccessTokenBuilder {
 
   @Override
   public void init() throws CoreException {
-    if (getJsonKeyFile() == null){
-      throw new CoreException("Value for json-key-file is invalid");
-    }
-    if (getScope() == null){
-      throw new CoreException("Value for scope is invalid");
-    }
+    getCredentials().init();
   }
 
   @Override
   public void start() throws CoreException {
-
+    getCredentials().start();
   }
 
   @Override
   public void stop() {
-
+    getCredentials().stop();
   }
 
   @Override
   public void close() {
-
+    getCredentials().close();
   }
 
-  public MessageDrivenDestination getJsonKeyFile() {
-    return jsonKeyFile;
+  public Credentials getCredentials() {
+    return credentials;
   }
 
-  public void setJsonKeyFile(MessageDrivenDestination jsonKeyFile) {
-    this.jsonKeyFile = jsonKeyFile;
-  }
-
-  public List<String> getScope() {
-    return scope;
-  }
-
-  public void setScope(List<String> scope) {
-    this.scope = scope;
-  }
-
-  CredentialBuilder getCredentialBuilder() {
-    return credentialBuilder;
-  }
-
-  void setCredentialBuilder(CredentialBuilder credentialBuilder) {
-    this.credentialBuilder = credentialBuilder;
+  public void setCredentials(Credentials credentials) {
+    this.credentials = credentials;
   }
 }

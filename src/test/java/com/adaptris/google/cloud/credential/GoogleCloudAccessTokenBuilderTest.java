@@ -2,16 +2,13 @@ package com.adaptris.google.cloud.credential;
 
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.AdaptrisMessageFactory;
-import com.adaptris.core.ConfiguredProduceDestination;
-import com.adaptris.core.CoreException;
 import com.adaptris.core.http.oauth.AccessToken;
 import com.adaptris.core.http.oauth.GetOauthToken;
+import com.adaptris.core.util.LifecycleHelper;
 import com.adaptris.util.text.DateFormatUtil;
 import org.junit.Test;
+import org.mockito.Mockito;
 
-import java.io.File;
-import java.net.URL;
-import java.nio.file.Paths;
 import java.util.Arrays;
 
 
@@ -24,84 +21,37 @@ public class GoogleCloudAccessTokenBuilderTest extends CredentialServiceExample 
   @Test
   public void testConstruct() throws Exception {
     GoogleCloudAccessTokenBuilder service = new GoogleCloudAccessTokenBuilder();
-    assertNull(service.getScope());
-    assertNull(service.getJsonKeyFile());
-    assertNotNull(service.getCredentialBuilder());
-    assertTrue(service.getCredentialBuilder() instanceof GoogleCredentialBuilder);
-    service = new GoogleCloudAccessTokenBuilder(new ConfiguredProduceDestination(), Arrays.asList("scope"));
-    assertNotNull(service.getScope());
-    assertTrue(service.getScope().contains("scope"));
-    assertNotNull(service.getJsonKeyFile());
-    assertTrue(service.getJsonKeyFile() instanceof ConfiguredProduceDestination);
+    assertNotNull(service.getCredentials());
+    assertTrue(service.getCredentials() instanceof ApplicationDefaultCredentials);
+    service = new GoogleCloudAccessTokenBuilder(new KeyFileCredentials());
+    assertNotNull(service.getCredentials());
+    assertTrue(service.getCredentials() instanceof KeyFileCredentials);
   }
 
-  @Test
-  public void testInitFail() throws Exception {
-    GoogleCloudAccessTokenBuilder service = new GoogleCloudAccessTokenBuilder();
-    try {
-      service.init();
-      fail();
-    } catch (CoreException e){
-      assertEquals("Value for json-key-file is invalid", e.getMessage());
-    }
-  }
-
-  @Test
-  public void testInitJsonKeyOnly() throws Exception {
-    GoogleCloudAccessTokenBuilder service = new GoogleCloudAccessTokenBuilder();
-    service.setJsonKeyFile(new ConfiguredProduceDestination());
-    try {
-      service.init();
-      fail();
-    } catch (CoreException e){
-      assertEquals("Value for scope is invalid", e.getMessage());
-    }
-  }
-
-  @Test
-  public void testInitScopeOnly() throws Exception {
-    GoogleCloudAccessTokenBuilder service = new GoogleCloudAccessTokenBuilder();
-    service.setScope(Arrays.asList("scope"));
-    try {
-      service.init();
-      fail();
-    } catch (CoreException e){
-      assertEquals("Value for json-key-file is invalid", e.getMessage());
-    }
-  }
-
-  @Test
-  public void testInitOk() throws Exception {
-    GoogleCloudAccessTokenBuilder service = new GoogleCloudAccessTokenBuilder();
-    service.setScope(Arrays.asList("scope"));
-    service.setJsonKeyFile(new ConfiguredProduceDestination());
-    service.init();
-    assertNotNull(service.getScope());
-    assertTrue(service.getScope().contains("scope"));
-    assertNotNull(service.getJsonKeyFile());
-    assertTrue(service.getJsonKeyFile() instanceof ConfiguredProduceDestination);
-  }
 
   @Test
   public void testBuild() throws Exception {
     AdaptrisMessage msg =  AdaptrisMessageFactory.getDefaultInstance().newMessage("Hello World");
-    URL resource = GoogleCloudAccessTokenBuilderTest.class.getClassLoader().getResource("interlok.json");
-    File jsonFile = Paths.get(resource.toURI()).toFile();
     GoogleCloudAccessTokenBuilder service = new GoogleCloudAccessTokenBuilder();
-    service.setCredentialBuilder(new StubCredentialBuilder());
-    service.setJsonKeyFile(new ConfiguredProduceDestination("file:///" + jsonFile.getAbsolutePath()));
-    service.setScope(Arrays.asList("https://www.googleapis.com/auth/pubsub"));
+    Credentials credentials = Mockito.spy(new StubCredentials());
+    service.setCredentials(credentials);
+    LifecycleHelper.initAndStart(service);
     AccessToken accessToken = service.build(msg);
-    assertEquals(accessToken.getToken(), StubCredentialBuilder.ACCESS_TOKEN);
-    assertEquals(accessToken.getExpiry(), DateFormatUtil.format(StubCredentialBuilder.EXPIRATION));
+    LifecycleHelper.stopAndClose(service);
+    assertEquals(accessToken.getToken(), StubCredentials.ACCESS_TOKEN);
+    assertEquals(accessToken.getExpiry(), DateFormatUtil.format(StubCredentials.EXPIRATION));
+    Mockito.verify(credentials, Mockito.times(1)).init();
+    Mockito.verify(credentials, Mockito.times(1)).start();
+    Mockito.verify(credentials, Mockito.times(1)).stop();
+    Mockito.verify(credentials, Mockito.times(1)).close();
   }
 
   @Override
   protected Object retrieveObjectForSampleConfig() {
     GetOauthToken service = new GetOauthToken();
-    GoogleCloudAccessTokenBuilder tokenBuilder = new GoogleCloudAccessTokenBuilder();
-    tokenBuilder.setScope(Arrays.asList("https://www.googleapis.com/auth/pubsub"));
-    tokenBuilder.setJsonKeyFile(new ConfiguredProduceDestination("file:////home/matthew/interlok.json"));
+    ApplicationDefaultCredentials applicationDefaultCredentials = new ApplicationDefaultCredentials();
+    applicationDefaultCredentials.setScopes(Arrays.asList("https://www.googleapis.com/auth/pubsub"));
+    GoogleCloudAccessTokenBuilder tokenBuilder = new GoogleCloudAccessTokenBuilder(applicationDefaultCredentials);
     service.setAccessTokenBuilder(tokenBuilder);
     return service;
   }
