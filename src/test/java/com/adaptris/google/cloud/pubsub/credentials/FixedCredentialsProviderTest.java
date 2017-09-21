@@ -1,14 +1,13 @@
 package com.adaptris.google.cloud.pubsub.credentials;
 
 import com.adaptris.core.CoreException;
+import com.adaptris.core.oauth.gcloud.Credentials;
 import com.adaptris.core.util.LifecycleHelper;
-import com.adaptris.google.cloud.credential.Credentials;
-import com.adaptris.google.cloud.credential.StubCredentials;
+import com.adaptris.google.cloud.pubsub.stubs.StubCredentials;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 
 public class FixedCredentialsProviderTest {
