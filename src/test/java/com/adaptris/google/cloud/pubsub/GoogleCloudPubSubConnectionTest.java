@@ -10,6 +10,8 @@ import com.adaptris.google.cloud.pubsub.channel.DefaultChannelProvider;
 import com.adaptris.google.cloud.pubsub.credentials.CredentialsProvider;
 import com.adaptris.google.cloud.pubsub.credentials.FixedCredentialsProvider;
 import com.adaptris.google.cloud.pubsub.credentials.NoCredentialsProvider;
+import com.adaptris.google.cloud.pubsub.flowcontrol.CustomFlowControlProvider;
+import com.adaptris.google.cloud.pubsub.flowcontrol.DefaultFlowControlProvider;
 import com.google.api.gax.grpc.InstantiatingChannelProvider;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -22,6 +24,8 @@ public class GoogleCloudPubSubConnectionTest {
   public void testConstruct() throws Exception {
     GoogleCloudPubSubConnection connection = new GoogleCloudPubSubConnection();
     assertNull(connection.getProjectName());
+    assertNotNull(connection.getFlowControlProvider());
+    assertTrue(connection.getFlowControlProvider() instanceof DefaultFlowControlProvider);
     assertNotNull(connection.getChannelProvider());
     assertTrue(connection.getChannelProvider() instanceof DefaultChannelProvider);
     assertNotNull(connection.getCredentialsProvider());
@@ -132,6 +136,16 @@ public class GoogleCloudPubSubConnectionTest {
     connection.setTopicAdminClientProvider(provider);
     connection.getTopicAdminClient();
     Mockito.verify(provider, Mockito.times(1)).getTopicAdminClient();
+  }
+
+  @Test
+  public void testGetFlowControlProvider(){
+    GoogleCloudPubSubConnection connection = new GoogleCloudPubSubConnection();
+    assertNotNull(connection.getFlowControlProvider());
+    assertTrue(connection.getFlowControlProvider() instanceof DefaultFlowControlProvider);
+    connection.setFlowControlProvider(new CustomFlowControlProvider());
+    assertNotNull(connection.getFlowControlProvider());
+    assertTrue(connection.getFlowControlProvider() instanceof CustomFlowControlProvider);
   }
 
 }
