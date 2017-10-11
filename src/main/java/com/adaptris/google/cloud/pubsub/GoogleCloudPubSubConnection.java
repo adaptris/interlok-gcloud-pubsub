@@ -4,6 +4,7 @@ package com.adaptris.google.cloud.pubsub;
 import com.adaptris.core.CoreException;
 import com.adaptris.google.cloud.pubsub.channel.ChannelProvider;
 import com.adaptris.google.cloud.pubsub.credentials.CredentialsProvider;
+import com.google.api.gax.batching.FlowControlSettings;
 import com.google.api.gax.grpc.ApiException;
 import com.google.cloud.pubsub.v1.MessageReceiver;
 import com.google.cloud.pubsub.v1.Subscriber;
@@ -79,7 +80,11 @@ public class GoogleCloudPubSubConnection extends ConnectionConfig {
   }
 
   public Subscriber createSubscriber(Subscription subscription, MessageReceiver receiver) {
-    Subscriber subscriber = Subscriber.defaultBuilder(subscription.getNameAsSubscriptionName(), receiver).setChannelProvider(getGoogleChannelProvider()).setCredentialsProvider(getGoogleCredentialsProvider()).build();
+    Subscriber.Builder subscriberBuilder = Subscriber.defaultBuilder(subscription.getNameAsSubscriptionName(), receiver)
+        .setChannelProvider(getGoogleChannelProvider())
+        .setCredentialsProvider(getGoogleCredentialsProvider());
+    getFlowControlProvider().apply(subscriberBuilder);
+    Subscriber subscriber = subscriberBuilder.build();
     if (getConnectionErrorHandler() instanceof GoogleCloudPubSubConnectionErrorHandler) {
       subscriber.addListener(
           new Subscriber.Listener() {

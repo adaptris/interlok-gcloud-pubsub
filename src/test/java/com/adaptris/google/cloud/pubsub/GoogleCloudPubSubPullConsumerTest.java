@@ -3,7 +3,7 @@ package com.adaptris.google.cloud.pubsub;
 import com.adaptris.core.*;
 import com.adaptris.core.stubs.MockMessageListener;
 import com.adaptris.core.util.LifecycleHelper;
-import com.adaptris.google.cloud.credential.ApplicationDefaultCredentials;
+import com.adaptris.core.oauth.gcloud.ApplicationDefaultCredentials;
 import com.adaptris.google.cloud.pubsub.credentials.FixedCredentialsProvider;
 import com.adaptris.util.TimeInterval;
 import com.google.cloud.pubsub.v1.AckReplyConsumer;

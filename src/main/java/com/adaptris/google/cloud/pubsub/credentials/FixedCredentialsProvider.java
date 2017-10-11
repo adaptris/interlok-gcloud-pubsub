@@ -2,10 +2,8 @@ package com.adaptris.google.cloud.pubsub.credentials;
 
 
 import com.adaptris.core.CoreException;
-import com.adaptris.google.cloud.credential.ApplicationDefaultCredentials;
-import com.adaptris.google.cloud.credential.Credentials;
+import com.adaptris.core.oauth.gcloud.Credentials;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.apache.commons.lang.StringUtils;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;

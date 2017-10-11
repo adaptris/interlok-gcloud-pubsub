@@ -9,6 +9,8 @@ import com.adaptris.google.cloud.pubsub.channel.ChannelProvider;
 import com.adaptris.google.cloud.pubsub.channel.DefaultChannelProvider;
 import com.adaptris.google.cloud.pubsub.credentials.CredentialsProvider;
 import com.adaptris.google.cloud.pubsub.credentials.NoCredentialsProvider;
+import com.adaptris.google.cloud.pubsub.flowcontrol.DefaultFlowControlProvider;
+import com.adaptris.google.cloud.pubsub.flowcontrol.FlowControlProvider;
 import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
 
@@ -46,6 +48,9 @@ abstract class ConnectionConfig extends AdaptrisConnectionImp {
   @Valid
   private ChannelProvider channelProvider;
 
+  @AdvancedConfig
+  private FlowControlProvider flowControlProvider;
+
   private transient SubscriptionAdminClientProvider subscriptionAdminClientProvider = new SubscriptionAdminClientProvider();
   private transient TopicAdminClientProvider topicAdminClientProvider = new TopicAdminClientProvider();
 
@@ -61,6 +66,7 @@ abstract class ConnectionConfig extends AdaptrisConnectionImp {
   public ConnectionConfig(ChannelProvider channelProvider, CredentialsProvider credentialsProvider){
     setCredentialsProvider(credentialsProvider);
     setChannelProvider(channelProvider);
+    setFlowControlProvider(new DefaultFlowControlProvider());
   }
 
   @Override
@@ -68,6 +74,7 @@ abstract class ConnectionConfig extends AdaptrisConnectionImp {
     connectionState = ConnectionState.Initialising;
     getCredentialsProvider().init();
     getChannelProvider().init();
+    getFlowControlProvider().init();
     subscriptionAdminClientProvider.setChannelProvider(getGoogleChannelProvider());
     subscriptionAdminClientProvider.setCredentialsProvider(getGoogleCredentialsProvider());
     topicAdminClientProvider.setChannelProvider(getGoogleChannelProvider());
@@ -82,6 +89,7 @@ abstract class ConnectionConfig extends AdaptrisConnectionImp {
     connectionState = ConnectionState.Starting;
     getCredentialsProvider().start();
     getChannelProvider().start();
+    getFlowControlProvider().start();
     subscriptionAdminClientProvider.start();
     topicAdminClientProvider.start();
     connectionState = ConnectionState.Started;
@@ -92,6 +100,7 @@ abstract class ConnectionConfig extends AdaptrisConnectionImp {
     connectionState = ConnectionState.Stopping;
     getCredentialsProvider().stop();
     getChannelProvider().stop();
+    getFlowControlProvider().stop();
     subscriptionAdminClientProvider.stop();
     topicAdminClientProvider.stop();
     connectionState = ConnectionState.Stopped;
@@ -102,6 +111,7 @@ abstract class ConnectionConfig extends AdaptrisConnectionImp {
     connectionState = ConnectionState.Closing;
     getCredentialsProvider().close();
     getChannelProvider().close();
+    getFlowControlProvider().close();
     subscriptionAdminClientProvider.close();
     topicAdminClientProvider.close();
     connectionState = ConnectionState.Closed;
@@ -118,6 +128,14 @@ abstract class ConnectionConfig extends AdaptrisConnectionImp {
 
   public com.google.api.gax.core.CredentialsProvider getGoogleCredentialsProvider() {
     return getCredentialsProvider().getCredentialsProvider();
+  }
+
+  public FlowControlProvider getFlowControlProvider() {
+    return flowControlProvider;
+  }
+
+  public void setFlowControlProvider(FlowControlProvider flowControlProvider) {
+    this.flowControlProvider = flowControlProvider;
   }
 
   public ChannelProvider getChannelProvider() {

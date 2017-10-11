@@ -1,7 +1,8 @@
-package com.adaptris.google.cloud.credential;
+package com.adaptris.google.cloud.pubsub.stubs;
 
 
 import com.adaptris.core.CoreException;
+import com.adaptris.core.oauth.gcloud.Credentials;
 import com.google.auth.oauth2.AccessToken;
 import com.google.auth.oauth2.GoogleCredentials;
 import org.mockito.Mockito;
