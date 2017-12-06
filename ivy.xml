@@ -40,7 +40,7 @@
       <exclude org="com.fasterxml.jackson.core" name="jackson-databind"/>
     </dependency>
 
-    <dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.6.2" conf="compile->default"/>
+    <dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.8.10" conf="compile->default"/>
     
     <dependency org="com.jayway.jsonpath" name="json-path" rev="2.2.0" conf="test->default"/>
 
