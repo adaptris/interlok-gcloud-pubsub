@@ -28,7 +28,7 @@
   </publications>
   <dependencies>
     <dependency org="com.adaptris" name="adp-core" rev="${adp-core-version}" conf="compile->default;javadoc->javadoc" changing="true"/>
-        <dependency org="com.adaptris" name="interlok-common" rev="${adp-core-version}" conf="compile->default;javadoc->javadoc" changing="true"/>
+    <dependency org="com.adaptris" name="interlok-common" rev="${adp-core-version}" conf="compile->default;javadoc->javadoc" changing="true"/>
     <dependency org="com.adaptris" name="adp-stubs" rev="${adp-core-version}" changing="true" conf="test->default"/>
     <dependency org="com.adaptris" name="adp-core-apt" rev="${adp-core-version}" conf="compile->default;ant->default" changing="true"/>
 
@@ -41,7 +41,7 @@
       <exclude org="com.fasterxml.jackson.core" name="jackson-databind"/>
     </dependency>
 
-    <dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.8.10" conf="compile->default"/>
+    <dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.8.11.1" conf="compile->default"/>
     
     <dependency org="com.jayway.jsonpath" name="json-path" rev="2.2.0" conf="test->default"/>
 
