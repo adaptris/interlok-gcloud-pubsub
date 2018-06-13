@@ -138,21 +138,22 @@ jacocoTestReport {
     }
 }
 
-task cleanActiveMQ(type: Delete) {
-  delete 'activemq-data'
-}
-
 check.dependsOn jacocoTestReport
-clean.dependsOn cleanActiveMQ
-
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
   classifier = 'javadoc'
   from javadoc.destinationDir
 }
 
+task examplesJar(type: Jar, dependsOn: test) {
+  classifier = 'examples'
+  from new File(buildDir, '/examples')
+}
+
+
 artifacts {
   archives javadocJar
+  archives examplesJar
 }
 
 publishing {
@@ -163,10 +164,9 @@ publishing {
       artifact javadocJar { classifier "javadoc" }
 
       pom.withXml {
-        asNode().appendNode("description", "Embedded ActiveMQ management component")
-        asNode().appendNode("url", "http://interlok.adaptris.net/interlok-docs/adapter-bootstrap.html#activemq-component")
+        asNode().appendNode("description", "Interlok Google Cloud Pub/Sub")
         def properties = asNode().appendNode("properties")
-        properties.appendNode("target", "3.6.0+")
+        properties.appendNode("target", "3.6.3+")
       }
     }
   }
