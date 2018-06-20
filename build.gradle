@@ -110,6 +110,8 @@ task generateVersion {
     ant.propertyfile(file: versionFile) {
       entry(key: 'component.name', value: componentName)
       entry(key: 'build.version', value: releaseVersion)
+      entry(key: 'groupId', value: "com.adaptris")
+      entry(key: 'artifactId', value: project.name)
       entry(key: 'build.date', value: new Date().format('yyyy-MM-dd'))
     }
   }
@@ -168,6 +170,8 @@ publishing {
         asNode().appendNode("description", "Interlok Google Cloud Pub/Sub")
         def properties = asNode().appendNode("properties")
         properties.appendNode("target", "3.6.3+")
+        properties.appendNode("tags", "google,gcloud")
+        properties.appendNode("license", "false")
       }
     }
   }
