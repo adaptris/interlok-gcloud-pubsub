@@ -1,12 +1,13 @@
 ext {
-  adpCoreVersion = project.hasProperty('adpCoreVersion') ? project.getProperty('adpCoreVersion') : '3.8-SNAPSHOT'
+  interlokCoreVersion = project.hasProperty('interlokCoreVersion') ? project.getProperty('interlokCoreVersion') : '3.8-SNAPSHOT'
   releaseVersion = project.hasProperty('releaseVersion') ? project.getProperty('releaseVersion') : '3.8-SNAPSHOT'
   mavenPublishUrl = project.hasProperty('mavenPublishUrl') ? project.getProperty('mavenPublishUrl') : 'https://development.adaptris.net/nexus/content/repositories/snapshots'
   repoUsername = project.hasProperty('repoUsername') ? project.getProperty('repoUsername') : 'unknown'
   repoPassword = project.hasProperty('repoPassword') ? project.getProperty('repoPassword') : 'unknown'
   defaultNexusRepo = project.hasProperty('defaultNexusRepo') ? project.getProperty('defaultNexusRepo') : 'https://repo1.maven.org/maven2/'
-  interlokJavadocs= project.hasProperty('interlokJavadocs') ? project.getProperty('interlokJavadocs') : 'https://development.adaptris.net/javadocs/latest/Interlok-API/'
-  interlokCommonJavadocs= project.hasProperty('interlokJavadocs') ? project.getProperty('interlokJavadocs') : 'https://development.adaptris.net/javadocs/latest/Interlok-Common/'
+  javadocsBaseUrl = "https://development.adaptris.net/nexus/content/sites/javadocs/com/adaptris"
+  interlokJavadocs= project.hasProperty('interlokJavadocs') ? project.getProperty('interlokJavadocs') : javadocsBaseUrl + "/interlok-core/" + interlokCoreVersion
+  interlokCommonJavadocs= project.hasProperty('interlokJavadocs') ? project.getProperty('interlokJavadocs') : javadocsBaseUrl + "/interlok-common/" + interlokCoreVersion
   componentName='Interlok Google Cloud Pub/Sub'
   organizationName = "Adaptris Ltd"
   organizationUrl = "http://interlok.adaptris.net"
@@ -59,19 +60,19 @@ configurations.all {
 }
 
 dependencies {
-  compile  ("com.adaptris:interlok-core:$adpCoreVersion") { changing= true}
-  compile  ("com.adaptris:interlok-common:$adpCoreVersion") { changing= true}
-  compile  ("com.adaptris:interlok-oauth-gcloud:$adpCoreVersion") { changing= true}
+  compile  ("com.adaptris:interlok-core:$interlokCoreVersion") { changing= true}
+  compile  ("com.adaptris:interlok-common:$interlokCoreVersion") { changing= true}
+  compile  ("com.adaptris:interlok-oauth-gcloud:$interlokCoreVersion") { changing= true}
   compile ("com.google.cloud:google-cloud-pubsub:0.20.0-beta") {
     exclude group: "com.fasterxml.jackson.core", module: "jackson-databind"
   }
   compile ("com.fasterxml.jackson.core:jackson-databind:2.8.11.1")
   compile ("com.google.guava:guava:24.1.1-jre")
 
-  annotationProcessor ("com.adaptris:interlok-common:$adpCoreVersion") {changing= true}
+  annotationProcessor ("com.adaptris:interlok-common:$interlokCoreVersion") {changing= true}
 
   testCompile  ('junit:junit:4.12')
-  testCompile  ("com.adaptris:interlok-stubs:$adpCoreVersion") { changing= true}
+  testCompile  ("com.adaptris:interlok-stubs:$interlokCoreVersion") { changing= true}
   testCompile  ("org.apache.logging.log4j:log4j-core:2.8.1")
   testCompile  ("org.apache.logging.log4j:log4j-1.2-api:2.8.1")
   testCompile  ("org.apache.logging.log4j:log4j-slf4j-impl:2.8.1")
@@ -80,7 +81,7 @@ dependencies {
   testCompile  ("org.apache.geronimo.specs:geronimo-jms_1.1_spec:1.1.1")
   testCompile  ("com.jayway.jsonpath:json-path:2.2.0")
 
-  javadoc("com.adaptris:interlok-core-apt:$adpCoreVersion") { changing= true}
+  javadoc("com.adaptris:interlok-core-apt:$interlokCoreVersion") { changing= true}
 
 }
 
