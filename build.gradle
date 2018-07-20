@@ -66,7 +66,7 @@ dependencies {
   compile ("com.google.cloud:google-cloud-pubsub:0.20.0-beta") {
     exclude group: "com.fasterxml.jackson.core", module: "jackson-databind"
   }
-  compile ("com.fasterxml.jackson.core:jackson-databind:2.9.5")
+  compile ("com.fasterxml.jackson.core:jackson-databind:2.9.6")
   compile ("com.google.guava:guava:24.1.1-jre")
 
   annotationProcessor ("com.adaptris:interlok-common:$interlokCoreVersion") {changing= true}
