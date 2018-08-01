@@ -2,7 +2,8 @@ package com.adaptris.google.cloud.pubsub.channel;
 
 import com.adaptris.core.CoreException;
 import com.adaptris.core.util.LifecycleHelper;
-import com.google.api.gax.grpc.FixedChannelProvider;
+import com.google.api.gax.rpc.FixedTransportChannelProvider;
+import com.google.api.gax.rpc.TransportChannelProvider;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -29,11 +30,11 @@ public class CustomChannelProviderTest {
     provider.setAddress("localhost:9999");
     provider.setUsePlaintext(true);
     LifecycleHelper.initAndStart(provider);
-    assertTrue(provider.getChannelProvider() instanceof FixedChannelProvider);
+    assertTrue(provider.getChannelProvider() instanceof FixedTransportChannelProvider);
     Mockito.verify(provider,Mockito.times(1)).init();
     Mockito.verify(provider,Mockito.times(1)).start();
     Mockito.verify(provider,Mockito.times(1)).validateArguments();
-    Mockito.verify(provider,Mockito.times(1)).setChannelProvider(Mockito.any(FixedChannelProvider.class));
+    Mockito.verify(provider,Mockito.times(1)).setChannelProvider(Mockito.any(FixedTransportChannelProvider.class));
   }
 
   @Test
@@ -43,7 +44,7 @@ public class CustomChannelProviderTest {
     Mockito.verify(provider,Mockito.times(1)).stop();
     Mockito.verify(provider,Mockito.times(1)).close();
     Mockito.verify(provider,Mockito.never()).validateArguments();
-    Mockito.verify(provider,Mockito.never()).setChannelProvider(Mockito.any(FixedChannelProvider.class));
+    Mockito.verify(provider,Mockito.never()).setChannelProvider(Mockito.any(FixedTransportChannelProvider.class));
   }
 
   @Test
@@ -51,8 +52,8 @@ public class CustomChannelProviderTest {
     CustomChannelProvider provider = new CustomChannelProvider();
     provider.setAddress("localhost:9999");
     provider.setUsePlaintext(true);
-    com.google.api.gax.grpc.ChannelProvider credentialsProvider = provider.createChannelProvider();
-    assertTrue(credentialsProvider instanceof FixedChannelProvider);
+    TransportChannelProvider credentialsProvider = provider.createChannelProvider();
+    assertTrue(credentialsProvider instanceof FixedTransportChannelProvider);
   }
 
   @Test

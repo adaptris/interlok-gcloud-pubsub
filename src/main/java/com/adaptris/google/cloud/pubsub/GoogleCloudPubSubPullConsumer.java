@@ -5,6 +5,7 @@ import com.adaptris.core.CoreException;
 import com.google.cloud.pubsub.v1.AckReplyConsumer;
 import com.google.cloud.pubsub.v1.MessageReceiver;
 import com.google.cloud.pubsub.v1.Subscriber;
+import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.PubsubMessage;
 import com.google.pubsub.v1.Subscription;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -26,7 +27,7 @@ public class GoogleCloudPubSubPullConsumer extends ConsumeConfig implements Mess
   @Override
   public void init() throws CoreException {
     GoogleCloudPubSubConnection connection = retrieveConnection(GoogleCloudPubSubConnection.class);
-    Subscription subscription = connection.createSubscription(this);
+    ProjectSubscriptionName subscription = connection.createSubscription(this);
     subscriber = connection.createSubscriber(subscription, this);
     projectName = connection.getProjectName();
   }

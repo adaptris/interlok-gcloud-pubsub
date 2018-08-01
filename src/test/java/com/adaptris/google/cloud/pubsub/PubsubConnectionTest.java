@@ -41,14 +41,14 @@ public class PubsubConnectionTest extends ServiceHelperBase {
   @Test
   @SuppressWarnings("all")
   public void testCreateSubscriptionExists() throws Exception {
-    SubscriptionName name = SubscriptionName.create(PROJECT, SUBSCRIPTION);
-    TopicNameOneof topic = TopicNameOneof.from(TopicName.create(PROJECT, TOPIC));
+    ProjectSubscriptionName name = ProjectSubscriptionName.of(PROJECT, SUBSCRIPTION);
+    TopicName topic = ProjectTopicName.of(PROJECT, TOPIC);
     int ackDeadlineSeconds2 = -921632575;
     boolean retainAckedMessages = false;
     Subscription expectedResponse =
         Subscription.newBuilder()
-            .setNameWithSubscriptionName(name)
-            .setTopicWithTopicNameOneof(topic)
+            .setName(name.toString())
+            .setTopic(topic.toString())
             .setAckDeadlineSeconds(ackDeadlineSeconds2)
             .setRetainAckedMessages(retainAckedMessages)
             .build();
@@ -63,8 +63,8 @@ public class PubsubConnectionTest extends ServiceHelperBase {
     consumer.setDestination(new ConfiguredConsumeDestination(TOPIC));
     consumer.setSubscriptionName(SUBSCRIPTION);
     consumer.setCreateSubscription(true);
-    Subscription actualResponse = connection.createSubscription(consumer);
-    assertEquals(expectedResponse, actualResponse);
+    ProjectSubscriptionName actualResponse = connection.createSubscription(consumer);
+    assertEquals(ProjectSubscriptionName.parse(expectedResponse.getName()), actualResponse);
 
     List<GeneratedMessageV3> actualRequests = mockSubscriber.getRequests();
     assertEquals(1, actualRequests.size());
@@ -76,14 +76,14 @@ public class PubsubConnectionTest extends ServiceHelperBase {
   @Test
   @SuppressWarnings("all")
   public void testCreateSubscriptionDifferentTopic() throws Exception {
-    SubscriptionName name = SubscriptionName.create(PROJECT, SUBSCRIPTION);
-    TopicNameOneof topic = TopicNameOneof.from(TopicName.create(PROJECT, TOPIC));
+    ProjectSubscriptionName name = ProjectSubscriptionName.of(PROJECT, SUBSCRIPTION);
+    TopicName topic = ProjectTopicName.of(PROJECT, TOPIC);
     int ackDeadlineSeconds2 = -921632575;
     boolean retainAckedMessages = false;
     Subscription expectedResponse =
         Subscription.newBuilder()
-            .setNameWithSubscriptionName(name)
-            .setTopicWithTopicNameOneof(topic)
+            .setName(name.toString())
+            .setTopic(topic.toString())
             .setAckDeadlineSeconds(ackDeadlineSeconds2)
             .setRetainAckedMessages(retainAckedMessages)
             .build();
@@ -157,14 +157,14 @@ public class PubsubConnectionTest extends ServiceHelperBase {
   public void testCreateSubscriptionGetFailsThenCreate() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.NOT_FOUND);
     mockSubscriber.addException(exception);
-    SubscriptionName name = SubscriptionName.create(PROJECT, SUBSCRIPTION);
-    TopicNameOneof topic = TopicNameOneof.from(TopicName.create(PROJECT, TOPIC));
+    ProjectSubscriptionName name = ProjectSubscriptionName.of(PROJECT, SUBSCRIPTION);
+    TopicName topic = ProjectTopicName.of(PROJECT, TOPIC);
     int ackDeadlineSeconds2 = -921632575;
     boolean retainAckedMessages = false;
     Subscription expectedResponse =
         Subscription.newBuilder()
-            .setNameWithSubscriptionName(name)
-            .setTopicWithTopicNameOneof(topic)
+            .setName(name.toString())
+            .setTopic(topic.toString())
             .setAckDeadlineSeconds(ackDeadlineSeconds2)
             .setRetainAckedMessages(retainAckedMessages)
             .build();
@@ -179,8 +179,8 @@ public class PubsubConnectionTest extends ServiceHelperBase {
     consumer.setDestination(new ConfiguredConsumeDestination(TOPIC));
     consumer.setSubscriptionName(SUBSCRIPTION);
     consumer.setCreateSubscription(true);
-    Subscription actualResponse = connection.createSubscription(consumer);
-    assertEquals(expectedResponse, actualResponse);
+    ProjectSubscriptionName actualResponse = connection.createSubscription(consumer);
+    assertEquals(ProjectSubscriptionName.parse(expectedResponse.getName()), actualResponse);
 
     List<GeneratedMessageV3> actualRequests = mockSubscriber.getRequests();
     assertEquals(1, actualRequests.size());
@@ -210,11 +210,11 @@ public class PubsubConnectionTest extends ServiceHelperBase {
     consumer.setCreateSubscription(true);
     connection.deleteSubscription(consumer);
 
-    SubscriptionName subscription = SubscriptionName.create(PROJECT, SUBSCRIPTION);
+    ProjectSubscriptionName subscription = ProjectSubscriptionName.of(PROJECT, SUBSCRIPTION);
     List<GeneratedMessageV3> actualRequests = mockSubscriber.getRequests();
     assertEquals(1, actualRequests.size());
     DeleteSubscriptionRequest actualRequest = (DeleteSubscriptionRequest) actualRequests.get(0);
-    assertEquals(subscription, actualRequest.getSubscriptionAsSubscriptionName());
+    assertEquals(subscription, ProjectSubscriptionName.parse(actualRequest.getSubscription()));
   }
 
   @Test
@@ -240,14 +240,14 @@ public class PubsubConnectionTest extends ServiceHelperBase {
   @Test
   @SuppressWarnings("all")
   public void testCreateSubscriber() throws Exception {
-    SubscriptionName name = SubscriptionName.create(PROJECT, SUBSCRIPTION);
-    TopicNameOneof topic = TopicNameOneof.from(TopicName.create(PROJECT, TOPIC));
+    ProjectSubscriptionName name = ProjectSubscriptionName.of(PROJECT, SUBSCRIPTION);
+    TopicName topic = ProjectTopicName.of(PROJECT, TOPIC);
     int ackDeadlineSeconds2 = -921632575;
     boolean retainAckedMessages = false;
     Subscription expectedResponse =
         Subscription.newBuilder()
-            .setNameWithSubscriptionName(name)
-            .setTopicWithTopicNameOneof(topic)
+            .setName(name.toString())
+            .setTopic(topic.toString())
             .setAckDeadlineSeconds(ackDeadlineSeconds2)
             .setRetainAckedMessages(retainAckedMessages)
             .build();
@@ -269,11 +269,11 @@ public class PubsubConnectionTest extends ServiceHelperBase {
     connection.initConnection();
     connection.startConnection();
 
-    Subscription subscription = connection.createSubscription(consumer);
+    ProjectSubscriptionName subscription = connection.createSubscription(consumer);
     Subscriber subscriber = connection.createSubscriber(subscription, consumer);
 
-    assertEquals(PROJECT, subscriber.getSubscriptionName().getProject());
-    assertEquals(SUBSCRIPTION, subscriber.getSubscriptionName().getSubscription());
+    assertEquals(PROJECT, ProjectSubscriptionName.parse(subscriber.getSubscriptionNameString()).getProject());
+    assertEquals(SUBSCRIPTION, ProjectSubscriptionName.parse(subscriber.getSubscriptionNameString()).getSubscription());
 
     List<GeneratedMessageV3> actualRequests = mockSubscriber.getRequests();
     assertEquals(1, actualRequests.size());
@@ -282,14 +282,14 @@ public class PubsubConnectionTest extends ServiceHelperBase {
   @Test
   @SuppressWarnings("all")
   public void testCreateSubscriberWithErrorHandler() throws Exception {
-    SubscriptionName name = SubscriptionName.create(PROJECT, SUBSCRIPTION);
-    TopicNameOneof topic = TopicNameOneof.from(TopicName.create(PROJECT, TOPIC));
+    ProjectSubscriptionName name = ProjectSubscriptionName.of(PROJECT, SUBSCRIPTION);
+    TopicName topic = ProjectTopicName.of(PROJECT, TOPIC);
     int ackDeadlineSeconds2 = -921632575;
     boolean retainAckedMessages = false;
     Subscription expectedResponse =
         Subscription.newBuilder()
-            .setNameWithSubscriptionName(name)
-            .setTopicWithTopicNameOneof(topic)
+            .setName(name.toString())
+            .setTopic(topic.toString())
             .setAckDeadlineSeconds(ackDeadlineSeconds2)
             .setRetainAckedMessages(retainAckedMessages)
             .build();
@@ -312,11 +312,11 @@ public class PubsubConnectionTest extends ServiceHelperBase {
     connection.initConnection();
     connection.startConnection();
 
-    Subscription subscription = connection.createSubscription(consumer);
+    ProjectSubscriptionName subscription = connection.createSubscription(consumer);
     Subscriber subscriber = connection.createSubscriber(subscription, consumer);
 
-    assertEquals(PROJECT, subscriber.getSubscriptionName().getProject());
-    assertEquals(SUBSCRIPTION, subscriber.getSubscriptionName().getSubscription());
+    assertEquals(PROJECT, ProjectSubscriptionName.parse(subscriber.getSubscriptionNameString()).getProject());
+    assertEquals(SUBSCRIPTION, ProjectSubscriptionName.parse(subscriber.getSubscriptionNameString()).getSubscription());
     //check for listener
 
     List<GeneratedMessageV3> actualRequests = mockSubscriber.getRequests();

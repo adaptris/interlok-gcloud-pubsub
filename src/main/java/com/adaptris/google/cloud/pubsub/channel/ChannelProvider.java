@@ -2,14 +2,15 @@ package com.adaptris.google.cloud.pubsub.channel;
 
 import com.adaptris.core.ComponentLifecycle;
 import com.adaptris.core.CoreException;
+import com.google.api.gax.rpc.TransportChannelProvider;
 
 public abstract class ChannelProvider implements ComponentLifecycle {
 
   static final int MAX_INBOUND_MESSAGE_SIZE = 20 * 1024 * 1024;
 
-  private transient com.google.api.gax.grpc.ChannelProvider channelProvider;
+  private transient TransportChannelProvider channelProvider;
 
-  abstract com.google.api.gax.grpc.ChannelProvider createChannelProvider() throws CoreException;
+  abstract TransportChannelProvider createChannelProvider() throws CoreException;
 
   void validateArguments() throws CoreException {
 
@@ -33,11 +34,11 @@ public abstract class ChannelProvider implements ComponentLifecycle {
   public void close() {
   }
 
-  void setChannelProvider(com.google.api.gax.grpc.ChannelProvider channelProvider) {
+  void setChannelProvider(TransportChannelProvider channelProvider) {
     this.channelProvider = channelProvider;
   }
 
-  public com.google.api.gax.grpc.ChannelProvider getChannelProvider() {
+  public TransportChannelProvider getChannelProvider() {
     return channelProvider;
   }
 }

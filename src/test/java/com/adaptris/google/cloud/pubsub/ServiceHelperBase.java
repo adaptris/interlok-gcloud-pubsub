@@ -22,9 +22,9 @@ import com.adaptris.google.cloud.pubsub.mocks.MockPublisher;
 import com.adaptris.google.cloud.pubsub.mocks.MockSubscriber;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.NoCredentialsProvider;
-import com.google.api.gax.grpc.ChannelProvider;
 import com.google.api.gax.grpc.testing.MockGrpcService;
 import com.google.api.gax.grpc.testing.MockServiceHelper;
+import com.google.api.gax.rpc.TransportChannelProvider;
 import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
 import com.google.cloud.pubsub.v1.SubscriptionAdminSettings;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
@@ -47,7 +47,7 @@ public class ServiceHelperBase {
 
   SubscriptionAdminClient subscriptionAdminClient;
   TopicAdminClient topicAdminClient;
-  ChannelProvider channelProvider;
+  TransportChannelProvider channelProvider;
   CredentialsProvider credentialsProvider;
 
 
@@ -70,15 +70,15 @@ public class ServiceHelperBase {
     channelProvider = serviceHelper.createChannelProvider();
     credentialsProvider = new NoCredentialsProvider();
     SubscriptionAdminSettings settings =
-        SubscriptionAdminSettings.defaultBuilder()
-            .setChannelProvider(channelProvider)
+        SubscriptionAdminSettings.newBuilder()
+            .setTransportChannelProvider(channelProvider)
             .setCredentialsProvider(credentialsProvider)
             .build();
     subscriptionAdminClient = SubscriptionAdminClient.create(settings);
 
     TopicAdminSettings topicAdminSettings =
-        TopicAdminSettings.defaultBuilder()
-            .setChannelProvider(serviceHelper.createChannelProvider())
+        TopicAdminSettings.newBuilder()
+            .setTransportChannelProvider(serviceHelper.createChannelProvider())
             .setCredentialsProvider(new NoCredentialsProvider())
             .build();
     topicAdminClient = TopicAdminClient.create(topicAdminSettings);

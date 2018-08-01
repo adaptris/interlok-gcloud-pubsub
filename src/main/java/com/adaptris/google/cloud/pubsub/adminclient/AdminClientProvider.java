@@ -4,14 +4,14 @@ package com.adaptris.google.cloud.pubsub.adminclient;
 import com.adaptris.core.ComponentLifecycle;
 import com.adaptris.core.CoreException;
 import com.google.api.gax.core.CredentialsProvider;
-import com.google.api.gax.grpc.ChannelProvider;
+import com.google.api.gax.rpc.TransportChannelProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class AdminClientProvider implements ComponentLifecycle {
 
   private transient CredentialsProvider credentialsProvider;
-  private transient ChannelProvider channelProvider;
+  private transient TransportChannelProvider channelProvider;
   protected transient Logger log = LoggerFactory.getLogger(this.getClass().getName());
 
   @Override
@@ -25,11 +25,11 @@ public abstract class AdminClientProvider implements ComponentLifecycle {
   }
 
 
-  public ChannelProvider getChannelProvider() {
+  public TransportChannelProvider getChannelProvider() {
     return channelProvider;
   }
 
-  public void setChannelProvider(ChannelProvider channelProvider) {
+  public void setChannelProvider(TransportChannelProvider channelProvider) {
     this.channelProvider = channelProvider;
   }
 

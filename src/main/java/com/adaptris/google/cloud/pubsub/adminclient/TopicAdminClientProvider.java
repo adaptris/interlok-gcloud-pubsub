@@ -19,7 +19,7 @@ public class TopicAdminClientProvider extends AdminClientProvider {
       throw new CoreException("CredentialsProvider can not be null");
     }
     try {
-      topicAdminClient = TopicAdminClient.create(TopicAdminSettings.defaultBuilder().setChannelProvider(getChannelProvider()).setCredentialsProvider(getCredentialsProvider()).build());
+      topicAdminClient = TopicAdminClient.create(TopicAdminSettings.newBuilder().setTransportChannelProvider(getChannelProvider()).setCredentialsProvider(getCredentialsProvider()).build());
     } catch (IOException e) {
       throw new CoreException("Failed to create SubscriptionAdminClient", e);
     }

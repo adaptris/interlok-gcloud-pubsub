@@ -1,20 +1,21 @@
 package com.adaptris.google.cloud.pubsub.channel;
 
 import com.adaptris.core.CoreException;
+import com.google.api.gax.rpc.TransportChannelProvider;
 
 /**
  * @author mwarman
  */
 public class MockChannelProvider extends ChannelProvider {
 
-  private transient com.google.api.gax.grpc.ChannelProvider channelProvider;
+  private transient TransportChannelProvider channelProvider;
 
-  public MockChannelProvider(com.google.api.gax.grpc.ChannelProvider channelProvider){
+  public MockChannelProvider(TransportChannelProvider channelProvider){
     this.channelProvider = channelProvider;
   }
 
   @Override
-  com.google.api.gax.grpc.ChannelProvider createChannelProvider() throws CoreException {
+  TransportChannelProvider createChannelProvider() throws CoreException {
     return channelProvider;
   }
 }

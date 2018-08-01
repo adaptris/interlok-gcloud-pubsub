@@ -10,6 +10,7 @@ import com.google.cloud.pubsub.v1.AckReplyConsumer;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Timestamp;
+import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.PubsubMessage;
 import com.google.pubsub.v1.Subscription;
 import org.junit.Test;
@@ -113,7 +114,7 @@ public class GoogleCloudPubSubPullConsumerTest extends ConsumerCase {
     GoogleCloudPubSubConnection connection = Mockito.mock(GoogleCloudPubSubConnection.class);
     Mockito.doReturn(connection).when(connection).retrieveConnection(GoogleCloudPubSubConnection.class);
     Mockito.doReturn("project-name").when(connection).getProjectName();
-    Subscription subscription = Subscription.newBuilder().build();
+    ProjectSubscriptionName subscription = ProjectSubscriptionName.newBuilder().setProject("project-name").setSubscription("subscription-name").build();
     Mockito.doReturn(subscription).when(connection).createSubscription(consumer);
     Subscriber subscriber = Mockito.mock(Subscriber.class);
     Mockito.doReturn(subscriber).when(subscriber).startAsync();
@@ -139,7 +140,7 @@ public class GoogleCloudPubSubPullConsumerTest extends ConsumerCase {
     GoogleCloudPubSubConnection connection = Mockito.mock(GoogleCloudPubSubConnection.class);
     Mockito.doReturn(connection).when(connection).retrieveConnection(GoogleCloudPubSubConnection.class);
     Mockito.doReturn("project-name").when(connection).getProjectName();
-    Subscription subscription = Subscription.newBuilder().build();
+    ProjectSubscriptionName subscription = ProjectSubscriptionName.newBuilder().setProject("project-name").setSubscription("subscription-name").build();
     Mockito.doReturn(subscription).when(connection).createSubscription(consumer);
     Subscriber subscriber = Mockito.mock(Subscriber.class);
     Mockito.doReturn(subscriber).when(subscriber).startAsync();
@@ -156,7 +157,7 @@ public class GoogleCloudPubSubPullConsumerTest extends ConsumerCase {
     GoogleCloudPubSubConnection connection = Mockito.mock(GoogleCloudPubSubConnection.class);
     Mockito.doReturn(connection).when(connection).retrieveConnection(GoogleCloudPubSubConnection.class);
     Mockito.doReturn("project-name").when(connection).getProjectName();
-    Subscription subscription = Subscription.newBuilder().build();
+    ProjectSubscriptionName subscription = ProjectSubscriptionName.newBuilder().setProject("project-name").setSubscription("subscription-name").build();
     Mockito.doReturn(subscription).when(connection).createSubscription(consumer);
     Subscriber subscriber = Mockito.mock(Subscriber.class);
     Mockito.doReturn(subscriber).when(subscriber).startAsync();
