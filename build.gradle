@@ -67,7 +67,7 @@ dependencies {
     exclude group: "com.fasterxml.jackson.core", module: "jackson-databind"
   }
   compile ("com.fasterxml.jackson.core:jackson-databind:2.9.6")
-  compile ("com.google.guava:guava:25.1-jre")
+  compile ("com.google.guava:guava:26.0-jre")
 
   annotationProcessor ("com.adaptris:interlok-common:$interlokCoreVersion") {changing= true}
 
