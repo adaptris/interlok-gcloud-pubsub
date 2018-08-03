@@ -7,15 +7,17 @@ import com.adaptris.core.metadata.MetadataFilter;
 import com.adaptris.core.metadata.NoOpMetadataFilter;
 import com.google.api.core.ApiFuture;
 import com.google.api.gax.core.CredentialsProvider;
-import com.google.api.gax.grpc.ApiException;
-import com.google.api.gax.grpc.ChannelProvider;
+import com.google.api.gax.rpc.ApiException;
+import com.google.api.gax.rpc.StatusCode;
+import com.google.api.gax.rpc.TransportChannelProvider;
 import com.google.cloud.pubsub.v1.Publisher;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.protobuf.ByteString;
+import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.PubsubMessage;
+import com.google.pubsub.v1.Topic;
 import com.google.pubsub.v1.TopicName;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import io.grpc.Status;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -41,7 +43,7 @@ public class GoogleCloudPubSubProducer extends ProduceOnlyProducerImp {
   private MetadataFilter metadataFilter = new NoOpMetadataFilter();
 
   private transient CredentialsProvider credentialsProvider;
-  private transient ChannelProvider channelProvider;
+  private transient TransportChannelProvider channelProvider;
   private transient String projectName;
   private transient TopicAdminClient topicAdminClient;
   private transient Map<String, Publisher> publisherCache;
@@ -62,7 +64,7 @@ public class GoogleCloudPubSubProducer extends ProduceOnlyProducerImp {
         publisher = publisherCache.get(key);
       } else {
         log.trace(String.format("No publisher found for key [%s]", key));
-        publisher = Publisher.defaultBuilder(createOrGetTopicName(adaptrisMessage))
+        publisher = Publisher.newBuilder(createOrGetTopicName(adaptrisMessage))
             .setChannelProvider(channelProvider)
             .setCredentialsProvider(credentialsProvider)
             .build();
@@ -75,18 +77,20 @@ public class GoogleCloudPubSubProducer extends ProduceOnlyProducerImp {
     }
   }
 
-  TopicName createOrGetTopicName(AdaptrisMessage adaptrisMessage) throws CoreException {
-    TopicName topicName = TopicName.create(projectName, getDestination().getDestination(adaptrisMessage));
+  ProjectTopicName createOrGetTopicName(AdaptrisMessage adaptrisMessage) throws CoreException {
+    ProjectTopicName topicName = ProjectTopicName.of(projectName, getDestination().getDestination(adaptrisMessage));
     if(!getCreateTopic()){
       return topicName;
     }
     try {
-      return topicAdminClient.getTopic(topicName).getNameAsTopicName();
+      Topic topic = topicAdminClient.getTopic(topicName);
+      return ProjectTopicName.parse(topic.getName());
     } catch (ApiException e) {
-      if (Status.Code.NOT_FOUND != e.getStatusCode()) {
+      if (StatusCode.Code.NOT_FOUND != e.getStatusCode().getCode()) {
         throw new CoreException("Failed to get Topic", e);
       } else {
-        return topicAdminClient.createTopic(topicName).getNameAsTopicName();
+        Topic topic = topicAdminClient.createTopic(topicName);
+        return ProjectTopicName.parse(topic.getName());
       }
     }
   }

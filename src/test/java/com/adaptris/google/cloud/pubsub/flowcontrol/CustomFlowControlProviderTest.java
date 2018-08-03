@@ -5,8 +5,8 @@ import com.google.api.gax.batching.FlowController;
 import com.google.cloud.pubsub.v1.AckReplyConsumer;
 import com.google.cloud.pubsub.v1.MessageReceiver;
 import com.google.cloud.pubsub.v1.Subscriber;
+import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.PubsubMessage;
-import com.google.pubsub.v1.SubscriptionName;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -71,7 +71,7 @@ public class CustomFlowControlProviderTest {
     flowControlProvider.setMaxOutstandingRequestBytes(1024L);
     flowControlProvider.setLimitExceededBehavior(FlowController.LimitExceededBehavior.Block);
     flowControlProvider.init();
-    Subscriber.Builder subscriberBuilder = Subscriber.defaultBuilder(SubscriptionName.create("project", "subscription"), new MessageReceiver() {
+    Subscriber.Builder subscriberBuilder = Subscriber.newBuilder(ProjectSubscriptionName.of("project", "subscription"), new MessageReceiver() {
       @Override
       public void receiveMessage(PubsubMessage message, AckReplyConsumer consumer) {
 

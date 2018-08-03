@@ -11,6 +11,7 @@ import com.adaptris.google.cloud.pubsub.credentials.CredentialsProvider;
 import com.adaptris.google.cloud.pubsub.credentials.NoCredentialsProvider;
 import com.adaptris.google.cloud.pubsub.flowcontrol.DefaultFlowControlProvider;
 import com.adaptris.google.cloud.pubsub.flowcontrol.FlowControlProvider;
+import com.google.api.gax.rpc.TransportChannelProvider;
 import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
 
@@ -146,7 +147,7 @@ abstract class ConnectionConfig extends AdaptrisConnectionImp {
     this.channelProvider = channelProvider;
   }
 
-  public com.google.api.gax.grpc.ChannelProvider getGoogleChannelProvider() {
+  public TransportChannelProvider getGoogleChannelProvider() {
     return getChannelProvider().getChannelProvider();
   }
 

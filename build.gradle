@@ -63,11 +63,11 @@ dependencies {
   compile  ("com.adaptris:interlok-core:$interlokCoreVersion") { changing= true}
   compile  ("com.adaptris:interlok-common:$interlokCoreVersion") { changing= true}
   compile  ("com.adaptris:interlok-oauth-gcloud:$interlokCoreVersion") { changing= true}
-  compile ("com.google.cloud:google-cloud-pubsub:0.20.0-beta") {
+  compile ("com.google.cloud:google-cloud-pubsub:1.38.0") {
     exclude group: "com.fasterxml.jackson.core", module: "jackson-databind"
   }
   compile ("com.fasterxml.jackson.core:jackson-databind:2.9.6")
-  compile ("com.google.guava:guava:25.1-jre")
+  compile ("com.google.guava:guava:26.0-jre")
 
   annotationProcessor ("com.adaptris:interlok-common:$interlokCoreVersion") {changing= true}
 
@@ -80,6 +80,7 @@ dependencies {
   testCompile  ("org.mockito:mockito-all:1.10.19")
   testCompile  ("org.apache.geronimo.specs:geronimo-jms_1.1_spec:1.1.1")
   testCompile  ("com.jayway.jsonpath:json-path:2.4.0")
+  testCompile  ("com.google.api:gax-grpc:1.29.0:testlib")
 
   javadoc("com.adaptris:interlok-core-apt:$interlokCoreVersion") { changing= true}
 

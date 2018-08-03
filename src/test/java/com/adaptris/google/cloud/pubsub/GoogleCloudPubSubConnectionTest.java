@@ -12,7 +12,7 @@ import com.adaptris.google.cloud.pubsub.credentials.FixedCredentialsProvider;
 import com.adaptris.google.cloud.pubsub.credentials.NoCredentialsProvider;
 import com.adaptris.google.cloud.pubsub.flowcontrol.CustomFlowControlProvider;
 import com.adaptris.google.cloud.pubsub.flowcontrol.DefaultFlowControlProvider;
-import com.google.api.gax.grpc.InstantiatingChannelProvider;
+import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -71,7 +71,7 @@ public class GoogleCloudPubSubConnectionTest {
     CredentialsProvider credentialsProvider = Mockito.mock(NoCredentialsProvider.class);
     Mockito.doReturn(new com.google.api.gax.core.NoCredentialsProvider()).when(credentialsProvider).getCredentialsProvider();
     ChannelProvider channelProvider = Mockito.mock(DefaultChannelProvider.class);
-    Mockito.doReturn(InstantiatingChannelProvider.newBuilder().build()).when(channelProvider).getChannelProvider();
+    Mockito.doReturn(InstantiatingGrpcChannelProvider.newBuilder().build()).when(channelProvider).getChannelProvider();
     SubscriptionAdminClientProvider subscriptionAdminClientProvider = Mockito.mock(SubscriptionAdminClientProvider.class);
     TopicAdminClientProvider topicAdminClientProvider = Mockito.mock(TopicAdminClientProvider.class);
     connection.setSubscriptionAdminClientProvider(subscriptionAdminClientProvider);
@@ -81,7 +81,7 @@ public class GoogleCloudPubSubConnectionTest {
     LifecycleHelper.initAndStart(connection);
     assertFalse(connection.getConnectionState().isStopOrClose());
     assertTrue(connection.getGoogleCredentialsProvider() instanceof com.google.api.gax.core.NoCredentialsProvider);
-    assertTrue(connection.getGoogleChannelProvider()instanceof InstantiatingChannelProvider);
+    assertTrue(connection.getGoogleChannelProvider() instanceof InstantiatingGrpcChannelProvider);
     LifecycleHelper.stopAndClose(connection);
     assertTrue(connection.getConnectionState().isStopOrClose());
     Mockito.verify(connection, Mockito.times(1)).initConnection();

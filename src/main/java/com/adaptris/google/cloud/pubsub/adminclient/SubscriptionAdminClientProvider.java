@@ -19,7 +19,7 @@ public class SubscriptionAdminClientProvider extends AdminClientProvider {
       throw new CoreException("CredentialsProvider can not be null");
     }
     try {
-      subscriptionAdminClient = SubscriptionAdminClient.create(SubscriptionAdminSettings.defaultBuilder().setChannelProvider(getChannelProvider()).setCredentialsProvider(getCredentialsProvider()).build());
+      subscriptionAdminClient = SubscriptionAdminClient.create(SubscriptionAdminSettings.newBuilder().setTransportChannelProvider(getChannelProvider()).setCredentialsProvider(getCredentialsProvider()).build());
     } catch (IOException e) {
       throw new CoreException("Failed to create SubscriptionAdminClient", e);
     }

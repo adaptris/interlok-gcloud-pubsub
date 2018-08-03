@@ -2,7 +2,9 @@ package com.adaptris.google.cloud.pubsub.channel;
 
 import com.adaptris.annotation.InputFieldDefault;
 import com.adaptris.core.CoreException;
-import com.google.api.gax.grpc.FixedChannelProvider;
+import com.google.api.gax.grpc.GrpcTransportChannel;
+import com.google.api.gax.rpc.FixedTransportChannelProvider;
+import com.google.api.gax.rpc.TransportChannelProvider;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -47,13 +49,15 @@ public class CustomChannelProvider extends ChannelProvider {
   }
 
   @Override
-  com.google.api.gax.grpc.ChannelProvider createChannelProvider() {
-    ManagedChannel channel = ManagedChannelBuilder
+  TransportChannelProvider createChannelProvider() {
+    ManagedChannelBuilder channelBuilder = ManagedChannelBuilder
         .forTarget(getAddress())
-        .usePlaintext(getUsePlaintext())
-        .maxInboundMessageSize(MAX_INBOUND_MESSAGE_SIZE)
-        .build();
-    return FixedChannelProvider.create(channel);
+        .maxInboundMessageSize(MAX_INBOUND_MESSAGE_SIZE);
+    if(getUsePlaintext()){
+      channelBuilder.usePlaintext();
+    }
+    ManagedChannel channel = channelBuilder.build();
+    return FixedTransportChannelProvider.create(GrpcTransportChannel.create(channel));
   }
 
   public String getAddress() {
