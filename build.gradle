@@ -65,7 +65,9 @@ dependencies {
   compile  ("com.adaptris:interlok-oauth-gcloud:$interlokCoreVersion") { changing= true}
   compile ("com.google.cloud:google-cloud-pubsub:1.38.0") {
     exclude group: "com.fasterxml.jackson.core", module: "jackson-databind"
+    exclude group: "com.apache.httpcomponents", module: "httpclient"
   }
+  compile ("org.apache.httpcomponents:httpclient:4.5.6")
   compile ("com.fasterxml.jackson.core:jackson-databind:2.9.6")
   compile ("com.google.guava:guava:26.0-jre")
 
