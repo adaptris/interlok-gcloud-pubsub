@@ -1,6 +1,11 @@
 package com.adaptris.google.cloud.pubsub;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 import com.adaptris.annotation.AdvancedConfig;
+import com.adaptris.annotation.AutoPopulated;
+import com.adaptris.annotation.InputFieldDefault;
 import com.adaptris.core.AdaptrisConnectionImp;
 import com.adaptris.core.CoreException;
 import com.adaptris.google.cloud.pubsub.adminclient.SubscriptionAdminClientProvider;
@@ -11,11 +16,9 @@ import com.adaptris.google.cloud.pubsub.credentials.CredentialsProvider;
 import com.adaptris.google.cloud.pubsub.credentials.NoCredentialsProvider;
 import com.adaptris.google.cloud.pubsub.flowcontrol.DefaultFlowControlProvider;
 import com.adaptris.google.cloud.pubsub.flowcontrol.FlowControlProvider;
+import com.google.api.gax.rpc.TransportChannelProvider;
 import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 abstract class ConnectionConfig extends AdaptrisConnectionImp {
 
@@ -41,14 +44,21 @@ abstract class ConnectionConfig extends AdaptrisConnectionImp {
 
   @NotNull
   @Valid
+  @AutoPopulated
+  @InputFieldDefault(value = "NoCredentialsProvider")
   private CredentialsProvider credentialsProvider;
 
   @AdvancedConfig
   @NotNull
   @Valid
+  @AutoPopulated
+  @InputFieldDefault(value = "DefaultChannelProvider")
   private ChannelProvider channelProvider;
 
   @AdvancedConfig
+  @NotNull
+  @AutoPopulated
+  @InputFieldDefault(value = "DefaultFlowControlProvider")
   private FlowControlProvider flowControlProvider;
 
   private transient SubscriptionAdminClientProvider subscriptionAdminClientProvider = new SubscriptionAdminClientProvider();
@@ -146,7 +156,7 @@ abstract class ConnectionConfig extends AdaptrisConnectionImp {
     this.channelProvider = channelProvider;
   }
 
-  public com.google.api.gax.grpc.ChannelProvider getGoogleChannelProvider() {
+  public TransportChannelProvider getGoogleChannelProvider() {
     return getChannelProvider().getChannelProvider();
   }
 

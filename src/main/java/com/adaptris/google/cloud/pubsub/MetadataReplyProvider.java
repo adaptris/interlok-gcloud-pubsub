@@ -1,13 +1,15 @@
 package com.adaptris.google.cloud.pubsub;
 
-import com.adaptris.core.AdaptrisMessage;
-import com.adaptris.google.cloud.pubsub.ReplyProvider;
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.hibernate.validator.constraints.NotBlank;
-
 import javax.validation.constraints.NotNull;
 
-@XStreamAlias("metadata-reply-provider")
+import org.hibernate.validator.constraints.NotBlank;
+
+import com.adaptris.annotation.ComponentProfile;
+import com.adaptris.core.AdaptrisMessage;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
+@XStreamAlias("gcloud-metadata-reply-provider")
+@ComponentProfile(summary = "Derive a ack/nack based on metadata for GoogleCloudPubSubResponseProducer")
 public class MetadataReplyProvider implements ReplyProvider {
 
   @NotBlank

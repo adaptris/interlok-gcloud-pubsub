@@ -24,10 +24,7 @@ import com.adaptris.google.cloud.pubsub.channel.MockChannelProvider;
 import com.adaptris.google.cloud.pubsub.credentials.MockCredentialsProvider;
 import com.google.protobuf.Empty;
 import com.google.protobuf.GeneratedMessageV3;
-import com.google.pubsub.v1.PublishRequest;
-import com.google.pubsub.v1.PublishResponse;
-import com.google.pubsub.v1.Topic;
-import com.google.pubsub.v1.TopicName;
+import com.google.pubsub.v1.*;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import org.junit.Test;
@@ -59,7 +56,7 @@ public class PubsubProducerTest extends ServiceHelperBase {
     final AdaptrisMessage msg = AdaptrisMessageFactory.getDefaultInstance().newMessage();
     producer.init();
     producer.start();
-    TopicName topicName = producer.createOrGetTopicName(msg);
+    ProjectTopicName topicName = producer.createOrGetTopicName(msg);
     producer.stop();
     producer.close();
 
@@ -74,7 +71,7 @@ public class PubsubProducerTest extends ServiceHelperBase {
   @SuppressWarnings("all")
   public void testCreateOrGetTopicName_GetWithCreate() throws Exception {
     Topic expectedResponse = Topic.newBuilder()
-        .setNameWithTopicName(TopicName.create(PROJECT, TOPIC))
+        .setName(ProjectTopicName.of(PROJECT, TOPIC).toString())
         .build();
     mockPublisher.addResponse(expectedResponse);
 
@@ -91,7 +88,7 @@ public class PubsubProducerTest extends ServiceHelperBase {
     final AdaptrisMessage msg = AdaptrisMessageFactory.getDefaultInstance().newMessage();
     producer.init();
     producer.start();
-    TopicName topicName = producer.createOrGetTopicName(msg);
+    ProjectTopicName topicName = producer.createOrGetTopicName(msg);
     producer.stop();
     producer.close();
 
@@ -108,7 +105,7 @@ public class PubsubProducerTest extends ServiceHelperBase {
     StatusRuntimeException exception = new StatusRuntimeException(Status.NOT_FOUND);
     mockPublisher.addException(exception);
     Topic expectedResponse = Topic.newBuilder()
-        .setNameWithTopicName(TopicName.create(PROJECT, TOPIC))
+        .setName(ProjectTopicName.of(PROJECT, TOPIC).toString())
         .build();
     mockPublisher.addResponse(expectedResponse);
 
@@ -125,7 +122,7 @@ public class PubsubProducerTest extends ServiceHelperBase {
     final AdaptrisMessage msg = AdaptrisMessageFactory.getDefaultInstance().newMessage();
     producer.init();
     producer.start();
-    TopicName topicName = producer.createOrGetTopicName(msg);
+    ProjectTopicName topicName = producer.createOrGetTopicName(msg);
     producer.stop();
     producer.close();
 

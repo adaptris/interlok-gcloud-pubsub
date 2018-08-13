@@ -1,8 +1,12 @@
 
 package com.adaptris.google.cloud.pubsub;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 import com.adaptris.annotation.AdvancedConfig;
 import com.adaptris.annotation.AutoPopulated;
+import com.adaptris.annotation.ComponentProfile;
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.ServiceException;
 import com.adaptris.core.ServiceImp;
@@ -10,18 +14,19 @@ import com.adaptris.core.metadata.MetadataFilter;
 import com.adaptris.core.metadata.NoOpMetadataFilter;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
-import javax.validation.constraints.NotNull;
-
 @XStreamAlias("google-cloud-pubsub-transform-service")
+@ComponentProfile(summary = "Map from google pubsub message format to an Interlok message", tag = "service,gcloud")
 public class GoogleCloudPubSubTransformService extends ServiceImp {
 
   @AutoPopulated
   @NotNull
+  @Valid
   private TransformationDirection direction = TransformationDirection.INTERLOK_TO_PUBLISH_REQUEST;
 
   @AutoPopulated
   @AdvancedConfig
   @NotNull
+  @Valid
   private TransformationDriver driver = new DefaultGoogleCloudPubSubTransformationDriver();
 
   @AdvancedConfig
