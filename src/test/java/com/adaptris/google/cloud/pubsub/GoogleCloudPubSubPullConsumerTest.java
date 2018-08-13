@@ -1,9 +1,18 @@
 package com.adaptris.google.cloud.pubsub;
 
-import com.adaptris.core.*;
+import java.util.concurrent.TimeUnit;
+
+import org.junit.Test;
+import org.mockito.Mockito;
+
+import com.adaptris.core.AdaptrisMessage;
+import com.adaptris.core.ConfiguredConsumeDestination;
+import com.adaptris.core.ConsumerCase;
+import com.adaptris.core.CoreException;
+import com.adaptris.core.StandaloneConsumer;
+import com.adaptris.core.oauth.gcloud.ApplicationDefaultCredentials;
 import com.adaptris.core.stubs.MockMessageListener;
 import com.adaptris.core.util.LifecycleHelper;
-import com.adaptris.core.oauth.gcloud.ApplicationDefaultCredentials;
 import com.adaptris.google.cloud.pubsub.credentials.FixedCredentialsProvider;
 import com.adaptris.util.TimeInterval;
 import com.google.cloud.pubsub.v1.AckReplyConsumer;
@@ -12,11 +21,6 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.Timestamp;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.PubsubMessage;
-import com.google.pubsub.v1.Subscription;
-import org.junit.Test;
-import org.mockito.Mockito;
-
-import java.util.concurrent.TimeUnit;
 
 public class GoogleCloudPubSubPullConsumerTest extends ConsumerCase {
 
@@ -41,18 +45,18 @@ public class GoogleCloudPubSubPullConsumerTest extends ConsumerCase {
   @Test
   public void testPrepare() throws Exception {
     GoogleCloudPubSubPullConsumer consumer = new GoogleCloudPubSubPullConsumer();
-    prepareFail(consumer, "Subscription Name is invalid");
+    prepareFail(consumer, "subscriptionName may not be null");
     consumer.setSubscriptionName("subscription");
-    prepareFail(consumer, "Destination is invalid");
+    prepareFail(consumer, "destination may not be null");
     consumer.setDestination(new ConfiguredConsumeDestination("topic"));
     consumer.setAckDeadline(null);
-    prepareFail(consumer, "Ack Deadline is invalid");
+    prepareFail(consumer, "ackDeadline may not be null");
     consumer.setAckDeadline(new TimeInterval(10L, TimeUnit.SECONDS));
     consumer.setCreateSubscription(null);
-    prepareFail(consumer, "Create Subscription is invalid");
+    prepareFail(consumer, "createSubscription may not be null");
     consumer.setCreateSubscription(true);
     consumer.setAutoAcknowledge(null);
-    prepareFail(consumer, "Auto Acknowledge is invalid");
+    prepareFail(consumer, "autoAcknowledge may not be null");
     consumer.setAutoAcknowledge(true);
     consumer.prepare();
   }
