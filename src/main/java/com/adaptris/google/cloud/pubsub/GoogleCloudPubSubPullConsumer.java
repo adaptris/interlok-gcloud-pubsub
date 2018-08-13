@@ -1,5 +1,11 @@
 package com.adaptris.google.cloud.pubsub;
 
+import static com.adaptris.core.AdaptrisMessageFactory.defaultIfNull;
+
+import java.util.Map;
+
+import com.adaptris.annotation.ComponentProfile;
+import com.adaptris.annotation.DisplayOrder;
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.CoreException;
 import com.google.cloud.pubsub.v1.AckReplyConsumer;
@@ -7,14 +13,20 @@ import com.google.cloud.pubsub.v1.MessageReceiver;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.PubsubMessage;
-import com.google.pubsub.v1.Subscription;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
-import java.util.Map;
-
-import static com.adaptris.core.AdaptrisMessageFactory.defaultIfNull;
-
 @XStreamAlias("google-cloud-pubsub-pull-consumer")
+@ComponentProfile(summary = "Receive a message to Google pubsub", tag = "consumer,gcloud,messaging", metadata =
+{
+    "gcloud_topic", "gcloud_projectName", "gcloud_subscriptionName", "gcloud_publishTime"
+}, recommended =
+{
+    GoogleCloudPubSubConnection.class
+})
+@DisplayOrder(order =
+{
+    "subscriptionName", "ackDeadline", "createSubscription", "autoAcknowledge"
+})
 public class GoogleCloudPubSubPullConsumer extends ConsumeConfig implements MessageReceiver {
 
   private transient Subscriber subscriber = null;

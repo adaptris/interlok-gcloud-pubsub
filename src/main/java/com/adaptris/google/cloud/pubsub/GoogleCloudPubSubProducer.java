@@ -1,8 +1,24 @@
 package com.adaptris.google.cloud.pubsub;
 
+import java.io.IOException;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 import com.adaptris.annotation.AdvancedConfig;
+import com.adaptris.annotation.AutoPopulated;
+import com.adaptris.annotation.ComponentProfile;
+import com.adaptris.annotation.DisplayOrder;
 import com.adaptris.annotation.InputFieldDefault;
-import com.adaptris.core.*;
+import com.adaptris.core.AdaptrisMessage;
+import com.adaptris.core.CoreException;
+import com.adaptris.core.MetadataCollection;
+import com.adaptris.core.MetadataElement;
+import com.adaptris.core.ProduceDestination;
+import com.adaptris.core.ProduceException;
+import com.adaptris.core.ProduceOnlyProducerImp;
 import com.adaptris.core.metadata.MetadataFilter;
 import com.adaptris.core.metadata.NoOpMetadataFilter;
 import com.google.api.core.ApiFuture;
@@ -16,25 +32,29 @@ import com.google.protobuf.ByteString;
 import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.PubsubMessage;
 import com.google.pubsub.v1.Topic;
-import com.google.pubsub.v1.TopicName;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import java.io.IOException;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-
 @XStreamAlias("google-cloud-pubsub-producer")
+@ComponentProfile(summary = "Publish a message to Google pubsub", tag = "producer,gcloud,messaging", recommended =
+{
+    GoogleCloudPubSubConnection.class
+})
+@DisplayOrder(order =
+{
+    "destination", "createTopic", "publisherCacheLimit", "metadataFilter"
+})
 public class GoogleCloudPubSubProducer extends ProduceOnlyProducerImp {
 
   @Valid
   @NotNull
   @InputFieldDefault(value = "false")
+  @AutoPopulated
   private Boolean createTopic;
 
   @Valid
   @NotNull
+  @AutoPopulated
+  @InputFieldDefault(value = "PublisherMap#DEFAULT_MAX_ENTRIES (10)")
   private Integer publisherCacheLimit;
 
   @Valid

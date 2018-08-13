@@ -1,14 +1,19 @@
 package com.adaptris.google.cloud.pubsub;
 
-import com.adaptris.core.AdaptrisMessageConsumerImp;
-import com.adaptris.core.CoreException;
-import com.adaptris.util.TimeInterval;
+import static java.lang.Math.toIntExact;
+
+import java.util.concurrent.TimeUnit;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.concurrent.TimeUnit;
 
-import static java.lang.Math.toIntExact;
+import com.adaptris.annotation.AutoPopulated;
+import com.adaptris.annotation.InputFieldDefault;
+import com.adaptris.core.AdaptrisMessageConsumerImp;
+import com.adaptris.core.CoreException;
+import com.adaptris.core.util.Args;
+import com.adaptris.core.util.ExceptionHelper;
+import com.adaptris.util.TimeInterval;
 
 public abstract class ConsumeConfig extends AdaptrisMessageConsumerImp {
 
@@ -18,14 +23,20 @@ public abstract class ConsumeConfig extends AdaptrisMessageConsumerImp {
 
   @NotNull
   @Valid
+  @AutoPopulated
+  @InputFieldDefault(value = "10 seconds")
   private TimeInterval ackDeadline;
 
   @NotNull
   @Valid
+  @AutoPopulated
+  @InputFieldDefault(value = "true")
   private Boolean createSubscription = true;
 
   @NotNull
   @Valid
+  @AutoPopulated
+  @InputFieldDefault(value = "true")
   private Boolean autoAcknowledge = true;
 
   public ConsumeConfig(){
@@ -34,20 +45,15 @@ public abstract class ConsumeConfig extends AdaptrisMessageConsumerImp {
 
   @Override
   public void prepare() throws CoreException {
-    if(getSubscriptionName() == null){
-      throw new CoreException("Subscription Name is invalid");
+    try {
+      Args.notNull(getSubscriptionName(), "subscriptionName");
+      Args.notNull(getDestination(), "destination");
+      Args.notNull(getAckDeadline(), "ackDeadline");
+      Args.notNull(getCreateSubscription(), "createSubscription");
+      Args.notNull(getAutoAcknowledge(), "autoAcknowledge");
     }
-    if(getDestination() == null){
-      throw new CoreException("Destination is invalid");
-    }
-    if(getAckDeadline() == null){
-      throw new CoreException("Ack Deadline is invalid");
-    }
-    if(getCreateSubscription() == null){
-      throw new CoreException("Create Subscription is invalid");
-    }
-    if(getAutoAcknowledge() == null){
-      throw new CoreException("Auto Acknowledge is invalid");
+    catch (IllegalArgumentException e) {
+      throw ExceptionHelper.wrapCoreException(e);
     }
   }
 

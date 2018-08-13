@@ -1,6 +1,11 @@
 package com.adaptris.google.cloud.pubsub;
 
 
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.validator.constraints.NotBlank;
+
+import com.adaptris.annotation.ComponentProfile;
+import com.adaptris.annotation.DisplayOrder;
 import com.adaptris.core.CoreException;
 import com.adaptris.google.cloud.pubsub.channel.ChannelProvider;
 import com.adaptris.google.cloud.pubsub.credentials.CredentialsProvider;
@@ -9,18 +14,21 @@ import com.google.api.gax.rpc.StatusCode;
 import com.google.cloud.pubsub.v1.MessageReceiver;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.common.util.concurrent.MoreExecutors;
-import com.google.pubsub.v1.*;
+import com.google.pubsub.v1.ProjectSubscriptionName;
+import com.google.pubsub.v1.ProjectTopicName;
+import com.google.pubsub.v1.PushConfig;
+import com.google.pubsub.v1.Subscription;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.apache.commons.lang.StringUtils;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 @XStreamAlias("google-cloud-pubsub-connection")
+@ComponentProfile(summary = "Enables a connection to Google pubsub messaging", tag = "connections,gcloud,messaging")
+@DisplayOrder(order =
+{
+    "projectName", "credentialsProvider", "flowControlProvider", "channelProvider"
+})
 public class GoogleCloudPubSubConnection extends ConnectionConfig {
 
-  @NotNull
-  @Valid
+  @NotBlank
   private String projectName;
 
 
