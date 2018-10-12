@@ -1,6 +1,5 @@
 extraction:
   java:
-    before_index:
     index:
       gradle:
         version: 4.8
