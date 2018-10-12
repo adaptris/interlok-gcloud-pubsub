@@ -34,7 +34,7 @@ def versionDir = "$buildDir/version"
 
 // In this section you declare where to find the dependencies of your project
 repositories {
-  jcenter()
+  mavenCentral()
   maven { url "$defaultNexusRepo" }
   maven { url "https://development.adaptris.net/nexus/content/groups/public" }
   maven { url "https://development.adaptris.net/nexus/content/repositories/snapshots" }
