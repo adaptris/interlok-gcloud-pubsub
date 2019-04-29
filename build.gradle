@@ -1,3 +1,11 @@
+plugins {
+  id 'java'
+  id 'maven'
+  id 'maven-publish'
+  id  "jacoco"
+  id 'com.github.spotbugs' version '1.6.10'
+}
+
 ext {
   interlokCoreVersion = project.hasProperty('interlokCoreVersion') ? project.getProperty('interlokCoreVersion') : '3.8-SNAPSHOT'
   releaseVersion = project.hasProperty('releaseVersion') ? project.getProperty('releaseVersion') : '3.8-SNAPSHOT'
@@ -14,8 +22,8 @@ ext {
   componentName='Interlok Google Cloud Pub/Sub'
   organizationName = "Adaptris Ltd"
   organizationUrl = "http://interlok.adaptris.net"
-  slf4jVersion = '1.7.25'
-  log4j2Version = '2.9.1'
+  slf4jVersion = '1.7.26'
+  log4j2Version = '2.11.2'
 }
 
 if (JavaVersion.current().isJava8Compatible()) {
@@ -25,11 +33,6 @@ if (JavaVersion.current().isJava8Compatible()) {
     }
   }
 }
-
-apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'maven-publish'
-apply plugin: "jacoco"
 
 sourceCompatibility = 1.8
 group   = 'com.adaptris'
@@ -67,13 +70,13 @@ dependencies {
   compile  ("com.adaptris:interlok-core:$interlokCoreVersion") { changing= true}
   compile  ("com.adaptris:interlok-common:$interlokCoreVersion") { changing= true}
   compile  ("com.adaptris:interlok-oauth-gcloud:$interlokCoreVersion") { changing= true}
-  compile ("com.google.cloud:google-cloud-pubsub:1.61.0") {
+  compile ("com.google.cloud:google-cloud-pubsub:1.67.0") {
     exclude group: "com.fasterxml.jackson.core", module: "jackson-databind"
     exclude group: "com.apache.httpcomponents", module: "httpclient"
   }
-  compile ("org.apache.httpcomponents:httpclient:4.5.7")
+  compile ("org.apache.httpcomponents:httpclient:4.5.8")
   compile ("com.fasterxml.jackson.core:jackson-databind:2.9.8")
-  compile ("com.google.guava:guava:27.0.1-jre")
+  compile ("com.google.guava:guava:27.1-jre")
 
   annotationProcessor ("com.adaptris:interlok-core-apt:$interlokCoreVersion") {changing= true}
 
@@ -160,8 +163,6 @@ jacocoTestReport {
     }
 }
 
-check.dependsOn jacocoTestReport
-javadoc.dependsOn offlinePackageList
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
   classifier = 'javadoc'
@@ -213,3 +214,27 @@ publishing {
     }
   }
 }
+
+spotbugs {
+  // showProgress = "true"
+  effort = "max"
+  // Ignore failures?
+  // ignoreFailures = false
+
+  // We only care about "high priority" issues...
+  reportLevel = "high"
+}
+
+// disable spotbugsTests which checks our test code..
+spotbugsTest.enabled = false
+
+tasks.withType(com.github.spotbugs.SpotBugsTask) {
+  reports {
+    xml.enabled = false
+    html.enabled = true
+  }
+  includeFilter = new File("$rootDir/gradle/spotbugs-filter.xml")
+}
+
+check.dependsOn jacocoTestReport
+javadoc.dependsOn offlinePackageList
