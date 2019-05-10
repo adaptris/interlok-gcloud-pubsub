@@ -1,12 +1,17 @@
 package com.adaptris.google.cloud.pubsub;
 
-import com.adaptris.core.*;
+import org.junit.Test;
+import org.mockito.Mockito;
+import com.adaptris.core.AdaptrisMessage;
+import com.adaptris.core.AdaptrisMessageFactory;
+import com.adaptris.core.ConfiguredProduceDestination;
+import com.adaptris.core.CoreException;
+import com.adaptris.core.ProducerCase;
+import com.adaptris.core.StandaloneRequestor;
 import com.adaptris.core.metadata.NoOpMetadataFilter;
 import com.adaptris.core.metadata.RemoveAllMetadataFilter;
 import com.google.cloud.pubsub.v1.Publisher;
 import com.google.pubsub.v1.PubsubMessage;
-import org.junit.Test;
-import org.mockito.Mockito;
 
 public class GoogleCloudPubSubProducerTest extends ProducerCase {
 
@@ -55,7 +60,7 @@ public class GoogleCloudPubSubProducerTest extends ProducerCase {
   public void testCloseException() throws Exception {
     PublisherMap publisherMap = new PublisherMap(5);
     Publisher publisher = Mockito.mock(Publisher.class);
-    Mockito.doThrow(new Exception()).when(publisher).shutdown();
+    Mockito.doThrow(new IllegalArgumentException()).when(publisher).shutdown();
     publisherMap.put("key1",publisher);
     publisherMap.put("key2",null);
     GoogleCloudPubSubProducer producer = new GoogleCloudPubSubProducer();
