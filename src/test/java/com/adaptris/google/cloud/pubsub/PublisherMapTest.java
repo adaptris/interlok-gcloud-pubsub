@@ -1,12 +1,11 @@
 package com.adaptris.google.cloud.pubsub;
 
-import com.google.cloud.pubsub.v1.Publisher;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.mockito.Mockito;
-
-import java.util.Map;
-
-import static org.junit.Assert.*;
+import com.google.cloud.pubsub.v1.Publisher;
 
 public class PublisherMapTest {
 
@@ -61,7 +60,7 @@ public class PublisherMapTest {
   public void testRemoveEldestEntryException() throws Exception {
     PublisherMap publisherMap = new PublisherMap(5);
     Publisher publisher = Mockito.mock(Publisher.class);
-    Mockito.doThrow(new Exception()).when(publisher).shutdown();
+    Mockito.doThrow(new IllegalArgumentException()).when(publisher).shutdown();
     publisherMap.put("key1",publisher);
     publisherMap.put("key2",null);
     publisherMap.put("key3",Mockito.mock(Publisher.class));

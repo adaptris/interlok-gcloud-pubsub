@@ -1,54 +1,55 @@
 /*
- * Copyright 2017, Google Inc. All rights reserved.
+ * Copyright 2019 Google LLC
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
-/*
- * Copied from https://github.com/GoogleCloudPlatform/google-cloud-java/tree/master/google-cloud-pubsub/src/test/java/com/google/cloud/pubsub/v1
- */
+// copied from
+// https://github.com/googleapis/google-cloud-java/tree/master/google-cloud-clients/google-cloud-pubsub/src/test/java/com/google/cloud/pubsub/v1
 package com.adaptris.google.cloud.pubsub.mocks;
 
-    import com.google.protobuf.Empty;
-    import com.google.protobuf.GeneratedMessageV3;
-    import com.google.pubsub.v1.AcknowledgeRequest;
-    import com.google.pubsub.v1.CreateSnapshotRequest;
-    import com.google.pubsub.v1.DeleteSnapshotRequest;
-    import com.google.pubsub.v1.DeleteSubscriptionRequest;
-    import com.google.pubsub.v1.GetSubscriptionRequest;
-    import com.google.pubsub.v1.ListSnapshotsRequest;
-    import com.google.pubsub.v1.ListSnapshotsResponse;
-    import com.google.pubsub.v1.ListSubscriptionsRequest;
-    import com.google.pubsub.v1.ListSubscriptionsResponse;
-    import com.google.pubsub.v1.ModifyAckDeadlineRequest;
-    import com.google.pubsub.v1.ModifyPushConfigRequest;
-    import com.google.pubsub.v1.PullRequest;
-    import com.google.pubsub.v1.PullResponse;
-    import com.google.pubsub.v1.SeekRequest;
-    import com.google.pubsub.v1.SeekResponse;
-    import com.google.pubsub.v1.Snapshot;
-    import com.google.pubsub.v1.StreamingPullRequest;
-    import com.google.pubsub.v1.StreamingPullResponse;
-    import com.google.pubsub.v1.SubscriberGrpc.SubscriberImplBase;
-    import com.google.pubsub.v1.Subscription;
-    import com.google.pubsub.v1.UpdateSubscriptionRequest;
-    import io.grpc.stub.StreamObserver;
-    import java.util.ArrayList;
-    import java.util.LinkedList;
-    import java.util.List;
-    import java.util.Queue;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+import com.google.api.core.BetaApi;
+import com.google.protobuf.AbstractMessage;
+import com.google.protobuf.Empty;
+import com.google.pubsub.v1.AcknowledgeRequest;
+import com.google.pubsub.v1.CreateSnapshotRequest;
+import com.google.pubsub.v1.DeleteSnapshotRequest;
+import com.google.pubsub.v1.DeleteSubscriptionRequest;
+import com.google.pubsub.v1.GetSubscriptionRequest;
+import com.google.pubsub.v1.ListSnapshotsRequest;
+import com.google.pubsub.v1.ListSnapshotsResponse;
+import com.google.pubsub.v1.ListSubscriptionsRequest;
+import com.google.pubsub.v1.ListSubscriptionsResponse;
+import com.google.pubsub.v1.ModifyAckDeadlineRequest;
+import com.google.pubsub.v1.ModifyPushConfigRequest;
+import com.google.pubsub.v1.PullRequest;
+import com.google.pubsub.v1.PullResponse;
+import com.google.pubsub.v1.SeekRequest;
+import com.google.pubsub.v1.SeekResponse;
+import com.google.pubsub.v1.Snapshot;
+import com.google.pubsub.v1.StreamingPullRequest;
+import com.google.pubsub.v1.StreamingPullResponse;
+import com.google.pubsub.v1.SubscriberGrpc.SubscriberImplBase;
+import com.google.pubsub.v1.Subscription;
+import com.google.pubsub.v1.UpdateSnapshotRequest;
+import com.google.pubsub.v1.UpdateSubscriptionRequest;
+import io.grpc.stub.StreamObserver;
 
+@javax.annotation.Generated("by GAPIC")
+@BetaApi
 public class MockSubscriberImpl extends SubscriberImplBase {
-  private ArrayList<GeneratedMessageV3> requests;
+  private List<AbstractMessage> requests;
   private Queue<Object> responses;
 
   public MockSubscriberImpl() {
@@ -56,15 +57,15 @@ public class MockSubscriberImpl extends SubscriberImplBase {
     responses = new LinkedList<>();
   }
 
-  public List<GeneratedMessageV3> getRequests() {
+  public List<AbstractMessage> getRequests() {
     return requests;
   }
 
-  public void addResponse(GeneratedMessageV3 response) {
+  public void addResponse(AbstractMessage response) {
     responses.add(response);
   }
 
-  public void setResponses(List<GeneratedMessageV3> responses) {
+  public void setResponses(List<AbstractMessage> responses) {
     this.responses = new LinkedList<Object>(responses);
   }
 
@@ -259,6 +260,21 @@ public class MockSubscriberImpl extends SubscriberImplBase {
   @Override
   public void createSnapshot(
       CreateSnapshotRequest request, StreamObserver<Snapshot> responseObserver) {
+    Object response = responses.remove();
+    if (response instanceof Snapshot) {
+      requests.add(request);
+      responseObserver.onNext((Snapshot) response);
+      responseObserver.onCompleted();
+    } else if (response instanceof Exception) {
+      responseObserver.onError((Exception) response);
+    } else {
+      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+    }
+  }
+
+  @Override
+  public void updateSnapshot(UpdateSnapshotRequest request,
+      StreamObserver<Snapshot> responseObserver) {
     Object response = responses.remove();
     if (response instanceof Snapshot) {
       requests.add(request);
