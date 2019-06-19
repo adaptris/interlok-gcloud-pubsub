@@ -196,7 +196,8 @@ publishing {
       artifact sourcesJar { classifier "sources" }
 
       pom.withXml {
-        asNode().appendNode("description", "Interlok Google Cloud Pub/Sub")
+        asNode().appendNode("description", "Consuming and producing messages via Google Cloud Pub/Sub")
+        asNode().appendNode("name", componentName)
         def properties = asNode().appendNode("properties")
         properties.appendNode("target", "3.6.3+")
         properties.appendNode("tags", "google,gcloud")
