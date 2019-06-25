@@ -1,28 +1,28 @@
 /*
- * Copyright 2017, Google Inc. All rights reserved.
+ * Copyright 2019 Google LLC
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
-/*
- * Copied from https://github.com/GoogleCloudPlatform/google-cloud-java/tree/master/google-cloud-pubsub/src/test/java/com/google/cloud/pubsub/v1
- */
+// https://github.com/googleapis/google-cloud-java/tree/master/google-cloud-clients/google-cloud-pubsub/src/test/java/com/google/cloud/pubsub/v1
+
 package com.adaptris.google.cloud.pubsub.mocks;
 
-import com.google.api.gax.grpc.testing.MockGrpcService;
-import com.google.protobuf.GeneratedMessageV3;
-import io.grpc.ServerServiceDefinition;
 import java.util.List;
+import com.google.api.core.BetaApi;
+import com.google.api.gax.grpc.testing.MockGrpcService;
+import com.google.protobuf.AbstractMessage;
+import io.grpc.ServerServiceDefinition;
 
+@javax.annotation.Generated("by GAPIC")
+@BetaApi
 public class MockSubscriber implements MockGrpcService {
   private final MockSubscriberImpl serviceImpl;
 
@@ -31,12 +31,12 @@ public class MockSubscriber implements MockGrpcService {
   }
 
   @Override
-  public List<GeneratedMessageV3> getRequests() {
+  public List<AbstractMessage> getRequests() {
     return serviceImpl.getRequests();
   }
 
   @Override
-  public void addResponse(GeneratedMessageV3 response) {
+  public void addResponse(AbstractMessage response) {
     serviceImpl.addResponse(response);
   }
 

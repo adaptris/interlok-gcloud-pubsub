@@ -3,12 +3,12 @@ plugins {
   id 'maven'
   id 'maven-publish'
   id  "jacoco"
-  id 'com.github.spotbugs' version '1.6.10'
+  id 'com.github.spotbugs' version '2.0.0'
 }
 
 ext {
-  interlokCoreVersion = project.hasProperty('interlokCoreVersion') ? project.getProperty('interlokCoreVersion') : '3.8-SNAPSHOT'
-  releaseVersion = project.hasProperty('releaseVersion') ? project.getProperty('releaseVersion') : '3.8-SNAPSHOT'
+  interlokCoreVersion = project.hasProperty('interlokCoreVersion') ? project.getProperty('interlokCoreVersion') : '3.9-SNAPSHOT'
+  releaseVersion = project.hasProperty('releaseVersion') ? project.getProperty('releaseVersion') : '3.9-SNAPSHOT'
   nexusBaseUrl = project.hasProperty('nexusBaseUrl') ? project.getProperty('nexusBaseUrl') : 'https://nexus.adaptris.net/nexus'
   mavenPublishUrl = project.hasProperty('mavenPublishUrl') ? project.getProperty('mavenPublishUrl') : nexusBaseUrl + '/content/repositories/snapshots'
   javadocsBaseUrl = nexusBaseUrl + "/content/sites/javadocs/com/adaptris"
@@ -44,7 +44,7 @@ repositories {
   mavenCentral()
   maven { url "$defaultNexusRepo" }
   maven { url "$nexusBaseUrl/content/groups/public" }
-  maven { url "$nexusBaseUrl/content/repositories/snapshots" }
+  maven { url "$nexusBaseUrl/content/groups/interlok" }
 }
 
 
@@ -70,13 +70,13 @@ dependencies {
   compile  ("com.adaptris:interlok-core:$interlokCoreVersion") { changing= true}
   compile  ("com.adaptris:interlok-common:$interlokCoreVersion") { changing= true}
   compile  ("com.adaptris:interlok-oauth-gcloud:$interlokCoreVersion") { changing= true}
-  compile ("com.google.cloud:google-cloud-pubsub:1.67.0") {
+  compile ("com.google.cloud:google-cloud-pubsub:1.77.0") {
     exclude group: "com.fasterxml.jackson.core", module: "jackson-databind"
     exclude group: "com.apache.httpcomponents", module: "httpclient"
   }
-  compile ("org.apache.httpcomponents:httpclient:4.5.8")
-  compile ("com.fasterxml.jackson.core:jackson-databind:2.9.8")
-  compile ("com.google.guava:guava:27.1-jre")
+  compile ("org.apache.httpcomponents:httpclient:4.5.9")
+  compile ("com.fasterxml.jackson.core:jackson-databind:2.9.9")
+  compile ("com.google.guava:guava:28.0-jre")
 
   annotationProcessor ("com.adaptris:interlok-core-apt:$interlokCoreVersion") {changing= true}
 
@@ -153,7 +153,7 @@ javadoc {
 }
 
 jacoco {
-  toolVersion="0.8.0"
+  toolVersion="0.8.3"
 }
 
 jacocoTestReport {
@@ -196,7 +196,8 @@ publishing {
       artifact sourcesJar { classifier "sources" }
 
       pom.withXml {
-        asNode().appendNode("description", "Interlok Google Cloud Pub/Sub")
+        asNode().appendNode("description", "Consuming and producing messages via Google Cloud Pub/Sub")
+        asNode().appendNode("name", componentName)
         def properties = asNode().appendNode("properties")
         properties.appendNode("target", "3.6.3+")
         properties.appendNode("tags", "google,gcloud")

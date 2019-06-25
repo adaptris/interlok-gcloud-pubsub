@@ -18,21 +18,29 @@
  */
 package com.adaptris.google.cloud.pubsub;
 
-import com.adaptris.core.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import java.util.List;
+import org.junit.Test;
+import org.mockito.Mockito;
+import com.adaptris.core.AdaptrisMessage;
+import com.adaptris.core.AdaptrisMessageFactory;
+import com.adaptris.core.ConfiguredProduceDestination;
+import com.adaptris.core.CoreException;
+import com.adaptris.core.ProduceException;
 import com.adaptris.google.cloud.pubsub.adminclient.TopicAdminClientProvider;
 import com.adaptris.google.cloud.pubsub.channel.MockChannelProvider;
 import com.adaptris.google.cloud.pubsub.credentials.MockCredentialsProvider;
+import com.google.protobuf.AbstractMessage;
 import com.google.protobuf.Empty;
-import com.google.protobuf.GeneratedMessageV3;
-import com.google.pubsub.v1.*;
+import com.google.pubsub.v1.ProjectTopicName;
+import com.google.pubsub.v1.PublishRequest;
+import com.google.pubsub.v1.PublishResponse;
+import com.google.pubsub.v1.Topic;
+import com.google.pubsub.v1.TopicName;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
-import org.junit.Test;
-import org.mockito.Mockito;
-
-import java.util.List;
-
-import static org.junit.Assert.*;
 
 public class PubsubProducerTest extends ServiceHelperBase {
 
@@ -60,7 +68,7 @@ public class PubsubProducerTest extends ServiceHelperBase {
     producer.stop();
     producer.close();
 
-    List<GeneratedMessageV3> actualRequests = mockPublisher.getRequests();
+    List<AbstractMessage> actualRequests = mockPublisher.getRequests();
     assertEquals(0, actualRequests.size());
 
     assertEquals(TOPIC, topicName.getTopic());
@@ -92,7 +100,7 @@ public class PubsubProducerTest extends ServiceHelperBase {
     producer.stop();
     producer.close();
 
-    List<GeneratedMessageV3> actualRequests = mockPublisher.getRequests();
+    List<AbstractMessage> actualRequests = mockPublisher.getRequests();
     assertEquals(1, actualRequests.size());
 
     assertEquals(TOPIC, topicName.getTopic());
@@ -126,7 +134,7 @@ public class PubsubProducerTest extends ServiceHelperBase {
     producer.stop();
     producer.close();
 
-    List<GeneratedMessageV3> actualRequests = mockPublisher.getRequests();
+    List<AbstractMessage> actualRequests = mockPublisher.getRequests();
     assertEquals(1, actualRequests.size());
 
     assertEquals(TOPIC, topicName.getTopic());
@@ -197,7 +205,7 @@ public class PubsubProducerTest extends ServiceHelperBase {
     producer.stop();
     producer.close();
 
-    List<GeneratedMessageV3> actualRequests = mockPublisher.getRequests();
+    List<AbstractMessage> actualRequests = mockPublisher.getRequests();
     assertEquals(2, actualRequests.size());
 
     PublishRequest actualRequest = (PublishRequest) actualRequests.get(0);

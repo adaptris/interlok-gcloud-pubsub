@@ -18,23 +18,29 @@
  */
 package com.adaptris.google.cloud.pubsub;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import java.util.List;
+import org.junit.Test;
+import org.mockito.Mockito;
 import com.adaptris.core.ConfiguredConsumeDestination;
 import com.adaptris.core.CoreException;
 import com.adaptris.google.cloud.pubsub.adminclient.SubscriptionAdminClientProvider;
 import com.adaptris.google.cloud.pubsub.channel.MockChannelProvider;
 import com.adaptris.google.cloud.pubsub.credentials.MockCredentialsProvider;
 import com.google.cloud.pubsub.v1.Subscriber;
+import com.google.protobuf.AbstractMessage;
 import com.google.protobuf.Empty;
-import com.google.protobuf.GeneratedMessageV3;
-import com.google.pubsub.v1.*;
+import com.google.pubsub.v1.DeleteSubscriptionRequest;
+import com.google.pubsub.v1.GetSubscriptionRequest;
+import com.google.pubsub.v1.ProjectSubscriptionName;
+import com.google.pubsub.v1.ProjectTopicName;
+import com.google.pubsub.v1.PushConfig;
+import com.google.pubsub.v1.Subscription;
+import com.google.pubsub.v1.TopicName;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
-import org.junit.Test;
-import org.mockito.Mockito;
-
-import java.util.List;
-
-import static org.junit.Assert.*;
 
 public class PubsubConnectionTest extends ServiceHelperBase {
 
@@ -66,7 +72,7 @@ public class PubsubConnectionTest extends ServiceHelperBase {
     ProjectSubscriptionName actualResponse = connection.createSubscription(consumer);
     assertEquals(ProjectSubscriptionName.parse(expectedResponse.getName()), actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockSubscriber.getRequests();
+    List<AbstractMessage> actualRequests = mockSubscriber.getRequests();
     assertEquals(1, actualRequests.size());
     GetSubscriptionRequest actualRequest = (GetSubscriptionRequest) actualRequests.get(0);
 
@@ -182,7 +188,7 @@ public class PubsubConnectionTest extends ServiceHelperBase {
     ProjectSubscriptionName actualResponse = connection.createSubscription(consumer);
     assertEquals(ProjectSubscriptionName.parse(expectedResponse.getName()), actualResponse);
 
-    List<GeneratedMessageV3> actualRequests = mockSubscriber.getRequests();
+    List<AbstractMessage> actualRequests = mockSubscriber.getRequests();
     assertEquals(1, actualRequests.size());
     Subscription actualRequest = (Subscription) actualRequests.get(0);
 
@@ -211,7 +217,7 @@ public class PubsubConnectionTest extends ServiceHelperBase {
     connection.deleteSubscription(consumer);
 
     ProjectSubscriptionName subscription = ProjectSubscriptionName.of(PROJECT, SUBSCRIPTION);
-    List<GeneratedMessageV3> actualRequests = mockSubscriber.getRequests();
+    List<AbstractMessage> actualRequests = mockSubscriber.getRequests();
     assertEquals(1, actualRequests.size());
     DeleteSubscriptionRequest actualRequest = (DeleteSubscriptionRequest) actualRequests.get(0);
     assertEquals(subscription, ProjectSubscriptionName.parse(actualRequest.getSubscription()));
@@ -233,7 +239,7 @@ public class PubsubConnectionTest extends ServiceHelperBase {
     consumer.setSubscriptionName(SUBSCRIPTION);
     consumer.setCreateSubscription(false);
     connection.deleteSubscription(consumer);
-    List<GeneratedMessageV3> actualRequests = mockSubscriber.getRequests();
+    List<AbstractMessage> actualRequests = mockSubscriber.getRequests();
     assertEquals(0, actualRequests.size());
   }
 
@@ -275,7 +281,7 @@ public class PubsubConnectionTest extends ServiceHelperBase {
     assertEquals(PROJECT, ProjectSubscriptionName.parse(subscriber.getSubscriptionNameString()).getProject());
     assertEquals(SUBSCRIPTION, ProjectSubscriptionName.parse(subscriber.getSubscriptionNameString()).getSubscription());
 
-    List<GeneratedMessageV3> actualRequests = mockSubscriber.getRequests();
+    List<AbstractMessage> actualRequests = mockSubscriber.getRequests();
     assertEquals(1, actualRequests.size());
   }
 
@@ -319,7 +325,7 @@ public class PubsubConnectionTest extends ServiceHelperBase {
     assertEquals(SUBSCRIPTION, ProjectSubscriptionName.parse(subscriber.getSubscriptionNameString()).getSubscription());
     //check for listener
 
-    List<GeneratedMessageV3> actualRequests = mockSubscriber.getRequests();
+    List<AbstractMessage> actualRequests = mockSubscriber.getRequests();
     assertEquals(1, actualRequests.size());
   }
 
