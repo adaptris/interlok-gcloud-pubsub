@@ -75,7 +75,7 @@ dependencies {
     exclude group: "com.apache.httpcomponents", module: "httpclient"
   }
   compile ("org.apache.httpcomponents:httpclient:4.5.9")
-  compile ("com.fasterxml.jackson.core:jackson-databind:2.9.9.1")
+  compile ("com.fasterxml.jackson.core:jackson-databind:2.9.9.2")
   compile ("com.google.guava:guava:28.0-jre")
 
   annotationProcessor ("com.adaptris:interlok-core-apt:$interlokCoreVersion") {changing= true}
