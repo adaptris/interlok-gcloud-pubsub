@@ -23,7 +23,7 @@ ext {
   organizationName = "Adaptris Ltd"
   organizationUrl = "http://interlok.adaptris.net"
   slf4jVersion = '1.7.26'
-  log4j2Version = '2.11.2'
+  log4j2Version = '2.12.1'
 }
 
 if (JavaVersion.current().isJava8Compatible()) {
@@ -70,12 +70,12 @@ dependencies {
   compile  ("com.adaptris:interlok-core:$interlokCoreVersion") { changing= true}
   compile  ("com.adaptris:interlok-common:$interlokCoreVersion") { changing= true}
   compile  ("com.adaptris:interlok-oauth-gcloud:$interlokCoreVersion") { changing= true}
-  compile ("com.google.cloud:google-cloud-pubsub:1.77.0") {
+  compile ("com.google.cloud:google-cloud-pubsub:1.86.0") {
     exclude group: "com.fasterxml.jackson.core", module: "jackson-databind"
     exclude group: "com.apache.httpcomponents", module: "httpclient"
   }
   compile ("org.apache.httpcomponents:httpclient:4.5.9")
-  compile ("com.fasterxml.jackson.core:jackson-databind:2.9.9")
+  compile ("com.fasterxml.jackson.core:jackson-databind:2.9.9.3")
   compile ("com.google.guava:guava:28.0-jre")
 
   annotationProcessor ("com.adaptris:interlok-core-apt:$interlokCoreVersion") {changing= true}
