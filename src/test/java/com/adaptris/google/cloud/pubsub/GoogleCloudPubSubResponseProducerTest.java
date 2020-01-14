@@ -1,21 +1,25 @@
 package com.adaptris.google.cloud.pubsub;
 
-import com.adaptris.core.*;
-import com.adaptris.core.util.LifecycleHelper;
-import com.google.cloud.pubsub.v1.AckReplyConsumer;
-import com.google.cloud.pubsub.v1.Subscriber;
-import com.google.pubsub.v1.Subscription;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import org.junit.Test;
 import org.mockito.Mockito;
-
-import static org.junit.Assert.*;
+import com.adaptris.core.AdaptrisMessage;
+import com.adaptris.core.AdaptrisMessageFactory;
+import com.adaptris.core.CoreException;
+import com.adaptris.core.ProducerCase;
+import com.adaptris.core.StandaloneProducer;
+import com.adaptris.core.util.LifecycleHelper;
+import com.google.cloud.pubsub.v1.AckReplyConsumer;
 
 public class GoogleCloudPubSubResponseProducerTest extends ProducerCase {
 
-  public GoogleCloudPubSubResponseProducerTest(String name) {
-    super(name);
+  @Override
+  public boolean isAnnotatedForJunit4() {
+    return true;
   }
-
   @Test
   public void testConstruct() throws Exception {
     GoogleCloudPubSubResponseProducer producer = new GoogleCloudPubSubResponseProducer();

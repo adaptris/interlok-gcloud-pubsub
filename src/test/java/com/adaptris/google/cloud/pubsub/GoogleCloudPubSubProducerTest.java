@@ -1,5 +1,8 @@
 package com.adaptris.google.cloud.pubsub;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import org.junit.Test;
 import org.mockito.Mockito;
 import com.adaptris.core.AdaptrisMessage;
@@ -15,10 +18,10 @@ import com.google.pubsub.v1.PubsubMessage;
 
 public class GoogleCloudPubSubProducerTest extends ProducerCase {
 
-  public GoogleCloudPubSubProducerTest(String name) {
-    super(name);
+  @Override
+  public boolean isAnnotatedForJunit4() {
+    return true;
   }
-
   @Test
   public void testConstruct() throws Exception {
     GoogleCloudPubSubProducer producer = new GoogleCloudPubSubProducer();

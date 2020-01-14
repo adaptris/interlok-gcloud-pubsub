@@ -1,10 +1,14 @@
 package com.adaptris.google.cloud.pubsub;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import java.util.concurrent.TimeUnit;
-
 import org.junit.Test;
 import org.mockito.Mockito;
-
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.ConfiguredConsumeDestination;
 import com.adaptris.core.ConsumerCase;
@@ -24,8 +28,9 @@ import com.google.pubsub.v1.PubsubMessage;
 
 public class GoogleCloudPubSubPullConsumerTest extends ConsumerCase {
 
-  public GoogleCloudPubSubPullConsumerTest(String name) {
-    super(name);
+  @Override
+  public boolean isAnnotatedForJunit4() {
+    return true;
   }
 
   @Test
