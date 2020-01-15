@@ -8,7 +8,7 @@ import com.google.api.gax.rpc.TransportChannelProvider;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
