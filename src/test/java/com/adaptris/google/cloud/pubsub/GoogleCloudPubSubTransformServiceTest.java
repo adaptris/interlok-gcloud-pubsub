@@ -1,5 +1,11 @@
 package com.adaptris.google.cloud.pubsub;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import java.util.EnumSet;
+import org.junit.Before;
+import org.junit.Test;
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.AdaptrisMessageFactory;
 import com.adaptris.core.metadata.NoOpMetadataFilter;
@@ -10,15 +16,12 @@ import com.jayway.jsonpath.Option;
 import com.jayway.jsonpath.ReadContext;
 import com.jayway.jsonpath.spi.json.JsonSmartJsonProvider;
 import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.EnumSet;
 
 public class GoogleCloudPubSubTransformServiceTest extends TransformServiceExample {
 
-  public GoogleCloudPubSubTransformServiceTest(java.lang.String testName) {
-    super(testName);
+  @Override
+  public boolean isAnnotatedForJunit4() {
+    return true;
   }
 
   private Configuration jsonConfig;
