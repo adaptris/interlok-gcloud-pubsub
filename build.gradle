@@ -4,6 +4,7 @@ plugins {
   id 'maven-publish'
   id  "jacoco"
   id 'com.github.spotbugs' version '4.2.0'
+  id 'org.owasp.dependencycheck' version '5.3.2.1'
 }
 
 ext {
@@ -23,6 +24,7 @@ ext {
   organizationName = "Adaptris Ltd"
   organizationUrl = "http://interlok.adaptris.net"
   slf4jVersion = '1.7.30'
+  nettyVersion='4.1.50.Final'
 }
 
 if (JavaVersion.current().isJava8Compatible()) {
@@ -95,10 +97,15 @@ dependencies {
   compile ("com.google.cloud:google-cloud-pubsub:1.98.0") {
     exclude group: "com.fasterxml.jackson.core", module: "jackson-databind"
     exclude group: "com.apache.httpcomponents", module: "httpclient"
+    exclude group: "io.grpc", module: "grpc-netty-shaded"
   }
   compile ("org.apache.httpcomponents:httpclient:4.5.12")
   compile ("com.fasterxml.jackson.core:jackson-databind:2.11.0")
   compile ("com.google.guava:guava:29.0-jre")
+  // Minimal netty specification
+  implementation ("io.netty:netty-handler:$nettyVersion")
+  implementation ("io.netty:netty-transport-native-epoll:$nettyVersion")
+  implementation ("io.netty:netty-codec:$nettyVersion")
 
   annotationProcessor ("com.adaptris:interlok-core-apt:$interlokCoreVersion") {changing= true}
 
@@ -256,6 +263,17 @@ spotbugsMain {
   }
   includeFilter = new File("$rootDir/gradle/spotbugs-filter.xml")
   // excludeFilter = new File("$rootDir/gradle/spotbugs-exclude.xml")
+}
+
+dependencyCheck  {
+  suppressionFiles= [ "https://raw.githubusercontent.com/adaptris/interlok/develop/gradle/owasp-exclude.xml" , "$rootDir/gradle/owasp-exclude.xml"]
+  skipConfigurations = [ "antSql", "spotbugs", "umlDoclet", "offlineJavadocPackages", "javadoc" ]
+  formats = [ "HTML", "JUNIT" ]
+  junitFailOnCVSS = 7.0
+  failBuildOnCVSS = 7.0
+  analyzers {
+    assemblyEnabled=false
+  }
 }
 
 // disable spotbugsTests which checks our test code..

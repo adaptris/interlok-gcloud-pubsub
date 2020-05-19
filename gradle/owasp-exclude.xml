@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
+   <suppress>
+      <notes><![CDATA[
+      file name: grpc-netty-shaded-1.23.0.jar (shaded: io.netty:netty-buffer:4.1.38.Final)
+      // explicit ignored, since we depend on netty directly.
+      ]]></notes>
+      <packageUrl regex="true">^pkg:maven/io\.grpc/grpc\-netty.*$</packageUrl>
+      <cpe>cpe:/a:netty:netty</cpe>
+   </suppress>
+</suppressions>
