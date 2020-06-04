@@ -236,6 +236,8 @@ publishing {
         properties.appendNode("target", "3.6.3+")
         properties.appendNode("tags", "google,gcloud")
         properties.appendNode("license", "false")
+        properties.appendNode("repository", "https://github.com/adaptris/interlok-gcloud-pubsub")
+        properties.appendNode("readme", "https://github.com/adaptris/interlok-gcloud-pubsub/raw/develop/README.md")
       }
     }
   }
