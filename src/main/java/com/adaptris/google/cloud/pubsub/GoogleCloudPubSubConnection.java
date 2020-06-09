@@ -56,7 +56,8 @@ public class GoogleCloudPubSubConnection extends ConnectionConfig {
     ProjectTopicName topic = ProjectTopicName.of(getProjectName(), config.getTopicName());
     try {
       Subscription subscription = getSubscriptionAdminClient().getSubscription(subscriptionName);
-      log.trace(String.format("Found existing subscription [%s] for Topic [%s]", config.getSubscriptionName(), subscription.getTopic()));
+      log.trace("Found existing subscription [{}] for Topic [{}]", config.getSubscriptionName(),
+          subscription.getTopic());
       if(!subscription.getTopic().equals(topic.toString())){
         throw new CoreException(String.format("Existing subscription topics do not match [%s] [%s]", subscription.getTopic(), topic.toString()));
       }

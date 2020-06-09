@@ -78,10 +78,10 @@ public class GoogleCloudPubSubProducer extends ProduceOnlyProducerImp {
       String key = getDestination().getDestination(adaptrisMessage);
       Publisher publisher;
       if (publisherCache.containsKey(key)){
-        log.trace(String.format("Found publisher for key [%s]", key));
+        log.trace("Found publisher for key [{}]", key);
         publisher = publisherCache.get(key);
       } else {
-        log.trace(String.format("No publisher found for key [%s]", key));
+        log.trace("No publisher found for key [{}]", key);
         publisher = Publisher.newBuilder(createOrGetTopicName(adaptrisMessage))
             .setChannelProvider(channelProvider)
             .setCredentialsProvider(credentialsProvider)
@@ -89,7 +89,7 @@ public class GoogleCloudPubSubProducer extends ProduceOnlyProducerImp {
         publisherCache.put(key, publisher);
       }
       ApiFuture<String> messageId = publisher.publish(createPubsubMessage(adaptrisMessage));
-      log.debug(String.format("Published with message ID: %s", messageId.get()));
+      log.debug("Published with message ID: {}", messageId.get());
     } catch (IOException | CoreException | InterruptedException | ExecutionException e) {
       throw new ProduceException("Failed to Produce Message", e);
     }
