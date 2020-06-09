@@ -1,5 +1,7 @@
 package com.adaptris.google.cloud.pubsub;
 
+import java.io.IOException;
+import java.io.Reader;
 import com.adaptris.annotation.InputFieldHint;
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.MetadataCollection;
@@ -18,8 +20,6 @@ import com.google.pubsub.v1.PublishRequest;
 import com.google.pubsub.v1.PubsubMessage;
 import com.google.pubsub.v1.PullResponse;
 import com.google.pubsub.v1.ReceivedMessage;
-
-import java.io.IOException;
 
 /**
  * Direction enum; Google Cloud Pub/Sub JSON <-> Interlok Messsage.
@@ -81,9 +81,8 @@ public enum TransformationDirection {
   PUSH_RESPONSE_TO_INTERLOK {
     @Override
     public void transform(AdaptrisMessage message, MetadataFilter metadataFilter) throws ServiceException {
-      try {
-        JsonParser jsonParser = new JsonParser();
-        JsonElement jsonRoot = jsonParser.parse(new String(message.getPayload()));
+      try (Reader reader = message.getReader()) {
+        JsonElement jsonRoot = JsonParser.parseReader(reader);
         String messageStr = jsonRoot.getAsJsonObject().get("message").toString();
         message.addMetadata("gcloud_subscription", jsonRoot.getAsJsonObject().get("subscription").toString());
         PubsubMessage.Builder pubsubMessage = PubsubMessage.newBuilder();
