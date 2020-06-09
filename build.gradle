@@ -25,7 +25,8 @@ ext {
   organizationUrl = "http://interlok.adaptris.net"
   slf4jVersion = '1.7.30'
   nettyVersion='4.1.50.Final'
-  grpcVersion='1.29.0'
+  grpcVersion='1.30.0'
+  protobufVersion='3.12.0'
 }
 
 if (JavaVersion.current().isJava8Compatible()) {
@@ -105,6 +106,7 @@ dependencies {
   compile ("commons-codec:commons-codec:1.14")
   compile ("com.fasterxml.jackson.core:jackson-databind:2.11.0")
   compile ("com.google.guava:guava:29.0-jre")
+
   // Minimal netty specification
   implementation ("io.netty:netty-handler:$nettyVersion")
   implementation ("io.netty:netty-transport-native-epoll:$nettyVersion")
@@ -113,11 +115,17 @@ dependencies {
   implementation ("io.grpc:grpc-netty:$grpcVersion")
   implementation ("io.grpc:grpc-protobuf:$grpcVersion")
   implementation ("io.grpc:grpc-stub:$grpcVersion")
+
   // Some things appear to be pinned at 1.28.1 which refers to a missing class
   // in 1.29.0; gradle dependencies was required.
   implementation  ("io.grpc:grpc-auth:$grpcVersion")
   implementation  ("io.grpc:grpc-alts:$grpcVersion")
+
   implementation  ("com.google.code.gson:gson:2.8.6")
+  // Required because we attempt to create a protobuf message in PUSH_RESPONSE_TO_INTERLOK
+  implementation ("com.google.protobuf:protobuf-java-util:$protobufVersion")
+  implementation ("com.google.protobuf:protobuf-java:$protobufVersion")
+
 
   annotationProcessor ("com.adaptris:interlok-core-apt:$interlokCoreVersion") {changing= true}
 
