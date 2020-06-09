@@ -3,10 +3,8 @@ package com.adaptris.google.cloud.pubsub;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-
 import com.adaptris.annotation.AdvancedConfig;
 import com.adaptris.annotation.AutoPopulated;
 import com.adaptris.annotation.ComponentProfile;
@@ -97,11 +95,14 @@ public class GoogleCloudPubSubProducer extends ProduceOnlyProducerImp {
     }
   }
 
+  @SuppressWarnings("deprecation")
   ProjectTopicName createOrGetTopicName(AdaptrisMessage adaptrisMessage) throws CoreException {
     ProjectTopicName topicName = ProjectTopicName.of(projectName, getDestination().getDestination(adaptrisMessage));
     if(!getCreateTopic()){
       return topicName;
     }
+    // could cast to TopicName since ProjectTopicName extends TopicName to avoid the
+    // deprecation warning
     try {
       Topic topic = topicAdminClient.getTopic(topicName);
       return ProjectTopicName.parse(topic.getName());

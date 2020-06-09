@@ -1,9 +1,8 @@
 package com.adaptris.google.cloud.pubsub;
 
 
+import javax.validation.constraints.NotBlank;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.validator.constraints.NotBlank;
-
 import com.adaptris.annotation.ComponentProfile;
 import com.adaptris.annotation.DisplayOrder;
 import com.adaptris.core.CoreException;
@@ -51,6 +50,7 @@ public class GoogleCloudPubSubConnection extends ConnectionConfig {
     }
   }
 
+  @SuppressWarnings("deprecation")
   public ProjectSubscriptionName createSubscription(ConsumeConfig config) throws CoreException {
     ProjectSubscriptionName subscriptionName = ProjectSubscriptionName.of(getProjectName(), config.getSubscriptionName());
     ProjectTopicName topic = ProjectTopicName.of(getProjectName(), config.getTopicName());
@@ -66,8 +66,13 @@ public class GoogleCloudPubSubConnection extends ConnectionConfig {
         throw new CoreException("Failed to retrieve Topic", e);
       } else {
         if (config.getCreateSubscription()){
-          log.trace(String.format("Creating Subscription [%s] Topic [%s]", config.getSubscriptionName(), topic.toString()));
-          Subscription subscription = getSubscriptionAdminClient().createSubscription(subscriptionName, topic, PushConfig.getDefaultInstance(), config.getAckDeadlineSeconds());
+          log.trace("Creating Subscription [{}] Topic [{}]", config.getSubscriptionName(),
+              topic.toString());
+          // could cast to TopicName since ProjectTopicName extends TopicName to avoid the
+          // deprecation warning
+          Subscription subscription =
+              getSubscriptionAdminClient().createSubscription(subscriptionName, topic,
+                  PushConfig.getDefaultInstance(), config.getAckDeadlineSeconds());
           return ProjectSubscriptionName.parse(subscription.getName());
         } else {
           throw new CoreException("Failed to retrieve Topic", e);
