@@ -1,13 +1,14 @@
 package com.adaptris.google.cloud.pubsub;
 
-import com.google.cloud.pubsub.v1.Publisher;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import com.google.cloud.pubsub.v1.Publisher;
 
 public class PublisherMap extends LinkedHashMap<String, Publisher> {
+
+  private static final long serialVersionUID = 2020060901L;
 
   protected transient Logger log = LoggerFactory.getLogger(this.getClass().getName());
 

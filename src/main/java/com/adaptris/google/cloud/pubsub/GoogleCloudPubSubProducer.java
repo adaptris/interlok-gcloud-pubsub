@@ -3,10 +3,8 @@ package com.adaptris.google.cloud.pubsub;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-
 import com.adaptris.annotation.AdvancedConfig;
 import com.adaptris.annotation.AutoPopulated;
 import com.adaptris.annotation.ComponentProfile;
@@ -80,10 +78,10 @@ public class GoogleCloudPubSubProducer extends ProduceOnlyProducerImp {
       String key = getDestination().getDestination(adaptrisMessage);
       Publisher publisher;
       if (publisherCache.containsKey(key)){
-        log.trace(String.format("Found publisher for key [%s]", key));
+        log.trace("Found publisher for key [{}]", key);
         publisher = publisherCache.get(key);
       } else {
-        log.trace(String.format("No publisher found for key [%s]", key));
+        log.trace("No publisher found for key [{}]", key);
         publisher = Publisher.newBuilder(createOrGetTopicName(adaptrisMessage))
             .setChannelProvider(channelProvider)
             .setCredentialsProvider(credentialsProvider)
@@ -91,17 +89,20 @@ public class GoogleCloudPubSubProducer extends ProduceOnlyProducerImp {
         publisherCache.put(key, publisher);
       }
       ApiFuture<String> messageId = publisher.publish(createPubsubMessage(adaptrisMessage));
-      log.debug(String.format("Published with message ID: %s", messageId.get()));
+      log.debug("Published with message ID: {}", messageId.get());
     } catch (IOException | CoreException | InterruptedException | ExecutionException e) {
       throw new ProduceException("Failed to Produce Message", e);
     }
   }
 
+  @SuppressWarnings("deprecation")
   ProjectTopicName createOrGetTopicName(AdaptrisMessage adaptrisMessage) throws CoreException {
     ProjectTopicName topicName = ProjectTopicName.of(projectName, getDestination().getDestination(adaptrisMessage));
     if(!getCreateTopic()){
       return topicName;
     }
+    // could cast to TopicName since ProjectTopicName extends TopicName to avoid the
+    // deprecation warning
     try {
       Topic topic = topicAdminClient.getTopic(topicName);
       return ProjectTopicName.parse(topic.getName());
