@@ -18,6 +18,7 @@ ext {
   repoPassword = project.hasProperty('repoPassword') ? project.getProperty('repoPassword') : 'unknown'
   defaultNexusRepo = project.hasProperty('defaultNexusRepo') ? project.getProperty('defaultNexusRepo') : 'https://repo1.maven.org/maven2/'
   offlineJavadocPackageDir = new File(project.buildDir, "offline-javadoc-packages")
+  delombokTargetDir = new File("${project.projectDir}/src/main/generated")
 
   interlokJavadocs= project.hasProperty('interlokJavadocs') ? project.getProperty('interlokJavadocs') : javadocsBaseUrl + "/interlok-core/" + interlokCoreVersion
   interlokCommonJavadocs= project.hasProperty('interlokCommonJavadocs') ? project.getProperty('interlokCommonJavadocs') : javadocsBaseUrl + "/interlok-common/" + interlokCoreVersion
@@ -300,6 +301,10 @@ dependencyCheck  {
   }
 }
 
+delombok {
+  target = delombokTargetDir
+}
+
 task lgtmCompile(type: JavaCompile, dependsOn: delombok) {
   group 'Build'
   description 'Compile for lgtm'
@@ -309,8 +314,13 @@ task lgtmCompile(type: JavaCompile, dependsOn: delombok) {
   classpath = project.sourceSets.main.compileClasspath
 }
 
+task deleteGeneratedFiles(type: Delete) {
+  delete delombokTargetDir
+}
+
+
 // disable spotbugsTests which checks our test code..
 spotbugsTest.enabled = false
-
+clean.dependsOn deleteGeneratedFiles
 check.dependsOn jacocoTestReport
 javadoc.dependsOn offlinePackageList
