@@ -23,7 +23,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 })
 @DisplayOrder(order =
 {
-    "subscriptionName", "ackDeadline", "createSubscription", "autoAcknowledge"
+    "topic", "subscriptionName", "ackDeadline", "createSubscription", "autoAcknowledge"
 })
 public class GoogleCloudPubSubPullConsumer extends ConsumeConfig implements MessageReceiver {
 
