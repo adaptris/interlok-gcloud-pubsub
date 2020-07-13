@@ -1,9 +1,7 @@
 package com.adaptris.google.cloud.pubsub;
 
 import static com.adaptris.core.AdaptrisMessageFactory.defaultIfNull;
-
 import java.util.Map;
-
 import com.adaptris.annotation.ComponentProfile;
 import com.adaptris.annotation.DisplayOrder;
 import com.adaptris.core.AdaptrisMessage;
@@ -97,4 +95,5 @@ public class GoogleCloudPubSubPullConsumer extends ConsumeConfig implements Mess
   void setProjectName(String projectName) {
     this.projectName = projectName;
   }
+
 }

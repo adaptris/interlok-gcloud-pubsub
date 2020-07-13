@@ -1,43 +1,74 @@
 package com.adaptris.google.cloud.pubsub;
 
 import static java.lang.Math.toIntExact;
-
 import java.util.concurrent.TimeUnit;
-
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-
 import com.adaptris.annotation.AutoPopulated;
 import com.adaptris.annotation.InputFieldDefault;
+import com.adaptris.annotation.Removal;
 import com.adaptris.core.AdaptrisMessageConsumerImp;
+import com.adaptris.core.ConsumeDestination;
 import com.adaptris.core.CoreException;
 import com.adaptris.core.util.Args;
-import com.adaptris.core.util.ExceptionHelper;
+import com.adaptris.core.util.DestinationHelper;
+import com.adaptris.core.util.LoggingHelper;
 import com.adaptris.util.TimeInterval;
+import lombok.Getter;
+import lombok.Setter;
 
 public abstract class ConsumeConfig extends AdaptrisMessageConsumerImp {
 
+  @Getter
+  @Setter
   @NotNull
   @Valid
   private String subscriptionName;
 
+  @Getter
+  @Setter
   @NotNull
   @Valid
   @AutoPopulated
   @InputFieldDefault(value = "10 seconds")
   private TimeInterval ackDeadline;
 
+  @Getter
+  @Setter
   @NotNull
   @Valid
   @AutoPopulated
   @InputFieldDefault(value = "true")
   private Boolean createSubscription = true;
 
+  @Getter
+  @Setter
   @NotNull
   @Valid
   @AutoPopulated
   @InputFieldDefault(value = "true")
   private Boolean autoAcknowledge = true;
+
+  /**
+   * The consume destination is the pubsub topic name
+   *
+   */
+  @Getter
+  @Setter
+  @Deprecated
+  @Valid
+  @Removal(version = "4.0.0", message = "Use 'topic' instead")
+  private ConsumeDestination destination;
+
+  /**
+   * The pubsub topic name.
+   *
+   */
+  @Getter
+  @Setter
+  private String topic;
+
+  private transient boolean destinationWarningLogged;
 
   public ConsumeConfig(){
     setAckDeadline(new TimeInterval(10L, TimeUnit.SECONDS));
@@ -45,55 +76,28 @@ public abstract class ConsumeConfig extends AdaptrisMessageConsumerImp {
 
   @Override
   public void prepare() throws CoreException {
-    try {
-      Args.notNull(getSubscriptionName(), "subscriptionName");
-      Args.notNull(getDestination(), "destination");
-      Args.notNull(getAckDeadline(), "ackDeadline");
-      Args.notNull(getCreateSubscription(), "createSubscription");
-      Args.notNull(getAutoAcknowledge(), "autoAcknowledge");
+    if (getDestination() != null) {
+      LoggingHelper.logWarning(destinationWarningLogged, () -> destinationWarningLogged = true,
+          "{} uses destination, use path + methods instead", LoggingHelper.friendlyName(this));
     }
-    catch (IllegalArgumentException e) {
-      throw ExceptionHelper.wrapCoreException(e);
-    }
-  }
-
-  public String getSubscriptionName() {
-    return subscriptionName;
-  }
-
-  public void setSubscriptionName(String subscriptionName) {
-    this.subscriptionName = subscriptionName;
-  }
-
-  public TimeInterval getAckDeadline() {
-    return ackDeadline;
-  }
-
-  public void setAckDeadline(TimeInterval ackDeadline) {
-    this.ackDeadline = ackDeadline;
-  }
-
-  public Boolean getCreateSubscription() {
-    return createSubscription;
-  }
-
-  public void setCreateSubscription(Boolean createSubscription) {
-    this.createSubscription = createSubscription;
-  }
-
-  public Boolean getAutoAcknowledge() {
-    return autoAcknowledge;
-  }
-
-  public void setAutoAcknowledge(Boolean autoAcknowledge) {
-    this.autoAcknowledge = autoAcknowledge;
+    DestinationHelper.mustHaveEither(getTopic(), getDestination());
+    Args.notNull(getSubscriptionName(), "subscriptionName");
+    Args.notNull(getAckDeadline(), "ackDeadline");
+    Args.notNull(getCreateSubscription(), "createSubscription");
+    Args.notNull(getAutoAcknowledge(), "autoAcknowledge");
   }
 
   public String getTopicName() {
-    return getDestination().getDestination();
+    return DestinationHelper.consumeDestination(getTopic(), getDestination());
   }
 
   public int getAckDeadlineSeconds() {
     return toIntExact(TimeUnit.MILLISECONDS.toSeconds(ackDeadline.toMilliseconds()));
+  }
+
+
+  @Override
+  protected String newThreadName() {
+    return DestinationHelper.threadName(retrieveAdaptrisMessageListener(), getDestination());
   }
 }

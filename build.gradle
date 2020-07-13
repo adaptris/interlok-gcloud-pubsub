@@ -4,6 +4,7 @@ plugins {
   id 'maven-publish'
   id  "jacoco"
   id 'com.github.spotbugs' version '4.4.4'
+  id "io.freefair.lombok" version "5.1.0"
   id 'org.owasp.dependencycheck' version '5.3.2.1'
 }
 
@@ -59,6 +60,7 @@ sourceCompatibility = 1.8
 group   = 'com.adaptris'
 version = releaseVersion
 def versionDir = "$buildDir/version"
+generateLombokConfig.enabled = false
 
 // In this section you declare where to find the dependencies of your project
 repositories {
@@ -298,9 +300,17 @@ dependencyCheck  {
   }
 }
 
+task lgtmCompile(type: JavaCompile, dependsOn: delombok) {
+  group 'Build'
+  description 'Compile for lgtm'
+
+  source = sourceSets.main.extensions.delombokTask
+  destinationDir = sourceSets.main.java.outputDir
+  classpath = project.sourceSets.main.compileClasspath
+}
+
 // disable spotbugsTests which checks our test code..
 spotbugsTest.enabled = false
-
 
 check.dependsOn jacocoTestReport
 javadoc.dependsOn offlinePackageList
