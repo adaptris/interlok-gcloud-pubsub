@@ -64,7 +64,7 @@ public class PubsubProducerTest extends ServiceHelperBase {
     final AdaptrisMessage msg = AdaptrisMessageFactory.getDefaultInstance().newMessage();
     producer.init();
     producer.start();
-    ProjectTopicName topicName = producer.createOrGetTopicName(msg);
+    ProjectTopicName topicName = producer.createOrGetTopicName(msg, producer.endpoint(msg));
     producer.stop();
     producer.close();
 
@@ -96,7 +96,7 @@ public class PubsubProducerTest extends ServiceHelperBase {
     final AdaptrisMessage msg = AdaptrisMessageFactory.getDefaultInstance().newMessage();
     producer.init();
     producer.start();
-    ProjectTopicName topicName = producer.createOrGetTopicName(msg);
+    ProjectTopicName topicName = producer.createOrGetTopicName(msg, producer.endpoint(msg));
     producer.stop();
     producer.close();
 
@@ -130,7 +130,7 @@ public class PubsubProducerTest extends ServiceHelperBase {
     final AdaptrisMessage msg = AdaptrisMessageFactory.getDefaultInstance().newMessage();
     producer.init();
     producer.start();
-    ProjectTopicName topicName = producer.createOrGetTopicName(msg);
+    ProjectTopicName topicName = producer.createOrGetTopicName(msg, producer.endpoint(msg));
     producer.stop();
     producer.close();
 
@@ -161,7 +161,7 @@ public class PubsubProducerTest extends ServiceHelperBase {
     producer.init();
     producer.start();
     try {
-      TopicName topicName = producer.createOrGetTopicName(msg);
+      TopicName topicName = producer.createOrGetTopicName(msg, producer.endpoint(msg));
       fail("No exception thrown");
     } catch (CoreException e){
       assertEquals("Failed to get Topic", e.getMessage());
@@ -244,8 +244,8 @@ public class PubsubProducerTest extends ServiceHelperBase {
     msg.addMetadata("foo", "bar");
     try {
       producer.produce(msg);
-    } catch (ProduceException e){
-      assertEquals("Failed to Produce Message", e.getMessage());
+      fail();
+    } catch (ProduceException expected) {
     }
     producer.stop();
     producer.close();

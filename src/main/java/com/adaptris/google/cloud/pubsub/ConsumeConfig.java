@@ -1,5 +1,7 @@
 package com.adaptris.google.cloud.pubsub;
 
+import static com.adaptris.core.util.DestinationHelper.logWarningIfNotNull;
+import static com.adaptris.core.util.DestinationHelper.mustHaveEither;
 import static java.lang.Math.toIntExact;
 import java.util.concurrent.TimeUnit;
 import javax.validation.Valid;
@@ -76,11 +78,10 @@ public abstract class ConsumeConfig extends AdaptrisMessageConsumerImp {
 
   @Override
   public void prepare() throws CoreException {
-    if (getDestination() != null) {
-      LoggingHelper.logWarning(destinationWarningLogged, () -> destinationWarningLogged = true,
-          "{} uses destination, use path + methods instead", LoggingHelper.friendlyName(this));
-    }
-    DestinationHelper.mustHaveEither(getTopic(), getDestination());
+    logWarningIfNotNull(destinationWarningLogged, () -> destinationWarningLogged = true,
+        getDestination(), "{} uses destination, use 'topic' instead",
+        LoggingHelper.friendlyName(this));
+    mustHaveEither(getTopic(), getDestination());
     Args.notNull(getSubscriptionName(), "subscriptionName");
     Args.notNull(getAckDeadline(), "ackDeadline");
     Args.notNull(getCreateSubscription(), "createSubscription");

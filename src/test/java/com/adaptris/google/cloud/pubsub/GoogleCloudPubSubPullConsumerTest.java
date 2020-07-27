@@ -288,7 +288,7 @@ public class GoogleCloudPubSubPullConsumerTest extends ConsumerCase {
 
     GoogleCloudPubSubPullConsumer cons = new GoogleCloudPubSubPullConsumer();
     cons.setSubscriptionName("subscription-name");
-    cons.setDestination(new ConfiguredConsumeDestination("topic-name"));
+    cons.setTopic("topic-name");
 
     StandaloneConsumer result = new StandaloneConsumer();
     result.setConnection(conn);

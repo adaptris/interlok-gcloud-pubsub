@@ -3,12 +3,10 @@ package com.adaptris.google.cloud.pubsub;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import org.junit.Test;
 import org.mockito.Mockito;
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.AdaptrisMessageFactory;
-import com.adaptris.core.CoreException;
 import com.adaptris.core.ProducerCase;
 import com.adaptris.core.StandaloneProducer;
 import com.adaptris.core.util.LifecycleHelper;
@@ -69,15 +67,8 @@ public class GoogleCloudPubSubResponseProducerTest extends ProducerCase {
   @Test
   public void testPrepare() throws Exception {
     GoogleCloudPubSubResponseProducer producer = new GoogleCloudPubSubResponseProducer();
-    producer.setReplyProvider(null);
-    try {
-      producer.prepare();
-      fail();
-    } catch (CoreException expected){
-      assertEquals("reply-provider is invalid", expected.getMessage());
-    }
     producer.setReplyProvider(new ConfiguredReplyProvider(ReplyProvider.AckReply.ACK));
-    producer.prepare();
+    LifecycleHelper.prepare(producer);
   }
 
   @Test

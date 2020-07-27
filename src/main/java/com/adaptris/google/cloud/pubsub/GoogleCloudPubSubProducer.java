@@ -1,15 +1,18 @@
 package com.adaptris.google.cloud.pubsub;
 
-import java.io.IOException;
+import static com.adaptris.core.util.DestinationHelper.logWarningIfNotNull;
+import static com.adaptris.core.util.DestinationHelper.mustHaveEither;
+import static com.adaptris.core.util.DestinationHelper.resolveProduceDestination;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import com.adaptris.annotation.AdvancedConfig;
-import com.adaptris.annotation.AutoPopulated;
 import com.adaptris.annotation.ComponentProfile;
 import com.adaptris.annotation.DisplayOrder;
 import com.adaptris.annotation.InputFieldDefault;
+import com.adaptris.annotation.InputFieldHint;
+import com.adaptris.annotation.Removal;
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.CoreException;
 import com.adaptris.core.MetadataCollection;
@@ -19,6 +22,9 @@ import com.adaptris.core.ProduceException;
 import com.adaptris.core.ProduceOnlyProducerImp;
 import com.adaptris.core.metadata.MetadataFilter;
 import com.adaptris.core.metadata.NoOpMetadataFilter;
+import com.adaptris.core.util.ExceptionHelper;
+import com.adaptris.core.util.LoggingHelper;
+import com.adaptris.util.NumberUtils;
 import com.google.api.core.ApiFuture;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.rpc.ApiException;
@@ -31,6 +37,10 @@ import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.PubsubMessage;
 import com.google.pubsub.v1.Topic;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @XStreamAlias("google-cloud-pubsub-producer")
 @ComponentProfile(summary = "Publish a message to Google pubsub", tag = "producer,gcloud,messaging", recommended =
@@ -39,66 +49,86 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 })
 @DisplayOrder(order =
 {
-    "destination", "createTopic", "publisherCacheLimit", "metadataFilter"
+    "topic", "createTopic", "publisherCacheLimit", "metadataFilter"
 })
+@NoArgsConstructor
 public class GoogleCloudPubSubProducer extends ProduceOnlyProducerImp {
 
-  @Valid
-  @NotNull
   @InputFieldDefault(value = "false")
-  @AutoPopulated
+  @Getter
+  @Setter
   private Boolean createTopic;
 
-  @Valid
-  @NotNull
-  @AutoPopulated
+  @Getter
+  @Setter
   @InputFieldDefault(value = "PublisherMap#DEFAULT_MAX_ENTRIES (10)")
   private Integer publisherCacheLimit;
 
   @Valid
-  @NotNull
   @AdvancedConfig
-  private MetadataFilter metadataFilter = new NoOpMetadataFilter();
+  @Getter
+  @Setter
+  private MetadataFilter metadataFilter;
+
+  /**
+   * The destination is the topic.
+   *
+   */
+  @Getter
+  @Setter
+  @Deprecated
+  @Valid
+  @Removal(version = "4.0.0", message = "Use 'topic' instead")
+  private ProduceDestination destination;
+
+  /**
+   * The pubsub topic
+   *
+   */
+  @InputFieldHint(expression = true)
+  @Getter
+  @Setter
+  // Needs to be @NotBlank when destination is removed.
+  private String topic;
+
+  private transient boolean destWarning;
 
   private transient CredentialsProvider credentialsProvider;
   private transient TransportChannelProvider channelProvider;
   private transient String projectName;
   private transient TopicAdminClient topicAdminClient;
+  @Getter(AccessLevel.PACKAGE)
+  @Setter(AccessLevel.PACKAGE)
   private transient Map<String, Publisher> publisherCache;
 
-  public GoogleCloudPubSubProducer() {
-    setMetadataFilter(new NoOpMetadataFilter());
-    setCreateTopic(false);
-    setPublisherCacheLimit(PublisherMap.DEFAULT_MAX_ENTRIES);
-  }
-
   @Override
-  public void produce(AdaptrisMessage adaptrisMessage, ProduceDestination produceDestination) throws ProduceException {
+  protected void doProduce(AdaptrisMessage adaptrisMessage, String endpoint)
+      throws ProduceException {
     try {
-      String key = getDestination().getDestination(adaptrisMessage);
       Publisher publisher;
-      if (publisherCache.containsKey(key)){
-        log.trace("Found publisher for key [{}]", key);
-        publisher = publisherCache.get(key);
+      if (publisherCache.containsKey(endpoint)) {
+        log.trace("Found publisher for key [{}]", endpoint);
+        publisher = publisherCache.get(endpoint);
       } else {
-        log.trace("No publisher found for key [{}]", key);
-        publisher = Publisher.newBuilder(createOrGetTopicName(adaptrisMessage))
+        log.trace("No publisher found for key [{}]", endpoint);
+        publisher = Publisher.newBuilder(createOrGetTopicName(adaptrisMessage, endpoint))
             .setChannelProvider(channelProvider)
             .setCredentialsProvider(credentialsProvider)
             .build();
-        publisherCache.put(key, publisher);
+        publisherCache.put(endpoint, publisher);
       }
       ApiFuture<String> messageId = publisher.publish(createPubsubMessage(adaptrisMessage));
       log.debug("Published with message ID: {}", messageId.get());
-    } catch (IOException | CoreException | InterruptedException | ExecutionException e) {
-      throw new ProduceException("Failed to Produce Message", e);
+    } catch (Exception e) {
+      throw ExceptionHelper.wrapProduceException(e);
     }
   }
 
   @SuppressWarnings("deprecation")
-  ProjectTopicName createOrGetTopicName(AdaptrisMessage adaptrisMessage) throws CoreException {
-    ProjectTopicName topicName = ProjectTopicName.of(projectName, getDestination().getDestination(adaptrisMessage));
-    if(!getCreateTopic()){
+  ProjectTopicName createOrGetTopicName(AdaptrisMessage adaptrisMessage, String endpoint)
+      throws CoreException {
+    ProjectTopicName topicName = ProjectTopicName.of(projectName, endpoint);
+    if (!createTopic()) {
       return topicName;
     }
     // could cast to TopicName since ProjectTopicName extends TopicName to avoid the
@@ -119,7 +149,7 @@ public class GoogleCloudPubSubProducer extends ProduceOnlyProducerImp {
   PubsubMessage createPubsubMessage(AdaptrisMessage adaptrisMessage){
     ByteString byteString = ByteString.copyFrom(adaptrisMessage.getPayload());
     PubsubMessage.Builder psmBuilder = PubsubMessage.newBuilder().setData(byteString);
-    MetadataCollection filtered = getMetadataFilter().filter(adaptrisMessage);
+    MetadataCollection filtered = metadataFilter().filter(adaptrisMessage);
     for (MetadataElement e : filtered){
       psmBuilder.putAttributes(e.getKey(), e.getValue());
     }
@@ -128,15 +158,9 @@ public class GoogleCloudPubSubProducer extends ProduceOnlyProducerImp {
 
   @Override
   public void prepare() throws CoreException {
-    if (getCreateTopic() == null){
-      throw new CoreException("create-topic is invalid");
-    }
-    if(getMetadataFilter() == null){
-      throw new CoreException("metadata-filter is invalid");
-    }
-    if(getPublisherCacheLimit() == null){
-      throw new CoreException("publisher-cache-limit is invalid");
-    }
+    logWarningIfNotNull(destWarning, () -> destWarning = true, getDestination(),
+        "{} uses destination, use 'topic' instead", LoggingHelper.friendlyName(this));
+    mustHaveEither(getTopic(), getDestination());
   }
 
   @Override
@@ -146,17 +170,7 @@ public class GoogleCloudPubSubProducer extends ProduceOnlyProducerImp {
     credentialsProvider = connection.getGoogleCredentialsProvider();
     projectName = connection.getProjectName();
     topicAdminClient = connection.getTopicAdminClient();
-    publisherCache = new PublisherMap(getPublisherCacheLimit());
-  }
-
-  @Override
-  public void start() throws CoreException {
-
-  }
-
-  @Override
-  public void stop() {
-
+    publisherCache = new PublisherMap(publisherCacheLimit());
   }
 
   @Override
@@ -172,35 +186,28 @@ public class GoogleCloudPubSubProducer extends ProduceOnlyProducerImp {
     }
   }
 
-  public void setCreateTopic(Boolean createTopic) {
-    this.createTopic = createTopic;
+  @SuppressWarnings("unchecked")
+  public <T extends GoogleCloudPubSubProducer> T withTopic(String s) {
+    setTopic(s);
+    return (T) this;
   }
 
-  public Boolean getCreateTopic() {
-    return createTopic;
+  private boolean createTopic() {
+    return BooleanUtils.toBooleanDefaultIfNull(getCreateTopic(), false);
   }
 
-  public void setMetadataFilter(MetadataFilter metadataFilter) {
-    this.metadataFilter = metadataFilter;
+  private MetadataFilter metadataFilter() {
+    return ObjectUtils.defaultIfNull(getMetadataFilter(), new NoOpMetadataFilter());
   }
 
-  public MetadataFilter getMetadataFilter() {
-    return metadataFilter;
+  private int publisherCacheLimit() {
+    return NumberUtils.toIntDefaultIfNull(getPublisherCacheLimit(),
+        PublisherMap.DEFAULT_MAX_ENTRIES);
   }
 
-  public void setPublisherCacheLimit(Integer publisherCacheLimit) {
-    this.publisherCacheLimit = publisherCacheLimit;
+  @Override
+  public String endpoint(AdaptrisMessage msg) throws ProduceException {
+    return resolveProduceDestination(getTopic(), getDestination(), msg);
   }
 
-  public Integer getPublisherCacheLimit() {
-    return publisherCacheLimit;
-  }
-
-  Map<String, Publisher> getPublisherCache() {
-    return publisherCache;
-  }
-
-  void setPublisherCache(Map<String, Publisher> publisherCache) {
-    this.publisherCache = publisherCache;
-  }
 }
