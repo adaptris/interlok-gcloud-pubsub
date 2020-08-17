@@ -28,7 +28,7 @@ ext {
   slf4jVersion = '1.7.30'
   nettyVersion='4.1.51.Final'
   grpcVersion='1.31.1'
-  protobufVersion='3.12.4'
+  protobufVersion='3.13.0'
 }
 
 if (JavaVersion.current().isJava8Compatible()) {
