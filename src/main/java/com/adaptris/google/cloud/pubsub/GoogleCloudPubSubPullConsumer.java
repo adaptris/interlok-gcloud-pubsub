@@ -1,9 +1,7 @@
 package com.adaptris.google.cloud.pubsub;
 
 import static com.adaptris.core.AdaptrisMessageFactory.defaultIfNull;
-
 import java.util.Map;
-
 import com.adaptris.annotation.ComponentProfile;
 import com.adaptris.annotation.DisplayOrder;
 import com.adaptris.core.AdaptrisMessage;
@@ -25,7 +23,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 })
 @DisplayOrder(order =
 {
-    "subscriptionName", "ackDeadline", "createSubscription", "autoAcknowledge"
+    "topic", "subscriptionName", "ackDeadline", "createSubscription", "autoAcknowledge"
 })
 public class GoogleCloudPubSubPullConsumer extends ConsumeConfig implements MessageReceiver {
 
@@ -97,4 +95,5 @@ public class GoogleCloudPubSubPullConsumer extends ConsumeConfig implements Mess
   void setProjectName(String projectName) {
     this.projectName = projectName;
   }
+
 }

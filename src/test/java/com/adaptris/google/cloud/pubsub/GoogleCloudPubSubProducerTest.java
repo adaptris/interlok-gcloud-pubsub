@@ -7,12 +7,9 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.AdaptrisMessageFactory;
-import com.adaptris.core.ConfiguredProduceDestination;
-import com.adaptris.core.CoreException;
 import com.adaptris.core.ProducerCase;
 import com.adaptris.core.StandaloneRequestor;
-import com.adaptris.core.metadata.NoOpMetadataFilter;
-import com.adaptris.core.metadata.RemoveAllMetadataFilter;
+import com.adaptris.core.util.LifecycleHelper;
 import com.google.cloud.pubsub.v1.Publisher;
 import com.google.pubsub.v1.PubsubMessage;
 
@@ -22,26 +19,18 @@ public class GoogleCloudPubSubProducerTest extends ProducerCase {
   public boolean isAnnotatedForJunit4() {
     return true;
   }
-  @Test
-  public void testConstruct() throws Exception {
-    GoogleCloudPubSubProducer producer = new GoogleCloudPubSubProducer();
-    assertEquals(Boolean.FALSE, producer.getCreateTopic());
-    assertTrue(producer.getMetadataFilter() instanceof NoOpMetadataFilter);
-    assertEquals((Integer)PublisherMap.DEFAULT_MAX_ENTRIES, producer.getPublisherCacheLimit());
-  }
 
   @Test
   public void testPrepare() throws Exception {
     GoogleCloudPubSubProducer producer = new GoogleCloudPubSubProducer();
-    producer.prepare();
-    producer.setCreateTopic(null);
-    prepareFail(producer, "create-topic is invalid");
-    producer.setCreateTopic(true);
-    producer.setMetadataFilter(null);
-    prepareFail(producer, "metadata-filter is invalid");
-    producer.setMetadataFilter(new NoOpMetadataFilter());
-    producer.setPublisherCacheLimit(null);
-    prepareFail(producer, "publisher-cache-limit is invalid");
+    try {
+      LifecycleHelper.prepare(producer);
+      fail();
+    } catch (Exception expected) {
+
+    }
+    producer.setTopic("topic");
+    LifecycleHelper.prepare(producer);
   }
 
   @Test
@@ -73,38 +62,6 @@ public class GoogleCloudPubSubProducerTest extends ProducerCase {
 
   }
 
-  @Test
-  public void testCreateTopic() throws Exception {
-    GoogleCloudPubSubProducer producer = new GoogleCloudPubSubProducer();
-    assertEquals(Boolean.FALSE, producer.getCreateTopic());
-    producer.setCreateTopic(true);
-    assertEquals(Boolean.TRUE, producer.getCreateTopic());
-  }
-
-  @Test
-  public void testMetadataFilter() throws Exception {
-    GoogleCloudPubSubProducer producer = new GoogleCloudPubSubProducer();
-    assertTrue(producer.getMetadataFilter() instanceof NoOpMetadataFilter);
-    producer.setMetadataFilter(new RemoveAllMetadataFilter());
-    assertTrue(producer.getMetadataFilter() instanceof RemoveAllMetadataFilter);
-  }
-
-  @Test
-  public void testCacheLimit() throws Exception {
-    GoogleCloudPubSubProducer producer = new GoogleCloudPubSubProducer();
-    assertEquals((Integer)PublisherMap.DEFAULT_MAX_ENTRIES, producer.getPublisherCacheLimit());
-    producer.setPublisherCacheLimit(5);
-    assertEquals((Integer)5, producer.getPublisherCacheLimit());
-  }
-
-  private void prepareFail(GoogleCloudPubSubProducer producer, String message){
-    try {
-      producer.prepare();
-      fail();
-    } catch (CoreException expected){
-      assertEquals(message, expected.getMessage());
-    }
-  }
 
   @Test
   public void testCreatePubsubMessage() throws Exception{
@@ -122,12 +79,7 @@ public class GoogleCloudPubSubProducerTest extends ProducerCase {
     GoogleCloudPubSubConnection conn = new GoogleCloudPubSubConnection();
     conn.setProjectName("project-name");
 
-    GoogleCloudPubSubProducer producer = new GoogleCloudPubSubProducer();
-    producer.setDestination(new ConfiguredProduceDestination("topic-name"));
-
-    StandaloneRequestor result = new StandaloneRequestor();
-    result.setConnection(conn);
-    result.setProducer(producer);
-    return result;
+    GoogleCloudPubSubProducer producer = new GoogleCloudPubSubProducer().withTopic("topic-name");
+    return new StandaloneRequestor(conn, producer);
   }
 }

@@ -36,7 +36,7 @@ public class GoogleCloudPubSubPullConsumerTest extends ConsumerCase {
   @Test
   public void testConstruct() throws Exception {
     GoogleCloudPubSubPullConsumer consumer = new GoogleCloudPubSubPullConsumer();
-    assertNull(consumer.getDestination());
+    assertNull(consumer.getTopic());
     assertNull(consumer.getSubscriptionName());
     assertNotNull(consumer.getAckDeadline());
     assertNotNull(consumer.getAckDeadlineSeconds());
@@ -50,28 +50,27 @@ public class GoogleCloudPubSubPullConsumerTest extends ConsumerCase {
   @Test
   public void testPrepare() throws Exception {
     GoogleCloudPubSubPullConsumer consumer = new GoogleCloudPubSubPullConsumer();
-    prepareFail(consumer, "subscriptionName may not be null");
+    prepareFail(consumer);
     consumer.setSubscriptionName("subscription");
-    prepareFail(consumer, "destination may not be null");
-    consumer.setDestination(new ConfiguredConsumeDestination("topic"));
+    prepareFail(consumer);
+    consumer.setTopic("topic");
     consumer.setAckDeadline(null);
-    prepareFail(consumer, "ackDeadline may not be null");
+    prepareFail(consumer);
     consumer.setAckDeadline(new TimeInterval(10L, TimeUnit.SECONDS));
     consumer.setCreateSubscription(null);
-    prepareFail(consumer, "createSubscription may not be null");
+    prepareFail(consumer);
     consumer.setCreateSubscription(true);
     consumer.setAutoAcknowledge(null);
-    prepareFail(consumer, "autoAcknowledge may not be null");
+    prepareFail(consumer);
     consumer.setAutoAcknowledge(true);
     consumer.prepare();
   }
 
-  private void prepareFail(GoogleCloudPubSubPullConsumer consumer, String message){
+  private void prepareFail(GoogleCloudPubSubPullConsumer consumer) {
     try {
       consumer.prepare();
       fail();
-    } catch (CoreException expected){
-      assertEquals(message, expected.getMessage());
+    } catch (IllegalArgumentException | CoreException expected) {
     }
   }
 
@@ -289,7 +288,7 @@ public class GoogleCloudPubSubPullConsumerTest extends ConsumerCase {
 
     GoogleCloudPubSubPullConsumer cons = new GoogleCloudPubSubPullConsumer();
     cons.setSubscriptionName("subscription-name");
-    cons.setDestination(new ConfiguredConsumeDestination("topic-name"));
+    cons.setTopic("topic-name");
 
     StandaloneConsumer result = new StandaloneConsumer();
     result.setConnection(conn);

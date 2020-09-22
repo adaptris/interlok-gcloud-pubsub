@@ -3,13 +3,14 @@ plugins {
   id 'maven'
   id 'maven-publish'
   id  "jacoco"
-  id 'com.github.spotbugs' version '4.2.3'
+  id 'com.github.spotbugs' version '4.5.0'
+  id "io.freefair.lombok" version "5.1.1"
   id 'org.owasp.dependencycheck' version '5.3.2.1'
 }
 
 ext {
-  interlokCoreVersion = project.hasProperty('interlokCoreVersion') ? project.getProperty('interlokCoreVersion') : '3.10-SNAPSHOT'
-  releaseVersion = project.hasProperty('releaseVersion') ? project.getProperty('releaseVersion') : '3.10-SNAPSHOT'
+  interlokCoreVersion = project.hasProperty('interlokCoreVersion') ? project.getProperty('interlokCoreVersion') : '3.11-SNAPSHOT'
+  releaseVersion = project.hasProperty('releaseVersion') ? project.getProperty('releaseVersion') : '3.11-SNAPSHOT'
   nexusBaseUrl = project.hasProperty('nexusBaseUrl') ? project.getProperty('nexusBaseUrl') : 'https://nexus.adaptris.net/nexus'
   mavenPublishUrl = project.hasProperty('mavenPublishUrl') ? project.getProperty('mavenPublishUrl') : nexusBaseUrl + '/content/repositories/snapshots'
   javadocsBaseUrl = nexusBaseUrl + "/content/sites/javadocs/com/adaptris"
@@ -17,6 +18,7 @@ ext {
   repoPassword = project.hasProperty('repoPassword') ? project.getProperty('repoPassword') : 'unknown'
   defaultNexusRepo = project.hasProperty('defaultNexusRepo') ? project.getProperty('defaultNexusRepo') : 'https://repo1.maven.org/maven2/'
   offlineJavadocPackageDir = new File(project.buildDir, "offline-javadoc-packages")
+  delombokTargetDir = new File("${project.projectDir}/src/main/generated")
 
   interlokJavadocs= project.hasProperty('interlokJavadocs') ? project.getProperty('interlokJavadocs') : javadocsBaseUrl + "/interlok-core/" + interlokCoreVersion
   interlokCommonJavadocs= project.hasProperty('interlokCommonJavadocs') ? project.getProperty('interlokCommonJavadocs') : javadocsBaseUrl + "/interlok-common/" + interlokCoreVersion
@@ -24,9 +26,9 @@ ext {
   organizationName = "Adaptris Ltd"
   organizationUrl = "http://interlok.adaptris.net"
   slf4jVersion = '1.7.30'
-  nettyVersion='4.1.50.Final'
-  grpcVersion='1.30.1'
-  protobufVersion='3.12.2'
+  nettyVersion='4.1.51.Final'
+  grpcVersion='1.31.1'
+  protobufVersion='3.13.0'
 }
 
 if (JavaVersion.current().isJava8Compatible()) {
@@ -59,6 +61,7 @@ sourceCompatibility = 1.8
 group   = 'com.adaptris'
 version = releaseVersion
 def versionDir = "$buildDir/version"
+generateLombokConfig.enabled = false
 
 // In this section you declare where to find the dependencies of your project
 repositories {
@@ -97,14 +100,14 @@ dependencies {
   compile  ("com.adaptris:interlok-common:$interlokCoreVersion") { changing= true}
   compile  ("com.adaptris:interlok-oauth-gcloud:$interlokCoreVersion") { changing= true}
 
-  compile ("com.google.cloud:google-cloud-pubsub:1.107.0") {
+  compile ("com.google.cloud:google-cloud-pubsub:1.108.1") {
     exclude group: "com.fasterxml.jackson.core", module: "jackson-databind"
     exclude group: "com.apache.httpcomponents", module: "httpclient"
     exclude group: "io.grpc", module: "grpc-netty-shaded"
   }
   compile ("org.apache.httpcomponents:httpclient:4.5.12")
   compile ("commons-codec:commons-codec:1.14")
-  compile ("com.fasterxml.jackson.core:jackson-databind:2.11.0")
+  compile ("com.fasterxml.jackson.core:jackson-databind:2.11.2")
   compile ("com.google.guava:guava:29.0-jre")
 
   // Minimal netty specification
@@ -137,11 +140,10 @@ dependencies {
     changing= true
     exclude group: "org.apache.logging.log4j"
   }
-
-  testCompile  ("org.mockito:mockito-all:1.10.19")
+  testCompile ("org.mockito:mockito-all:1.10.19")
   testCompile  ("org.apache.geronimo.specs:geronimo-jms_1.1_spec:1.1.1")
   testCompile  ("com.jayway.jsonpath:json-path:2.4.0")
-  testImplementation  ("com.google.api.grpc:grpc-google-cloud-pubsub-v1:1.89.0")
+  testImplementation  ("com.google.api.grpc:grpc-google-cloud-pubsub-v1:1.90.1")
   testImplementation  ("com.google.api:gax-grpc:$grpcVersion:testlib")
 
   javadoc("com.adaptris:interlok-core-apt:$interlokCoreVersion") { changing= true}
@@ -298,9 +300,26 @@ dependencyCheck  {
   }
 }
 
+delombok {
+  target = delombokTargetDir
+}
+
+task lgtmCompile(type: JavaCompile, dependsOn: delombok) {
+  group 'Build'
+  description 'Compile for lgtm'
+
+  source = sourceSets.main.extensions.delombokTask
+  destinationDir = sourceSets.main.java.outputDir
+  classpath = project.sourceSets.main.compileClasspath
+}
+
+task deleteGeneratedFiles(type: Delete) {
+  delete delombokTargetDir
+}
+
+
 // disable spotbugsTests which checks our test code..
 spotbugsTest.enabled = false
-
-
+clean.dependsOn deleteGeneratedFiles
 check.dependsOn jacocoTestReport
 javadoc.dependsOn offlinePackageList
