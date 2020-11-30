@@ -8,7 +8,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import com.adaptris.annotation.AutoPopulated;
 import com.adaptris.annotation.InputFieldDefault;
-import com.adaptris.annotation.Removal;
+import com.adaptris.validation.constraints.ConfigDeprecated;
 import com.adaptris.core.AdaptrisMessageConsumerImp;
 import com.adaptris.core.ConsumeDestination;
 import com.adaptris.core.CoreException;
@@ -59,7 +59,7 @@ public abstract class ConsumeConfig extends AdaptrisMessageConsumerImp {
   @Setter
   @Deprecated
   @Valid
-  @Removal(version = "4.0.0", message = "Use 'topic' instead")
+  @ConfigDeprecated(removalVersion = "4.0.0", message = "Use 'topic' instead", groups = Deprecated.class)
   private ConsumeDestination destination;
 
   /**

@@ -7,7 +7,7 @@ import com.adaptris.annotation.AutoPopulated;
 import com.adaptris.annotation.ComponentProfile;
 import com.adaptris.annotation.DisplayOrder;
 import com.adaptris.annotation.InputFieldDefault;
-import com.adaptris.annotation.Removal;
+import com.adaptris.validation.constraints.ConfigDeprecated;
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.CoreException;
 import com.adaptris.core.NullConnection;
@@ -49,8 +49,8 @@ public class GoogleCloudPubSubResponseProducer extends ProduceOnlyProducerImp {
   @Setter
   @Deprecated
   @Valid
-  @Removal(version = "4.0.0",
-      message = "Has no meaning for this produce since it will be inferred from ObjectMetadata")
+  @ConfigDeprecated(removalVersion = "4.0.0",
+      message = "Has no meaning for this produce since it will be inferred from ObjectMetadata", groups = Deprecated.class)
   private ProduceDestination destination;
 
 
