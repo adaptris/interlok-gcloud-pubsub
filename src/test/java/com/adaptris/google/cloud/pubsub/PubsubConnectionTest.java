@@ -21,9 +21,13 @@ package com.adaptris.google.cloud.pubsub;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+
 import java.util.List;
+
 import org.junit.Test;
-import org.mockito.Mockito;
+
 import com.adaptris.core.ConfiguredConsumeDestination;
 import com.adaptris.core.CoreException;
 import com.adaptris.google.cloud.pubsub.adminclient.SubscriptionAdminClientProvider;
@@ -39,6 +43,7 @@ import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.PushConfig;
 import com.google.pubsub.v1.Subscription;
 import com.google.pubsub.v1.TopicName;
+
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 
@@ -53,16 +58,16 @@ public class PubsubConnectionTest extends ServiceHelperBase {
     boolean retainAckedMessages = false;
     Subscription expectedResponse =
         Subscription.newBuilder()
-            .setName(name.toString())
-            .setTopic(topic.toString())
-            .setAckDeadlineSeconds(ackDeadlineSeconds2)
-            .setRetainAckedMessages(retainAckedMessages)
-            .build();
+        .setName(name.toString())
+        .setTopic(topic.toString())
+        .setAckDeadlineSeconds(ackDeadlineSeconds2)
+        .setRetainAckedMessages(retainAckedMessages)
+        .build();
     mockSubscriber.addResponse(expectedResponse);
 
     GoogleCloudPubSubConnection connection = new GoogleCloudPubSubConnection();
-    SubscriptionAdminClientProvider provider = Mockito.mock(SubscriptionAdminClientProvider.class);
-    Mockito.doReturn(subscriptionAdminClient).when(provider).getSubscriptionAdminClient();
+    SubscriptionAdminClientProvider provider = mock(SubscriptionAdminClientProvider.class);
+    doReturn(subscriptionAdminClient).when(provider).getSubscriptionAdminClient();
     connection.setSubscriptionAdminClientProvider(provider);
     connection.setProjectName(PROJECT);
     GoogleCloudPubSubPullConsumer consumer = new GoogleCloudPubSubPullConsumer();
@@ -88,16 +93,16 @@ public class PubsubConnectionTest extends ServiceHelperBase {
     boolean retainAckedMessages = false;
     Subscription expectedResponse =
         Subscription.newBuilder()
-            .setName(name.toString())
-            .setTopic(topic.toString())
-            .setAckDeadlineSeconds(ackDeadlineSeconds2)
-            .setRetainAckedMessages(retainAckedMessages)
-            .build();
+        .setName(name.toString())
+        .setTopic(topic.toString())
+        .setAckDeadlineSeconds(ackDeadlineSeconds2)
+        .setRetainAckedMessages(retainAckedMessages)
+        .build();
     mockSubscriber.addResponse(expectedResponse);
 
     GoogleCloudPubSubConnection connection = new GoogleCloudPubSubConnection();
-    SubscriptionAdminClientProvider provider = Mockito.mock(SubscriptionAdminClientProvider.class);
-    Mockito.doReturn(subscriptionAdminClient).when(provider).getSubscriptionAdminClient();
+    SubscriptionAdminClientProvider provider = mock(SubscriptionAdminClientProvider.class);
+    doReturn(subscriptionAdminClient).when(provider).getSubscriptionAdminClient();
     connection.setSubscriptionAdminClientProvider(provider);
     connection.setProjectName(PROJECT);
     GoogleCloudPubSubPullConsumer consumer = new GoogleCloudPubSubPullConsumer();
@@ -119,8 +124,8 @@ public class PubsubConnectionTest extends ServiceHelperBase {
     mockSubscriber.addException(exception);
 
     GoogleCloudPubSubConnection connection = new GoogleCloudPubSubConnection();
-    SubscriptionAdminClientProvider provider = Mockito.mock(SubscriptionAdminClientProvider.class);
-    Mockito.doReturn(subscriptionAdminClient).when(provider).getSubscriptionAdminClient();
+    SubscriptionAdminClientProvider provider = mock(SubscriptionAdminClientProvider.class);
+    doReturn(subscriptionAdminClient).when(provider).getSubscriptionAdminClient();
     connection.setSubscriptionAdminClientProvider(provider);
     connection.setProjectName(PROJECT);
     GoogleCloudPubSubPullConsumer consumer = new GoogleCloudPubSubPullConsumer();
@@ -142,8 +147,8 @@ public class PubsubConnectionTest extends ServiceHelperBase {
     mockSubscriber.addException(exception);
 
     GoogleCloudPubSubConnection connection = new GoogleCloudPubSubConnection();
-    SubscriptionAdminClientProvider provider = Mockito.mock(SubscriptionAdminClientProvider.class);
-    Mockito.doReturn(subscriptionAdminClient).when(provider).getSubscriptionAdminClient();
+    SubscriptionAdminClientProvider provider = mock(SubscriptionAdminClientProvider.class);
+    doReturn(subscriptionAdminClient).when(provider).getSubscriptionAdminClient();
     connection.setSubscriptionAdminClientProvider(provider);
     connection.setProjectName(PROJECT);
     GoogleCloudPubSubPullConsumer consumer = new GoogleCloudPubSubPullConsumer();
@@ -169,16 +174,16 @@ public class PubsubConnectionTest extends ServiceHelperBase {
     boolean retainAckedMessages = false;
     Subscription expectedResponse =
         Subscription.newBuilder()
-            .setName(name.toString())
-            .setTopic(topic.toString())
-            .setAckDeadlineSeconds(ackDeadlineSeconds2)
-            .setRetainAckedMessages(retainAckedMessages)
-            .build();
+        .setName(name.toString())
+        .setTopic(topic.toString())
+        .setAckDeadlineSeconds(ackDeadlineSeconds2)
+        .setRetainAckedMessages(retainAckedMessages)
+        .build();
     mockSubscriber.addResponse(expectedResponse);
 
     GoogleCloudPubSubConnection connection = new GoogleCloudPubSubConnection();
-    SubscriptionAdminClientProvider provider = Mockito.mock(SubscriptionAdminClientProvider.class);
-    Mockito.doReturn(subscriptionAdminClient).when(provider).getSubscriptionAdminClient();
+    SubscriptionAdminClientProvider provider = mock(SubscriptionAdminClientProvider.class);
+    doReturn(subscriptionAdminClient).when(provider).getSubscriptionAdminClient();
     connection.setSubscriptionAdminClientProvider(provider);
     connection.setProjectName(PROJECT);
     GoogleCloudPubSubPullConsumer consumer = new GoogleCloudPubSubPullConsumer();
@@ -206,8 +211,8 @@ public class PubsubConnectionTest extends ServiceHelperBase {
     mockSubscriber.addResponse(expectedResponse);
 
     GoogleCloudPubSubConnection connection = new GoogleCloudPubSubConnection();
-    SubscriptionAdminClientProvider provider = Mockito.mock(SubscriptionAdminClientProvider.class);
-    Mockito.doReturn(subscriptionAdminClient).when(provider).getSubscriptionAdminClient();
+    SubscriptionAdminClientProvider provider = mock(SubscriptionAdminClientProvider.class);
+    doReturn(subscriptionAdminClient).when(provider).getSubscriptionAdminClient();
     connection.setSubscriptionAdminClientProvider(provider);
     connection.setProjectName(PROJECT);
     GoogleCloudPubSubPullConsumer consumer = new GoogleCloudPubSubPullConsumer();
@@ -230,8 +235,8 @@ public class PubsubConnectionTest extends ServiceHelperBase {
     mockSubscriber.addResponse(expectedResponse);
 
     GoogleCloudPubSubConnection connection = new GoogleCloudPubSubConnection();
-    SubscriptionAdminClientProvider provider = Mockito.mock(SubscriptionAdminClientProvider.class);
-    Mockito.doReturn(subscriptionAdminClient).when(provider).getSubscriptionAdminClient();
+    SubscriptionAdminClientProvider provider = mock(SubscriptionAdminClientProvider.class);
+    doReturn(subscriptionAdminClient).when(provider).getSubscriptionAdminClient();
     connection.setSubscriptionAdminClientProvider(provider);
     connection.setProjectName(PROJECT);
     GoogleCloudPubSubPullConsumer consumer = new GoogleCloudPubSubPullConsumer();
@@ -252,16 +257,16 @@ public class PubsubConnectionTest extends ServiceHelperBase {
     boolean retainAckedMessages = false;
     Subscription expectedResponse =
         Subscription.newBuilder()
-            .setName(name.toString())
-            .setTopic(topic.toString())
-            .setAckDeadlineSeconds(ackDeadlineSeconds2)
-            .setRetainAckedMessages(retainAckedMessages)
-            .build();
+        .setName(name.toString())
+        .setTopic(topic.toString())
+        .setAckDeadlineSeconds(ackDeadlineSeconds2)
+        .setRetainAckedMessages(retainAckedMessages)
+        .build();
     mockSubscriber.addResponse(expectedResponse);
 
     GoogleCloudPubSubConnection connection = new GoogleCloudPubSubConnection();
-    SubscriptionAdminClientProvider provider = Mockito.mock(SubscriptionAdminClientProvider.class);
-    Mockito.doReturn(subscriptionAdminClient).when(provider).getSubscriptionAdminClient();
+    SubscriptionAdminClientProvider provider = mock(SubscriptionAdminClientProvider.class);
+    doReturn(subscriptionAdminClient).when(provider).getSubscriptionAdminClient();
     connection.setSubscriptionAdminClientProvider(provider);
     connection.setProjectName(PROJECT);
     connection.setCredentialsProvider(new MockCredentialsProvider(credentialsProvider));
@@ -294,16 +299,16 @@ public class PubsubConnectionTest extends ServiceHelperBase {
     boolean retainAckedMessages = false;
     Subscription expectedResponse =
         Subscription.newBuilder()
-            .setName(name.toString())
-            .setTopic(topic.toString())
-            .setAckDeadlineSeconds(ackDeadlineSeconds2)
-            .setRetainAckedMessages(retainAckedMessages)
-            .build();
+        .setName(name.toString())
+        .setTopic(topic.toString())
+        .setAckDeadlineSeconds(ackDeadlineSeconds2)
+        .setRetainAckedMessages(retainAckedMessages)
+        .build();
     mockSubscriber.addResponse(expectedResponse);
 
     GoogleCloudPubSubConnection connection = new GoogleCloudPubSubConnection();
-    SubscriptionAdminClientProvider provider = Mockito.mock(SubscriptionAdminClientProvider.class);
-    Mockito.doReturn(subscriptionAdminClient).when(provider).getSubscriptionAdminClient();
+    SubscriptionAdminClientProvider provider = mock(SubscriptionAdminClientProvider.class);
+    doReturn(subscriptionAdminClient).when(provider).getSubscriptionAdminClient();
     connection.setSubscriptionAdminClientProvider(provider);
     connection.setProjectName(PROJECT);
     connection.setCredentialsProvider(new MockCredentialsProvider(credentialsProvider));

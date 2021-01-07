@@ -3,21 +3,23 @@ package com.adaptris.google.cloud.pubsub;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import org.junit.Test;
-import org.mockito.Mockito;
+
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.AdaptrisMessageFactory;
-import com.adaptris.core.ProducerCase;
 import com.adaptris.core.StandaloneProducer;
 import com.adaptris.core.util.LifecycleHelper;
+import com.adaptris.interlok.junit.scaffolding.ExampleProducerCase;
 import com.google.cloud.pubsub.v1.AckReplyConsumer;
 
-public class GoogleCloudPubSubResponseProducerTest extends ProducerCase {
+public class GoogleCloudPubSubResponseProducerTest extends ExampleProducerCase {
 
-  @Override
-  public boolean isAnnotatedForJunit4() {
-    return true;
-  }
   @Test
   public void testConstruct() throws Exception {
     GoogleCloudPubSubResponseProducer producer = new GoogleCloudPubSubResponseProducer();
@@ -32,36 +34,36 @@ public class GoogleCloudPubSubResponseProducerTest extends ProducerCase {
 
   @Test
   public void testProduceNullMetadata() throws Exception {
-    GoogleCloudPubSubResponseProducer producer = Mockito.spy(new GoogleCloudPubSubResponseProducer());
+    GoogleCloudPubSubResponseProducer producer = spy(new GoogleCloudPubSubResponseProducer());
     AdaptrisMessage msg =  AdaptrisMessageFactory.getDefaultInstance().newMessage();
     producer.produce(msg);
-    Mockito.verify(producer, Mockito.never()).getReplyProvider();
+    verify(producer, never()).getReplyProvider();
   }
 
   @Test
   public void testProduceNack() throws Exception {
-    GoogleCloudPubSubResponseProducer producer = Mockito.spy(new GoogleCloudPubSubResponseProducer());
+    GoogleCloudPubSubResponseProducer producer = spy(new GoogleCloudPubSubResponseProducer());
     producer.setReplyProvider(new ConfiguredReplyProvider(ReplyProvider.AckReply.NACK));
     AdaptrisMessage msg =  AdaptrisMessageFactory.getDefaultInstance().newMessage();
-    AckReplyConsumer ackReplyConsumer = Mockito.mock(AckReplyConsumer.class);
+    AckReplyConsumer ackReplyConsumer = mock(AckReplyConsumer.class);
     msg.addObjectHeader(Constants.REPLY_KEY,ackReplyConsumer);
     producer.produce(msg);
-    Mockito.verify(producer, Mockito.times(1)).getReplyProvider();
-    Mockito.verify(ackReplyConsumer, Mockito.times(1)).nack();
-    Mockito.verify(ackReplyConsumer, Mockito.never()).ack();
+    verify(producer, times(1)).getReplyProvider();
+    verify(ackReplyConsumer, times(1)).nack();
+    verify(ackReplyConsumer, never()).ack();
   }
 
   @Test
   public void testProduceAck() throws Exception {
-    GoogleCloudPubSubResponseProducer producer = Mockito.spy(new GoogleCloudPubSubResponseProducer());
+    GoogleCloudPubSubResponseProducer producer = spy(new GoogleCloudPubSubResponseProducer());
     producer.setReplyProvider(new ConfiguredReplyProvider(ReplyProvider.AckReply.ACK));
     AdaptrisMessage msg =  AdaptrisMessageFactory.getDefaultInstance().newMessage();
-    AckReplyConsumer ackReplyConsumer = Mockito.mock(AckReplyConsumer.class);
+    AckReplyConsumer ackReplyConsumer = mock(AckReplyConsumer.class);
     msg.addObjectHeader(Constants.REPLY_KEY,ackReplyConsumer);
     producer.produce(msg);
-    Mockito.verify(producer, Mockito.times(1)).getReplyProvider();
-    Mockito.verify(ackReplyConsumer, Mockito.times(1)).ack();
-    Mockito.verify(ackReplyConsumer, Mockito.never()).nack();
+    verify(producer, times(1)).getReplyProvider();
+    verify(ackReplyConsumer, times(1)).ack();
+    verify(ackReplyConsumer, never()).nack();
   }
 
   @Test
@@ -73,14 +75,14 @@ public class GoogleCloudPubSubResponseProducerTest extends ProducerCase {
 
   @Test
   public void testLifecycle() throws Exception {
-    GoogleCloudPubSubResponseProducer producer = Mockito.spy(new GoogleCloudPubSubResponseProducer());
+    GoogleCloudPubSubResponseProducer producer = spy(new GoogleCloudPubSubResponseProducer());
     LifecycleHelper.initAndStart(producer);
     LifecycleHelper.stopAndClose(producer);
-    Mockito.verify(producer, Mockito.times(1)).prepare();
-    Mockito.verify(producer, Mockito.times(1)).init();
-    Mockito.verify(producer, Mockito.times(1)).start();
-    Mockito.verify(producer, Mockito.times(1)).stop();
-    Mockito.verify(producer, Mockito.times(1)).close();
+    verify(producer, times(1)).prepare();
+    verify(producer, times(1)).init();
+    verify(producer, times(1)).start();
+    verify(producer, times(1)).stop();
+    verify(producer, times(1)).close();
   }
 
   @Test
