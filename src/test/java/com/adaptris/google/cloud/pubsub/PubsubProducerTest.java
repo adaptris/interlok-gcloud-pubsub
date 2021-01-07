@@ -21,9 +21,13 @@ package com.adaptris.google.cloud.pubsub;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+
 import java.util.List;
+
 import org.junit.Test;
-import org.mockito.Mockito;
+
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.AdaptrisMessageFactory;
 import com.adaptris.core.ConfiguredProduceDestination;
@@ -39,11 +43,11 @@ import com.google.pubsub.v1.PublishRequest;
 import com.google.pubsub.v1.PublishResponse;
 import com.google.pubsub.v1.Topic;
 import com.google.pubsub.v1.TopicName;
+
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 
 public class PubsubProducerTest extends ServiceHelperBase {
-
 
   @Test
   @SuppressWarnings("all")
@@ -52,8 +56,8 @@ public class PubsubProducerTest extends ServiceHelperBase {
     mockPublisher.addResponse(expectedResponse);
 
     GoogleCloudPubSubConnection connection = new GoogleCloudPubSubConnection();
-    TopicAdminClientProvider provider = Mockito.mock(TopicAdminClientProvider.class);
-    Mockito.doReturn(topicAdminClient).when(provider).getTopicAdminClient();
+    TopicAdminClientProvider provider = mock(TopicAdminClientProvider.class);
+    doReturn(topicAdminClient).when(provider).getTopicAdminClient();
     connection.setTopicAdminClientProvider(provider);
     connection.setProjectName(PROJECT);
     GoogleCloudPubSubProducer producer = new GoogleCloudPubSubProducer();
@@ -84,8 +88,8 @@ public class PubsubProducerTest extends ServiceHelperBase {
     mockPublisher.addResponse(expectedResponse);
 
     GoogleCloudPubSubConnection connection = new GoogleCloudPubSubConnection();
-    TopicAdminClientProvider provider = Mockito.mock(TopicAdminClientProvider.class);
-    Mockito.doReturn(topicAdminClient).when(provider).getTopicAdminClient();
+    TopicAdminClientProvider provider = mock(TopicAdminClientProvider.class);
+    doReturn(topicAdminClient).when(provider).getTopicAdminClient();
     connection.setTopicAdminClientProvider(provider);
     connection.setProjectName(PROJECT);
     GoogleCloudPubSubProducer producer = new GoogleCloudPubSubProducer();
@@ -118,8 +122,8 @@ public class PubsubProducerTest extends ServiceHelperBase {
     mockPublisher.addResponse(expectedResponse);
 
     GoogleCloudPubSubConnection connection = new GoogleCloudPubSubConnection();
-    TopicAdminClientProvider provider = Mockito.mock(TopicAdminClientProvider.class);
-    Mockito.doReturn(topicAdminClient).when(provider).getTopicAdminClient();
+    TopicAdminClientProvider provider = mock(TopicAdminClientProvider.class);
+    doReturn(topicAdminClient).when(provider).getTopicAdminClient();
     connection.setTopicAdminClientProvider(provider);
     connection.setProjectName(PROJECT);
     GoogleCloudPubSubProducer producer = new GoogleCloudPubSubProducer();
@@ -148,8 +152,8 @@ public class PubsubProducerTest extends ServiceHelperBase {
     mockPublisher.addException(exception);
 
     GoogleCloudPubSubConnection connection = new GoogleCloudPubSubConnection();
-    TopicAdminClientProvider provider = Mockito.mock(TopicAdminClientProvider.class);
-    Mockito.doReturn(topicAdminClient).when(provider).getTopicAdminClient();
+    TopicAdminClientProvider provider = mock(TopicAdminClientProvider.class);
+    doReturn(topicAdminClient).when(provider).getTopicAdminClient();
     connection.setTopicAdminClientProvider(provider);
     connection.setProjectName(PROJECT);
     GoogleCloudPubSubProducer producer = new GoogleCloudPubSubProducer();
@@ -181,8 +185,8 @@ public class PubsubProducerTest extends ServiceHelperBase {
     mockPublisher.addResponse(expectedResponse);
 
     GoogleCloudPubSubConnection connection = new GoogleCloudPubSubConnection();
-    TopicAdminClientProvider provider = Mockito.mock(TopicAdminClientProvider.class);
-    Mockito.doReturn(topicAdminClient).when(provider).getTopicAdminClient();
+    TopicAdminClientProvider provider = mock(TopicAdminClientProvider.class);
+    doReturn(topicAdminClient).when(provider).getTopicAdminClient();
     connection.setTopicAdminClientProvider(provider);
     connection.setProjectName(PROJECT);
     connection.setCredentialsProvider(new MockCredentialsProvider(credentialsProvider));
@@ -224,8 +228,8 @@ public class PubsubProducerTest extends ServiceHelperBase {
     mockPublisher.addException(exception);
 
     GoogleCloudPubSubConnection connection = new GoogleCloudPubSubConnection();
-    TopicAdminClientProvider provider = Mockito.mock(TopicAdminClientProvider.class);
-    Mockito.doReturn(topicAdminClient).when(provider).getTopicAdminClient();
+    TopicAdminClientProvider provider = mock(TopicAdminClientProvider.class);
+    doReturn(topicAdminClient).when(provider).getTopicAdminClient();
     connection.setTopicAdminClientProvider(provider);
     connection.setProjectName(PROJECT);
     connection.setCredentialsProvider(new MockCredentialsProvider(credentialsProvider));

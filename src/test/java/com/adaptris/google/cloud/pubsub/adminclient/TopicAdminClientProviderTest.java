@@ -1,26 +1,31 @@
 package com.adaptris.google.cloud.pubsub.adminclient;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+
+import org.junit.Test;
+
 import com.adaptris.core.CoreException;
 import com.adaptris.core.util.LifecycleHelper;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.grpc.GrpcTransportChannel;
 import com.google.api.gax.rpc.TransportChannelProvider;
-import io.grpc.ManagedChannel;
-import org.junit.Test;
-import org.mockito.Mockito;
 
-import static org.junit.Assert.*;
+import io.grpc.ManagedChannel;
 
 public class TopicAdminClientProviderTest {
 
   @Test
   public void testLifeCycle() throws  Exception {
     TopicAdminClientProvider adminClientProvider = new TopicAdminClientProvider();
-    TransportChannelProvider channelProvider = Mockito.mock(TransportChannelProvider.class);
-    Mockito.doReturn("grpc").when(channelProvider).getTransportName();
-    GrpcTransportChannel managedChannel = GrpcTransportChannel.create(Mockito.mock(ManagedChannel.class));
-    Mockito.doReturn(managedChannel).when(channelProvider).getTransportChannel();
-    CredentialsProvider credentialsProvider = Mockito.mock(CredentialsProvider.class);
+    TransportChannelProvider channelProvider = mock(TransportChannelProvider.class);
+    doReturn("grpc").when(channelProvider).getTransportName();
+    GrpcTransportChannel managedChannel = GrpcTransportChannel.create(mock(ManagedChannel.class));
+    doReturn(managedChannel).when(channelProvider).getTransportChannel();
+    CredentialsProvider credentialsProvider = mock(CredentialsProvider.class);
     adminClientProvider.setChannelProvider(channelProvider);
     adminClientProvider.setCredentialsProvider(credentialsProvider);
     LifecycleHelper.initAndStart(adminClientProvider);
@@ -31,11 +36,11 @@ public class TopicAdminClientProviderTest {
   @Test
   public void testInit() throws  Exception {
     TopicAdminClientProvider adminClientProvider = new TopicAdminClientProvider();
-    TransportChannelProvider channelProvider = Mockito.mock(TransportChannelProvider.class);
-    Mockito.doReturn("grpc").when(channelProvider).getTransportName();
-    GrpcTransportChannel managedChannel = GrpcTransportChannel.create(Mockito.mock(ManagedChannel.class));
-    Mockito.doReturn(managedChannel).when(channelProvider).getTransportChannel();
-    CredentialsProvider credentialsProvider = Mockito.mock(CredentialsProvider.class);
+    TransportChannelProvider channelProvider = mock(TransportChannelProvider.class);
+    doReturn("grpc").when(channelProvider).getTransportName();
+    GrpcTransportChannel managedChannel = GrpcTransportChannel.create(mock(ManagedChannel.class));
+    doReturn(managedChannel).when(channelProvider).getTransportChannel();
+    CredentialsProvider credentialsProvider = mock(CredentialsProvider.class);
     initFail(adminClientProvider,"ChannelProvider can not be null");
     adminClientProvider.setChannelProvider(channelProvider);
     initFail(adminClientProvider,"CredentialsProvider can not be null");

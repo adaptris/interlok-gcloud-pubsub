@@ -28,3 +28,4 @@ target
 bin
 .gradle
 src/main/generated
+gradle.properties

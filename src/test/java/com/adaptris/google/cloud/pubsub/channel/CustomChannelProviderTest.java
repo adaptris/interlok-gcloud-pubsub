@@ -1,13 +1,23 @@
 package com.adaptris.google.cloud.pubsub.channel;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
+import org.junit.Test;
+
 import com.adaptris.core.CoreException;
 import com.adaptris.core.util.LifecycleHelper;
 import com.google.api.gax.rpc.FixedTransportChannelProvider;
 import com.google.api.gax.rpc.TransportChannelProvider;
-import org.junit.Test;
-import org.mockito.Mockito;
-
-import static org.junit.Assert.*;
 
 public class CustomChannelProviderTest {
 
@@ -26,25 +36,25 @@ public class CustomChannelProviderTest {
 
   @Test
   public void testInit() throws Exception {
-    CustomChannelProvider provider = Mockito.spy(new CustomChannelProvider());
+    CustomChannelProvider provider = spy(new CustomChannelProvider());
     provider.setAddress("localhost:9999");
     provider.setUsePlaintext(true);
     LifecycleHelper.initAndStart(provider);
     assertTrue(provider.getChannelProvider() instanceof FixedTransportChannelProvider);
-    Mockito.verify(provider,Mockito.times(1)).init();
-    Mockito.verify(provider,Mockito.times(1)).start();
-    Mockito.verify(provider,Mockito.times(1)).validateArguments();
-    Mockito.verify(provider,Mockito.times(1)).setChannelProvider(Mockito.any(FixedTransportChannelProvider.class));
+    verify(provider, times(1)).init();
+    verify(provider, times(1)).start();
+    verify(provider, times(1)).validateArguments();
+    verify(provider, times(1)).setChannelProvider(any(FixedTransportChannelProvider.class));
   }
 
   @Test
   public void testStopClose() throws Exception{
-    CustomChannelProvider provider = Mockito.spy(new CustomChannelProvider());
+    CustomChannelProvider provider = spy(new CustomChannelProvider());
     LifecycleHelper.stopAndClose(provider);
-    Mockito.verify(provider,Mockito.times(1)).stop();
-    Mockito.verify(provider,Mockito.times(1)).close();
-    Mockito.verify(provider,Mockito.never()).validateArguments();
-    Mockito.verify(provider,Mockito.never()).setChannelProvider(Mockito.any(FixedTransportChannelProvider.class));
+    verify(provider, times(1)).stop();
+    verify(provider, times(1)).close();
+    verify(provider, never()).validateArguments();
+    verify(provider, never()).setChannelProvider(any(FixedTransportChannelProvider.class));
   }
 
   @Test
