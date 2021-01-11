@@ -147,7 +147,7 @@ dependencies {
   testCompile ("org.mockito:mockito-core:3.7.0")
   testCompile ("org.mockito:mockito-inline:3.7.0")
   testCompile  ("org.apache.geronimo.specs:geronimo-jms_1.1_spec:1.1.1")
-  testCompile  ("com.jayway.jsonpath:json-path:2.4.0")
+  testCompile  ("com.jayway.jsonpath:json-path:2.5.0")
   testImplementation  ("com.google.api.grpc:grpc-google-cloud-pubsub-v1:1.92.1")
   testImplementation  ("com.google.api:gax-grpc:1.60:testlib")
 
