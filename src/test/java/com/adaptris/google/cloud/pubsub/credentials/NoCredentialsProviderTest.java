@@ -1,31 +1,36 @@
 package com.adaptris.google.cloud.pubsub.credentials;
 
-import com.adaptris.core.util.LifecycleHelper;
-import org.junit.Test;
-import org.mockito.Mockito;
-
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
+import org.junit.Test;
+
+import com.adaptris.core.util.LifecycleHelper;
 
 
 public class NoCredentialsProviderTest {
 
   @Test
   public void testInit() throws Exception {
-    NoCredentialsProvider provider = Mockito.spy(new NoCredentialsProvider());
+    NoCredentialsProvider provider = spy(new NoCredentialsProvider());
     LifecycleHelper.initAndStart(provider);
     assertTrue(provider.getCredentialsProvider() instanceof com.google.api.gax.core.NoCredentialsProvider);
-    Mockito.verify(provider,Mockito.times(1)).init();
-    Mockito.verify(provider,Mockito.times(1)).start();
-    Mockito.verify(provider,Mockito.times(1)).setCredentialsProvider(Mockito.any(com.google.api.gax.core.NoCredentialsProvider.class));
+    verify(provider, times(1)).init();
+    verify(provider, times(1)).start();
+    verify(provider, times(1)).setCredentialsProvider(any(com.google.api.gax.core.NoCredentialsProvider.class));
   }
 
   @Test
   public void testStopClose() throws Exception{
-    NoCredentialsProvider provider = Mockito.spy(new NoCredentialsProvider());
+    NoCredentialsProvider provider = spy(new NoCredentialsProvider());
     LifecycleHelper.stopAndClose(provider);
-    Mockito.verify(provider,Mockito.times(1)).stop();
-    Mockito.verify(provider,Mockito.times(1)).close();
-    Mockito.verify(provider,Mockito.never()).setCredentialsProvider(Mockito.any(com.google.api.gax.core.NoCredentialsProvider.class));
+    verify(provider, times(1)).stop();
+    verify(provider, times(1)).close();
+    verify(provider, never()).setCredentialsProvider(any(com.google.api.gax.core.NoCredentialsProvider.class));
   }
 
   @Test

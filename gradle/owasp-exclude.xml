@@ -8,4 +8,14 @@
       <packageUrl regex="true">^pkg:maven/io\.grpc/grpc\-netty.*$</packageUrl>
       <cpe>cpe:/a:netty:netty</cpe>
    </suppress>
+   <suppress>
+      <notes><![CDATA[
+      file name: proto-google-iam-v1-1.0.3.jar
+      // CVE-2017-7860, CVE-2017-7861, CVE-2017-8359 -> Relates to C
+      // CVE-2020-7768 -> Relates to Javascript
+      // so the identifier is almost certainly wrong here.
+      ]]></notes>
+      <packageUrl regex="true">^pkg:maven/com\.google\.api\.grpc/proto\-google\-iam\-v1@.*$</packageUrl>
+      <cpe>cpe:/a:grpc:grpc</cpe>
+   </suppress>
 </suppressions>

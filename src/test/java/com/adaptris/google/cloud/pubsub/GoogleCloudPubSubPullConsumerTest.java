@@ -6,18 +6,21 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
 import java.util.concurrent.TimeUnit;
+
 import org.junit.Test;
 import org.mockito.Mockito;
+
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.ConfiguredConsumeDestination;
-import com.adaptris.core.ConsumerCase;
 import com.adaptris.core.CoreException;
 import com.adaptris.core.StandaloneConsumer;
 import com.adaptris.core.oauth.gcloud.ApplicationDefaultCredentials;
 import com.adaptris.core.stubs.MockMessageListener;
 import com.adaptris.core.util.LifecycleHelper;
 import com.adaptris.google.cloud.pubsub.credentials.FixedCredentialsProvider;
+import com.adaptris.interlok.junit.scaffolding.ExampleConsumerCase;
 import com.adaptris.util.TimeInterval;
 import com.google.cloud.pubsub.v1.AckReplyConsumer;
 import com.google.cloud.pubsub.v1.Subscriber;
@@ -26,12 +29,7 @@ import com.google.protobuf.Timestamp;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.PubsubMessage;
 
-public class GoogleCloudPubSubPullConsumerTest extends ConsumerCase {
-
-  @Override
-  public boolean isAnnotatedForJunit4() {
-    return true;
-  }
+public class GoogleCloudPubSubPullConsumerTest extends ExampleConsumerCase {
 
   @Test
   public void testConstruct() throws Exception {

@@ -3,8 +3,13 @@ package com.adaptris.google.cloud.pubsub;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import org.junit.Test;
-import org.mockito.Mockito;
+
 import com.google.cloud.pubsub.v1.Publisher;
 
 public class PublisherMapTest {
@@ -20,12 +25,12 @@ public class PublisherMapTest {
   @Test
   public void testRemoveEldestEntry() throws Exception {
     PublisherMap publisherMap = new PublisherMap(5);
-    Publisher publisher = Mockito.mock(Publisher.class);
-    publisherMap.put("key1",publisher);
-    publisherMap.put("key2",null);
-    publisherMap.put("key3",Mockito.mock(Publisher.class));
-    publisherMap.put("key4",Mockito.mock(Publisher.class));
-    publisherMap.put("key5",Mockito.mock(Publisher.class));
+    Publisher publisher = mock(Publisher.class);
+    publisherMap.put("key1", publisher);
+    publisherMap.put("key2", null);
+    publisherMap.put("key3", mock(Publisher.class));
+    publisherMap.put("key4", mock(Publisher.class));
+    publisherMap.put("key5", mock(Publisher.class));
 
     assertTrue(publisherMap.containsKey("key1"));
     assertTrue(publisherMap.containsKey("key2"));
@@ -33,7 +38,7 @@ public class PublisherMapTest {
     assertTrue(publisherMap.containsKey("key4"));
     assertTrue(publisherMap.containsKey("key5"));
 
-    publisherMap.put("key6",Mockito.mock(Publisher.class));
+    publisherMap.put("key6", mock(Publisher.class));
 
     assertFalse(publisherMap.containsKey("key1"));
     assertTrue(publisherMap.containsKey("key2"));
@@ -42,7 +47,7 @@ public class PublisherMapTest {
     assertTrue(publisherMap.containsKey("key5"));
     assertTrue(publisherMap.containsKey("key6"));
 
-    publisherMap.put("key7",Mockito.mock(Publisher.class));
+    publisherMap.put("key7", mock(Publisher.class));
 
     assertFalse(publisherMap.containsKey("key1"));
     assertFalse(publisherMap.containsKey("key2"));
@@ -52,20 +57,20 @@ public class PublisherMapTest {
     assertTrue(publisherMap.containsKey("key6"));
     assertTrue(publisherMap.containsKey("key7"));
 
-    Mockito.verify(publisher, Mockito.times(1)).shutdown();
+    verify(publisher, times(1)).shutdown();
 
   }
 
   @Test
   public void testRemoveEldestEntryException() throws Exception {
     PublisherMap publisherMap = new PublisherMap(5);
-    Publisher publisher = Mockito.mock(Publisher.class);
-    Mockito.doThrow(new IllegalArgumentException()).when(publisher).shutdown();
-    publisherMap.put("key1",publisher);
-    publisherMap.put("key2",null);
-    publisherMap.put("key3",Mockito.mock(Publisher.class));
-    publisherMap.put("key4",Mockito.mock(Publisher.class));
-    publisherMap.put("key5",Mockito.mock(Publisher.class));
+    Publisher publisher = mock(Publisher.class);
+    doThrow(new IllegalArgumentException()).when(publisher).shutdown();
+    publisherMap.put("key1", publisher);
+    publisherMap.put("key2", null);
+    publisherMap.put("key3", mock(Publisher.class));
+    publisherMap.put("key4", mock(Publisher.class));
+    publisherMap.put("key5", mock(Publisher.class));
 
     assertTrue(publisherMap.containsKey("key1"));
     assertTrue(publisherMap.containsKey("key2"));
@@ -73,7 +78,7 @@ public class PublisherMapTest {
     assertTrue(publisherMap.containsKey("key4"));
     assertTrue(publisherMap.containsKey("key5"));
 
-    publisherMap.put("key6",Mockito.mock(Publisher.class));
+    publisherMap.put("key6", mock(Publisher.class));
 
     assertFalse(publisherMap.containsKey("key1"));
     assertTrue(publisherMap.containsKey("key2"));
@@ -81,7 +86,7 @@ public class PublisherMapTest {
     assertTrue(publisherMap.containsKey("key4"));
     assertTrue(publisherMap.containsKey("key5"));
     assertTrue(publisherMap.containsKey("key6"));
-    Mockito.verify(publisher, Mockito.times(1)).shutdown();
+    verify(publisher, times(1)).shutdown();
   }
 
 

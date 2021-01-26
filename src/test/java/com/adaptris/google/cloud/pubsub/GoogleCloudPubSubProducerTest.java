@@ -3,22 +3,22 @@ package com.adaptris.google.cloud.pubsub;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import org.junit.Test;
-import org.mockito.Mockito;
+
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.AdaptrisMessageFactory;
-import com.adaptris.core.ProducerCase;
 import com.adaptris.core.StandaloneRequestor;
 import com.adaptris.core.util.LifecycleHelper;
+import com.adaptris.interlok.junit.scaffolding.ExampleProducerCase;
 import com.google.cloud.pubsub.v1.Publisher;
 import com.google.pubsub.v1.PubsubMessage;
 
-public class GoogleCloudPubSubProducerTest extends ProducerCase {
-
-  @Override
-  public boolean isAnnotatedForJunit4() {
-    return true;
-  }
+public class GoogleCloudPubSubProducerTest extends ExampleProducerCase {
 
   @Test
   public void testPrepare() throws Exception {
@@ -36,7 +36,7 @@ public class GoogleCloudPubSubProducerTest extends ProducerCase {
   @Test
   public void testClose() throws Exception {
     PublisherMap publisherMap = new PublisherMap(5);
-    Publisher publisher = Mockito.mock(Publisher.class);
+    Publisher publisher = mock(Publisher.class);
     publisherMap.put("key1",publisher);
     publisherMap.put("key2",null);
 
@@ -44,21 +44,21 @@ public class GoogleCloudPubSubProducerTest extends ProducerCase {
     producer.setPublisherCache(publisherMap);
     producer.close();
 
-    Mockito.verify(publisher, Mockito.times(1)).shutdown();
+    verify(publisher, times(1)).shutdown();
 
   }
 
   @Test
   public void testCloseException() throws Exception {
     PublisherMap publisherMap = new PublisherMap(5);
-    Publisher publisher = Mockito.mock(Publisher.class);
-    Mockito.doThrow(new IllegalArgumentException()).when(publisher).shutdown();
+    Publisher publisher = mock(Publisher.class);
+    doThrow(new IllegalArgumentException()).when(publisher).shutdown();
     publisherMap.put("key1",publisher);
     publisherMap.put("key2",null);
     GoogleCloudPubSubProducer producer = new GoogleCloudPubSubProducer();
     producer.setPublisherCache(publisherMap);
     producer.close();
-    Mockito.verify(publisher, Mockito.times(1)).shutdown();
+    verify(publisher, times(1)).shutdown();
 
   }
 
