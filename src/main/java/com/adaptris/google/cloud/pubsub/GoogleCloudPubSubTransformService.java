@@ -14,6 +14,9 @@ import com.adaptris.core.metadata.MetadataFilter;
 import com.adaptris.core.metadata.NoOpMetadataFilter;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
+/**
+ * @config google-cloud-pubsub-transform-service
+ */
 @XStreamAlias("google-cloud-pubsub-transform-service")
 @ComponentProfile(summary = "Map from google pubsub message format to an Interlok message", tag = "service,gcloud")
 public class GoogleCloudPubSubTransformService extends ServiceImp {

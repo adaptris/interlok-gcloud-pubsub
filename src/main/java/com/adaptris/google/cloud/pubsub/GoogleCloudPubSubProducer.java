@@ -42,6 +42,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * @config google-cloud-pubsub-producer
+ */
 @XStreamAlias("google-cloud-pubsub-producer")
 @ComponentProfile(summary = "Publish a message to Google pubsub", tag = "producer,gcloud,messaging", recommended =
 {

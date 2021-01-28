@@ -5,6 +5,9 @@ import com.adaptris.core.ConnectionErrorHandlerImp;
 import com.adaptris.core.CoreException;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
+/**
+ * @config google-cloud-pubsub-connection-error-handler
+ */
 @XStreamAlias("google-cloud-pubsub-connection-error-handler")
 @ComponentProfile(summary = "Google pubsub specific error handler", tag = "connections,gcloud")
 public class GoogleCloudPubSubConnectionErrorHandler extends ConnectionErrorHandlerImp {
