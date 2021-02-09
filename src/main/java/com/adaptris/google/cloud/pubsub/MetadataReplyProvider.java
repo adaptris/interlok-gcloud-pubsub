@@ -6,6 +6,9 @@ import com.adaptris.annotation.ComponentProfile;
 import com.adaptris.core.AdaptrisMessage;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
+/**
+ * @config gcloud-metadata-reply-provider
+ */
 @XStreamAlias("gcloud-metadata-reply-provider")
 @ComponentProfile(summary = "Derive a ack/nack based on metadata for GoogleCloudPubSubResponseProducer")
 public class MetadataReplyProvider implements ReplyProvider {

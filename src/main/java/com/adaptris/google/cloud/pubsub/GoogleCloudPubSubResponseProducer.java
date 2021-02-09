@@ -22,6 +22,9 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
+/**
+ * @config google-cloud-pubsub-response-producer
+ */
 @XStreamAlias("google-cloud-pubsub-response-producer")
 @ComponentProfile(summary = "Publish a ack/nack message to Google pubsub (when auto-acknowledge=false on the consumer)", tag = "producer,gcloud,messaging", recommended =
 {

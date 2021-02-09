@@ -13,6 +13,9 @@ import org.apache.commons.lang3.StringUtils;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+/**
+ * @config custom-channel-provider
+ */
 @XStreamAlias("custom-channel-provider")
 public class CustomChannelProvider extends ChannelProvider {
 
