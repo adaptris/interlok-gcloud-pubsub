@@ -28,7 +28,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.adaptris.core.ConfiguredConsumeDestination;
 import com.adaptris.core.CoreException;
 import com.adaptris.google.cloud.pubsub.adminclient.SubscriptionAdminClientProvider;
 import com.adaptris.google.cloud.pubsub.channel.MockChannelProvider;
@@ -71,7 +70,7 @@ public class PubsubConnectionTest extends ServiceHelperBase {
     connection.setSubscriptionAdminClientProvider(provider);
     connection.setProjectName(PROJECT);
     GoogleCloudPubSubPullConsumer consumer = new GoogleCloudPubSubPullConsumer();
-    consumer.setDestination(new ConfiguredConsumeDestination(TOPIC));
+    consumer.setTopic(TOPIC);
     consumer.setSubscriptionName(SUBSCRIPTION);
     consumer.setCreateSubscription(true);
     ProjectSubscriptionName actualResponse = connection.createSubscription(consumer);
@@ -106,7 +105,7 @@ public class PubsubConnectionTest extends ServiceHelperBase {
     connection.setSubscriptionAdminClientProvider(provider);
     connection.setProjectName(PROJECT);
     GoogleCloudPubSubPullConsumer consumer = new GoogleCloudPubSubPullConsumer();
-    consumer.setDestination(new ConfiguredConsumeDestination("different-topic"));
+    consumer.setTopic("different-topic");
     consumer.setSubscriptionName(SUBSCRIPTION);
     consumer.setCreateSubscription(true);
     try {
@@ -129,7 +128,7 @@ public class PubsubConnectionTest extends ServiceHelperBase {
     connection.setSubscriptionAdminClientProvider(provider);
     connection.setProjectName(PROJECT);
     GoogleCloudPubSubPullConsumer consumer = new GoogleCloudPubSubPullConsumer();
-    consumer.setDestination(new ConfiguredConsumeDestination("different-topic"));
+    consumer.setTopic("different-topic");
     consumer.setSubscriptionName(SUBSCRIPTION);
     consumer.setCreateSubscription(true);
     try {
@@ -152,7 +151,7 @@ public class PubsubConnectionTest extends ServiceHelperBase {
     connection.setSubscriptionAdminClientProvider(provider);
     connection.setProjectName(PROJECT);
     GoogleCloudPubSubPullConsumer consumer = new GoogleCloudPubSubPullConsumer();
-    consumer.setDestination(new ConfiguredConsumeDestination("different-topic"));
+    consumer.setTopic("different-topic");
     consumer.setSubscriptionName(SUBSCRIPTION);
     consumer.setCreateSubscription(false);
     try {
@@ -187,7 +186,7 @@ public class PubsubConnectionTest extends ServiceHelperBase {
     connection.setSubscriptionAdminClientProvider(provider);
     connection.setProjectName(PROJECT);
     GoogleCloudPubSubPullConsumer consumer = new GoogleCloudPubSubPullConsumer();
-    consumer.setDestination(new ConfiguredConsumeDestination(TOPIC));
+    consumer.setTopic(TOPIC);
     consumer.setSubscriptionName(SUBSCRIPTION);
     consumer.setCreateSubscription(true);
     ProjectSubscriptionName actualResponse = connection.createSubscription(consumer);
@@ -216,7 +215,7 @@ public class PubsubConnectionTest extends ServiceHelperBase {
     connection.setSubscriptionAdminClientProvider(provider);
     connection.setProjectName(PROJECT);
     GoogleCloudPubSubPullConsumer consumer = new GoogleCloudPubSubPullConsumer();
-    consumer.setDestination(new ConfiguredConsumeDestination(TOPIC));
+    consumer.setTopic(TOPIC);
     consumer.setSubscriptionName(SUBSCRIPTION);
     consumer.setCreateSubscription(true);
     connection.deleteSubscription(consumer);
@@ -240,7 +239,7 @@ public class PubsubConnectionTest extends ServiceHelperBase {
     connection.setSubscriptionAdminClientProvider(provider);
     connection.setProjectName(PROJECT);
     GoogleCloudPubSubPullConsumer consumer = new GoogleCloudPubSubPullConsumer();
-    consumer.setDestination(new ConfiguredConsumeDestination(TOPIC));
+    consumer.setTopic(TOPIC);
     consumer.setSubscriptionName(SUBSCRIPTION);
     consumer.setCreateSubscription(false);
     connection.deleteSubscription(consumer);
@@ -273,7 +272,7 @@ public class PubsubConnectionTest extends ServiceHelperBase {
     connection.setChannelProvider(new MockChannelProvider(channelProvider));
 
     GoogleCloudPubSubPullConsumer consumer = new GoogleCloudPubSubPullConsumer();
-    consumer.setDestination(new ConfiguredConsumeDestination(TOPIC));
+    consumer.setTopic(TOPIC);
     consumer.setSubscriptionName(SUBSCRIPTION);
     consumer.setCreateSubscription(true);
 
@@ -316,7 +315,7 @@ public class PubsubConnectionTest extends ServiceHelperBase {
     connection.setConnectionErrorHandler(new GoogleCloudPubSubConnectionErrorHandler());
 
     GoogleCloudPubSubPullConsumer consumer = new GoogleCloudPubSubPullConsumer();
-    consumer.setDestination(new ConfiguredConsumeDestination(TOPIC));
+    consumer.setTopic(TOPIC);
     consumer.setSubscriptionName(SUBSCRIPTION);
     consumer.setCreateSubscription(true);
 

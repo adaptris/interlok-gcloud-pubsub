@@ -5,7 +5,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.concurrent.TimeUnit;
 
@@ -13,7 +12,6 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import com.adaptris.core.AdaptrisMessage;
-import com.adaptris.core.ConfiguredConsumeDestination;
 import com.adaptris.core.CoreException;
 import com.adaptris.core.StandaloneConsumer;
 import com.adaptris.core.oauth.gcloud.ApplicationDefaultCredentials;
@@ -48,34 +46,21 @@ public class GoogleCloudPubSubPullConsumerTest extends ExampleConsumerCase {
   @Test
   public void testPrepare() throws Exception {
     GoogleCloudPubSubPullConsumer consumer = new GoogleCloudPubSubPullConsumer();
-    prepareFail(consumer);
     consumer.setSubscriptionName("subscription");
-    prepareFail(consumer);
     consumer.setTopic("topic");
     consumer.setAckDeadline(null);
-    prepareFail(consumer);
     consumer.setAckDeadline(new TimeInterval(10L, TimeUnit.SECONDS));
     consumer.setCreateSubscription(null);
-    prepareFail(consumer);
     consumer.setCreateSubscription(true);
     consumer.setAutoAcknowledge(null);
-    prepareFail(consumer);
     consumer.setAutoAcknowledge(true);
     consumer.prepare();
-  }
-
-  private void prepareFail(GoogleCloudPubSubPullConsumer consumer) {
-    try {
-      consumer.prepare();
-      fail();
-    } catch (IllegalArgumentException | CoreException expected) {
-    }
   }
 
   @Test
   public void testTopic(){
     GoogleCloudPubSubPullConsumer consumer = new GoogleCloudPubSubPullConsumer();
-    consumer.setDestination(new ConfiguredConsumeDestination("topic-name"));
+    consumer.setTopic("topic-name");
     assertEquals("topic-name", consumer.getTopicName());
   }
 
@@ -116,7 +101,7 @@ public class GoogleCloudPubSubPullConsumerTest extends ExampleConsumerCase {
   public void testLifecycle() throws Exception{
     GoogleCloudPubSubPullConsumer consumer = new GoogleCloudPubSubPullConsumer();
     consumer.setSubscriptionName("subscription-name");
-    consumer.setDestination(new ConfiguredConsumeDestination("topic-name"));
+    consumer.setTopic("topic-name");
     GoogleCloudPubSubConnection connection = Mockito.mock(GoogleCloudPubSubConnection.class);
     Mockito.doReturn(connection).when(connection).retrieveConnection(GoogleCloudPubSubConnection.class);
     Mockito.doReturn("project-name").when(connection).getProjectName();
@@ -142,7 +127,7 @@ public class GoogleCloudPubSubPullConsumerTest extends ExampleConsumerCase {
   public void testStopWithNull() throws Exception{
     GoogleCloudPubSubPullConsumer consumer = new GoogleCloudPubSubPullConsumer();
     consumer.setSubscriptionName("subscription-name");
-    consumer.setDestination(new ConfiguredConsumeDestination("topic-name"));
+    consumer.setTopic("topic-name");
     GoogleCloudPubSubConnection connection = Mockito.mock(GoogleCloudPubSubConnection.class);
     Mockito.doReturn(connection).when(connection).retrieveConnection(GoogleCloudPubSubConnection.class);
     Mockito.doReturn("project-name").when(connection).getProjectName();
@@ -159,7 +144,7 @@ public class GoogleCloudPubSubPullConsumerTest extends ExampleConsumerCase {
   public void testCloseException() throws Exception{
     GoogleCloudPubSubPullConsumer consumer = Mockito.spy(new GoogleCloudPubSubPullConsumer());
     consumer.setSubscriptionName("subscription-name");
-    consumer.setDestination(new ConfiguredConsumeDestination("topic-name"));
+    consumer.setTopic("topic-name");
     GoogleCloudPubSubConnection connection = Mockito.mock(GoogleCloudPubSubConnection.class);
     Mockito.doReturn(connection).when(connection).retrieveConnection(GoogleCloudPubSubConnection.class);
     Mockito.doReturn("project-name").when(connection).getProjectName();
@@ -177,7 +162,7 @@ public class GoogleCloudPubSubPullConsumerTest extends ExampleConsumerCase {
   @Test
   public void testReceiveMessage() throws Exception {
     GoogleCloudPubSubPullConsumer consumer = new GoogleCloudPubSubPullConsumer();
-    consumer.setDestination(new ConfiguredConsumeDestination("topic-name"));
+    consumer.setTopic("topic-name");
     consumer.setSubscriptionName("subscription-name");
     consumer.setProjectName("project-name");
     MockMessageListener stub = new MockMessageListener();
@@ -207,7 +192,7 @@ public class GoogleCloudPubSubPullConsumerTest extends ExampleConsumerCase {
   @Test
   public void testReceiveMessagePublishTime() throws Exception {
     GoogleCloudPubSubPullConsumer consumer = new GoogleCloudPubSubPullConsumer();
-    consumer.setDestination(new ConfiguredConsumeDestination("topic-name"));
+    consumer.setTopic("topic-name");
     consumer.setSubscriptionName("subscription-name");
     consumer.setProjectName("project-name");
     MockMessageListener stub = new MockMessageListener();
@@ -241,7 +226,7 @@ public class GoogleCloudPubSubPullConsumerTest extends ExampleConsumerCase {
   @Test
   public void testReceiveMessageAutoAckFalse() throws Exception {
     GoogleCloudPubSubPullConsumer consumer = new GoogleCloudPubSubPullConsumer();
-    consumer.setDestination(new ConfiguredConsumeDestination("topic-name"));
+    consumer.setTopic("topic-name");
     consumer.setSubscriptionName("subscription-name");
     consumer.setProjectName("project-name");
     consumer.setAutoAcknowledge(false);

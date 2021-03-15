@@ -30,7 +30,6 @@ import org.junit.Test;
 
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.AdaptrisMessageFactory;
-import com.adaptris.core.ConfiguredProduceDestination;
 import com.adaptris.core.CoreException;
 import com.adaptris.core.ProduceException;
 import com.adaptris.google.cloud.pubsub.adminclient.TopicAdminClientProvider;
@@ -61,7 +60,7 @@ public class PubsubProducerTest extends ServiceHelperBase {
     connection.setTopicAdminClientProvider(provider);
     connection.setProjectName(PROJECT);
     GoogleCloudPubSubProducer producer = new GoogleCloudPubSubProducer();
-    producer.setDestination(new ConfiguredProduceDestination(TOPIC));
+    producer.setTopic(TOPIC);
     producer.registerConnection(connection);
     producer.setCreateTopic(false);
 
@@ -93,7 +92,7 @@ public class PubsubProducerTest extends ServiceHelperBase {
     connection.setTopicAdminClientProvider(provider);
     connection.setProjectName(PROJECT);
     GoogleCloudPubSubProducer producer = new GoogleCloudPubSubProducer();
-    producer.setDestination(new ConfiguredProduceDestination(TOPIC));
+    producer.setTopic(TOPIC);
     producer.registerConnection(connection);
     producer.setCreateTopic(true);
 
@@ -127,7 +126,7 @@ public class PubsubProducerTest extends ServiceHelperBase {
     connection.setTopicAdminClientProvider(provider);
     connection.setProjectName(PROJECT);
     GoogleCloudPubSubProducer producer = new GoogleCloudPubSubProducer();
-    producer.setDestination(new ConfiguredProduceDestination(TOPIC));
+    producer.setTopic(TOPIC);
     producer.registerConnection(connection);
     producer.setCreateTopic(true);
 
@@ -157,7 +156,7 @@ public class PubsubProducerTest extends ServiceHelperBase {
     connection.setTopicAdminClientProvider(provider);
     connection.setProjectName(PROJECT);
     GoogleCloudPubSubProducer producer = new GoogleCloudPubSubProducer();
-    producer.setDestination(new ConfiguredProduceDestination(TOPIC));
+    producer.setTopic(TOPIC);
     producer.registerConnection(connection);
     producer.setCreateTopic(true);
 
@@ -193,7 +192,7 @@ public class PubsubProducerTest extends ServiceHelperBase {
     connection.setChannelProvider(new MockChannelProvider(channelProvider));
 
     GoogleCloudPubSubProducer producer = new GoogleCloudPubSubProducer();
-    producer.setDestination(new ConfiguredProduceDestination(TOPIC));
+    producer.setTopic(TOPIC);
     producer.registerConnection(connection);
     producer.setCreateTopic(false);
 
@@ -236,7 +235,7 @@ public class PubsubProducerTest extends ServiceHelperBase {
     connection.setChannelProvider(new MockChannelProvider(channelProvider));
 
     GoogleCloudPubSubProducer producer = new GoogleCloudPubSubProducer();
-    producer.setDestination(new ConfiguredProduceDestination(TOPIC));
+    producer.setTopic(TOPIC);
     producer.registerConnection(connection);
     producer.setCreateTopic(false);
 
