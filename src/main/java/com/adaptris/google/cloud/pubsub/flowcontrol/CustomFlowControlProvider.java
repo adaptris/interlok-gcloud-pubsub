@@ -8,6 +8,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 /**
  * @author mwarman
+ * @config custom-flow-control-provider
  */
 @XStreamAlias("custom-flow-control-provider")
 public class CustomFlowControlProvider extends DefaultFlowControlProvider {

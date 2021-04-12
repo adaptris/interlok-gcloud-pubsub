@@ -4,6 +4,9 @@ import com.adaptris.annotation.ComponentProfile;
 import com.adaptris.core.AdaptrisMessage;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
+/**
+ * @config gcloud-configured-reply-provider
+ */
 @XStreamAlias("gcloud-configured-reply-provider")
 @ComponentProfile(summary = "An explicitly configured ack/nack for GoogleCloudPubSubResponseProducer")
 public class ConfiguredReplyProvider implements ReplyProvider {

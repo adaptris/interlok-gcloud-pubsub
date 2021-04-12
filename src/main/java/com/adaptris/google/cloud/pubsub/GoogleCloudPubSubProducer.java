@@ -1,29 +1,29 @@
 package com.adaptris.google.cloud.pubsub;
 
-import static com.adaptris.core.util.DestinationHelper.logWarningIfNotNull;
-import static com.adaptris.core.util.DestinationHelper.mustHaveEither;
 import static com.adaptris.core.util.DestinationHelper.resolveProduceDestination;
+
 import java.util.Map;
+
 import javax.validation.Valid;
+
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.ObjectUtils;
+
 import com.adaptris.annotation.AdvancedConfig;
 import com.adaptris.annotation.ComponentProfile;
 import com.adaptris.annotation.DisplayOrder;
 import com.adaptris.annotation.InputFieldDefault;
 import com.adaptris.annotation.InputFieldHint;
-import com.adaptris.validation.constraints.ConfigDeprecated;
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.CoreException;
 import com.adaptris.core.MetadataCollection;
 import com.adaptris.core.MetadataElement;
-import com.adaptris.core.ProduceDestination;
 import com.adaptris.core.ProduceException;
 import com.adaptris.core.ProduceOnlyProducerImp;
 import com.adaptris.core.metadata.MetadataFilter;
 import com.adaptris.core.metadata.NoOpMetadataFilter;
 import com.adaptris.core.util.ExceptionHelper;
-import com.adaptris.core.util.LoggingHelper;
+import com.adaptris.interlok.util.Args;
 import com.adaptris.util.NumberUtils;
 import com.google.api.core.ApiFuture;
 import com.google.api.gax.core.CredentialsProvider;
@@ -37,11 +37,15 @@ import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.PubsubMessage;
 import com.google.pubsub.v1.Topic;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * @config google-cloud-pubsub-producer
+ */
 @XStreamAlias("google-cloud-pubsub-producer")
 @ComponentProfile(summary = "Publish a message to Google pubsub", tag = "producer,gcloud,messaging", recommended =
 {
@@ -71,17 +75,6 @@ public class GoogleCloudPubSubProducer extends ProduceOnlyProducerImp {
   private MetadataFilter metadataFilter;
 
   /**
-   * The destination is the topic.
-   *
-   */
-  @Getter
-  @Setter
-  @Deprecated
-  @Valid
-  @ConfigDeprecated(removalVersion = "4.0.0", message = "Use 'topic' instead", groups = Deprecated.class)
-  private ProduceDestination destination;
-
-  /**
    * The pubsub topic
    *
    */
@@ -90,8 +83,6 @@ public class GoogleCloudPubSubProducer extends ProduceOnlyProducerImp {
   @Setter
   // Needs to be @NotBlank when destination is removed.
   private String topic;
-
-  private transient boolean destWarning;
 
   private transient CredentialsProvider credentialsProvider;
   private transient TransportChannelProvider channelProvider;
@@ -158,9 +149,7 @@ public class GoogleCloudPubSubProducer extends ProduceOnlyProducerImp {
 
   @Override
   public void prepare() throws CoreException {
-    logWarningIfNotNull(destWarning, () -> destWarning = true, getDestination(),
-        "{} uses destination, use 'topic' instead", LoggingHelper.friendlyName(this));
-    mustHaveEither(getTopic(), getDestination());
+    Args.notNull(getTopic(), "topic");
   }
 
   @Override
@@ -207,7 +196,7 @@ public class GoogleCloudPubSubProducer extends ProduceOnlyProducerImp {
 
   @Override
   public String endpoint(AdaptrisMessage msg) throws ProduceException {
-    return resolveProduceDestination(getTopic(), getDestination(), msg);
+    return resolveProduceDestination(getTopic(), msg);
   }
 
 }

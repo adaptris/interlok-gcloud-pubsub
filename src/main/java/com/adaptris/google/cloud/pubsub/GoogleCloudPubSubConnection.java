@@ -19,6 +19,9 @@ import com.google.pubsub.v1.PushConfig;
 import com.google.pubsub.v1.Subscription;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
+/**
+ * @config google-cloud-pubsub-connection
+ */
 @XStreamAlias("google-cloud-pubsub-connection")
 @ComponentProfile(summary = "Enables a connection to Google pubsub messaging", tag = "connections,gcloud,messaging")
 @DisplayOrder(order =

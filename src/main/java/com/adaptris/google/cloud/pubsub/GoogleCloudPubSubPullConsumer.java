@@ -13,6 +13,9 @@ import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.PubsubMessage;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
+/**
+ * @config google-cloud-pubsub-pull-consumer
+ */
 @XStreamAlias("google-cloud-pubsub-pull-consumer")
 @ComponentProfile(summary = "Receive a message to Google pubsub", tag = "consumer,gcloud,messaging", metadata =
 {

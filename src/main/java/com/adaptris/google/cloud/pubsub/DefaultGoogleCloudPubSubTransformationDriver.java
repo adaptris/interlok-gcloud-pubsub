@@ -5,6 +5,9 @@ import com.adaptris.core.ServiceException;
 import com.adaptris.core.metadata.MetadataFilter;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
+/**
+ * @config default-google-cloud-pubsub-tranform-driver
+ */
 @XStreamAlias("default-google-cloud-pubsub-tranform-driver")
 public class DefaultGoogleCloudPubSubTransformationDriver implements TransformationDriver {
 

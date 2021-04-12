@@ -8,6 +8,9 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+/**
+ * @config fixed-credentials-provider
+ */
 @XStreamAlias("fixed-credentials-provider")
 public class FixedCredentialsProvider extends CredentialsProvider {
 
