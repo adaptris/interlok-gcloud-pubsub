@@ -33,7 +33,7 @@ ext {
   nettyVersion='4.1.65.Final'
   grpcVersion='1.38.0'
   protobufVersion='3.17.1'
-  mockitoVersion='3.10.0'
+  mockitoVersion='3.11.0'
 }
 
 if (JavaVersion.current().isJava8Compatible()) {
