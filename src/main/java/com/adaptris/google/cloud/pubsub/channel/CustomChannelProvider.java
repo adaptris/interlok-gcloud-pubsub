@@ -1,17 +1,19 @@
 package com.adaptris.google.cloud.pubsub.channel;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.adaptris.annotation.InputFieldDefault;
 import com.adaptris.core.CoreException;
 import com.google.api.gax.grpc.GrpcTransportChannel;
 import com.google.api.gax.rpc.FixedTransportChannelProvider;
 import com.google.api.gax.rpc.TransportChannelProvider;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 /**
  * @config custom-channel-provider
@@ -53,7 +55,7 @@ public class CustomChannelProvider extends ChannelProvider {
 
   @Override
   TransportChannelProvider createChannelProvider() {
-    ManagedChannelBuilder channelBuilder = ManagedChannelBuilder
+    ManagedChannelBuilder<?> channelBuilder = ManagedChannelBuilder
         .forTarget(getAddress())
         .maxInboundMessageSize(MAX_INBOUND_MESSAGE_SIZE);
     if(getUsePlaintext()){

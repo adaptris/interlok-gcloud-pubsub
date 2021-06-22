@@ -1,7 +1,5 @@
 package com.adaptris.google.cloud.pubsub;
 
-import static com.adaptris.core.util.DestinationHelper.resolveProduceDestination;
-
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -196,7 +194,7 @@ public class GoogleCloudPubSubProducer extends ProduceOnlyProducerImp {
 
   @Override
   public String endpoint(AdaptrisMessage msg) throws ProduceException {
-    return resolveProduceDestination(getTopic(), msg);
+    return msg.resolve(getTopic());
   }
 
 }
