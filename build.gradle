@@ -111,7 +111,7 @@ dependencies {
   api  ("com.adaptris:interlok-common:$interlokCoreVersion") { changing= true}
   api  ("com.adaptris:interlok-oauth-gcloud:$interlokCoreVersion") { changing= true}
 
-  api ("com.google.cloud:google-cloud-pubsub:1.113.4") {
+  api ("com.google.cloud:google-cloud-pubsub:1.113.5") {
     exclude group: "com.fasterxml.jackson.core", module: "jackson-databind"
     exclude group: "com.apache.httpcomponents", module: "httpclient"
     exclude group: "io.grpc", module: "grpc-netty-shaded"
