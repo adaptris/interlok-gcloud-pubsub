@@ -30,7 +30,7 @@ ext {
   organizationUrl = "http://interlok.adaptris.net"
   slf4jVersion = '1.7.32'
   nettyVersion='4.1.67.Final'
-  grpcVersion='1.39.0'
+  grpcVersion='1.40.1'
   protobufVersion='3.17.3'
   mockitoVersion='3.11.2'
 }
@@ -162,7 +162,7 @@ dependencies {
   testImplementation ("org.mockito:mockito-inline:$mockitoVersion")
   testImplementation  ("org.apache.geronimo.specs:geronimo-jms_1.1_spec:1.1.1")
   testImplementation  ("com.jayway.jsonpath:json-path:2.6.0")
-  testImplementation  ("com.google.api.grpc:grpc-google-cloud-pubsub-v1:1.96.0")
+  testImplementation  ("com.google.api.grpc:grpc-google-cloud-pubsub-v1:1.96.2")
   testImplementation  ("com.google.api:gax-grpc:1.60:testlib")
 
   javadoc("com.adaptris:interlok-core-apt:$interlokCoreVersion") { changing= true}
