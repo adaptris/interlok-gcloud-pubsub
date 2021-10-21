@@ -162,7 +162,7 @@ dependencies {
   testImplementation ("org.mockito:mockito-inline:$mockitoVersion")
   testImplementation  ("org.apache.geronimo.specs:geronimo-jms_1.1_spec:1.1.1")
   testImplementation  ("com.jayway.jsonpath:json-path:2.6.0")
-  testImplementation  ("com.google.api.grpc:grpc-google-cloud-pubsub-v1:1.96.6")
+  testImplementation  ("com.google.api.grpc:grpc-google-cloud-pubsub-v1:1.96.7")
   testImplementation  ("com.google.api:gax-grpc:1.60:testlib")
 
   javadoc("com.adaptris:interlok-core-apt:$interlokCoreVersion") { changing= true}
