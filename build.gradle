@@ -31,7 +31,7 @@ ext {
   slf4jVersion = '1.7.32'
   nettyVersion='4.1.69.Final'
   grpcVersion='1.41.0'
-  protobufVersion='3.18.1'
+  protobufVersion='3.19.0'
   mockitoVersion='4.0.0'
 }
 
