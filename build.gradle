@@ -30,7 +30,7 @@ ext {
   organizationUrl = "http://interlok.adaptris.net"
   slf4jVersion = '1.7.32'
   nettyVersion='4.1.70.Final'
-  grpcVersion='1.41.0'
+  grpcVersion='1.42.0'
   protobufVersion='3.19.1'
   mockitoVersion='4.0.0'
 }
