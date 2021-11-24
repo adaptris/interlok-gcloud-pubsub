@@ -29,10 +29,11 @@ ext {
   organizationName = "Adaptris Ltd"
   organizationUrl = "http://interlok.adaptris.net"
   slf4jVersion = '1.7.32'
-  nettyVersion='4.1.70.Final'
-  grpcVersion='1.42.0'
-  protobufVersion='3.19.1'
-  mockitoVersion='4.0.0'
+  nettyVersion = '4.1.70.Final'
+  grpcVersion = '1.42.0'
+  gaxVersion = '2.6.1'
+  protobufVersion = '3.19.1'
+  mockitoVersion = '4.0.0'
 }
 
 ext.gitBranchNameOrTimestamp = { branchName ->
@@ -164,7 +165,7 @@ dependencies {
   testImplementation  ("org.apache.geronimo.specs:geronimo-jms_1.1_spec:1.1.1")
   testImplementation  ("com.jayway.jsonpath:json-path:2.6.0")
   testImplementation  ("com.google.api.grpc:grpc-google-cloud-pubsub-v1:1.96.7")
-  testImplementation  ("com.google.api:gax-grpc:1.60:testlib")
+  testImplementation  ("com.google.api:gax-grpc:$gaxVersion:testlib")
 
   javadoc("com.adaptris:interlok-core-apt:$interlokCoreVersion") { changing= true}
   offlineJavadocPackages ("com.adaptris:interlok-core:$interlokCoreVersion:javadoc@jar") { changing= true}
