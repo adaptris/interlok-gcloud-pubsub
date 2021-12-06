@@ -2,15 +2,15 @@ plugins {
   id 'java-library'
   id 'maven-publish'
   id 'jacoco'
-  id 'com.github.spotbugs' version '4.7.2'
-  id "io.freefair.lombok" version "5.3.3.3"
-  id 'org.owasp.dependencycheck' version '6.2.2'
+  id 'com.github.spotbugs' version '4.7.9'
+  id "io.freefair.lombok" version "6.2.0"
+  id 'org.owasp.dependencycheck' version '6.5.0.1'
   id 'project-report'
 }
 
 ext {
-  interlokCoreVersion = project.findProperty('interlokCoreVersion') ?: '4.2-SNAPSHOT'
-  releaseVersion = project.findProperty('releaseVersion') ?: '4.2-SNAPSHOT'
+  interlokCoreVersion = project.findProperty('interlokCoreVersion') ?: '4.3-SNAPSHOT'
+  releaseVersion = project.findProperty('releaseVersion') ?: '4.3-SNAPSHOT'
   nexusBaseUrl = project.findProperty('nexusBaseUrl') ?: 'https://nexus.adaptris.net/nexus'
   mavenPublishUrl = project.findProperty('mavenPublishUrl') ?: nexusBaseUrl + '/content/repositories/snapshots'
   javadocsBaseUrl = nexusBaseUrl + "/content/sites/javadocs/com/adaptris"
@@ -29,10 +29,10 @@ ext {
   organizationName = "Adaptris Ltd"
   organizationUrl = "http://interlok.adaptris.net"
   slf4jVersion = '1.7.32'
-  nettyVersion='4.1.66.Final'
-  grpcVersion='1.39.0'
-  protobufVersion='3.17.3'
-  mockitoVersion='3.11.2'
+  nettyVersion='4.1.70.Final'
+  grpcVersion='1.42.0'
+  protobufVersion='3.19.1'
+  mockitoVersion='4.0.0'
 }
 
 ext.gitBranchNameOrTimestamp = { branchName ->
@@ -59,7 +59,7 @@ targetCompatibility = JavaVersion.VERSION_11
 group   = 'com.adaptris'
 version = releaseVersion
 def versionDir = "$buildDir/version"
-generateLombokConfig.enabled = false
+lombok.disableConfig = true
 
 // Disable gradle module generation since we probably don't want
 // xxx.module files in your repository.
@@ -121,18 +121,19 @@ dependencies {
   api  ("com.adaptris:interlok-common:$interlokCoreVersion") { changing= true}
   api  ("com.adaptris:interlok-oauth-gcloud:$interlokCoreVersion") { changing= true}
 
-  api ("com.google.cloud:google-cloud-pubsub:1.114.0") {
+  api ("com.google.cloud:google-cloud-pubsub:1.114.7") {
     exclude group: "com.fasterxml.jackson.core", module: "jackson-databind"
     exclude group: "com.apache.httpcomponents", module: "httpclient"
     exclude group: "io.grpc", module: "grpc-netty-shaded"
   }
   api ("org.apache.httpcomponents:httpclient:4.5.13")
   api ("commons-codec:commons-codec:1.15")
-  api ("com.fasterxml.jackson.core:jackson-databind:2.12.4")
-  api ("com.google.guava:guava:30.1.1-jre")
+  api ("com.fasterxml.jackson.core:jackson-databind:2.13.0")
+  api ("com.google.guava:guava:31.0.1-jre")
 
   // Minimal netty specification
   implementation ("io.netty:netty-handler:$nettyVersion")
+  implementation ("io.netty:netty-handler-proxy:$nettyVersion")
   implementation ("io.netty:netty-transport-native-epoll:$nettyVersion")
   implementation ("io.netty:netty-codec:$nettyVersion")
   implementation ("io.netty:netty-codec-http2:$nettyVersion")
@@ -147,7 +148,7 @@ dependencies {
   implementation  ("io.grpc:grpc-auth:$grpcVersion")
   implementation  ("io.grpc:grpc-alts:$grpcVersion")
 
-  implementation  ("com.google.code.gson:gson:2.8.7")
+  implementation  ("com.google.code.gson:gson:2.8.9")
   // Required because we attempt to create a protobuf message in PUSH_RESPONSE_TO_INTERLOK
   implementation ("com.google.protobuf:protobuf-java-util:$protobufVersion")
   implementation ("com.google.protobuf:protobuf-java:$protobufVersion")
@@ -162,7 +163,7 @@ dependencies {
   testImplementation ("org.mockito:mockito-inline:$mockitoVersion")
   testImplementation  ("org.apache.geronimo.specs:geronimo-jms_1.1_spec:1.1.1")
   testImplementation  ("com.jayway.jsonpath:json-path:2.6.0")
-  testImplementation  ("com.google.api.grpc:grpc-google-cloud-pubsub-v1:1.96.0")
+  testImplementation  ("com.google.api.grpc:grpc-google-cloud-pubsub-v1:1.96.7")
   testImplementation  ("com.google.api:gax-grpc:1.60:testlib")
 
   javadoc("com.adaptris:interlok-core-apt:$interlokCoreVersion") { changing= true}
