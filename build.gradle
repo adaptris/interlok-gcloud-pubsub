@@ -2,15 +2,15 @@ plugins {
   id 'java-library'
   id 'maven-publish'
   id 'jacoco'
-  id 'com.github.spotbugs' version '4.7.9'
-  id "io.freefair.lombok" version "6.2.0"
-  id 'org.owasp.dependencycheck' version '6.5.0.1'
+  id 'com.github.spotbugs' version '5.0.5'
+  id "io.freefair.lombok" version "6.3.0"
+  id 'org.owasp.dependencycheck' version '6.5.3'
   id 'project-report'
 }
 
 ext {
-  interlokCoreVersion = project.findProperty('interlokCoreVersion') ?: '4.3-SNAPSHOT'
-  releaseVersion = project.findProperty('releaseVersion') ?: '4.3-SNAPSHOT'
+  interlokCoreVersion = project.findProperty('interlokCoreVersion') ?: '4.4-SNAPSHOT'
+  releaseVersion = project.findProperty('releaseVersion') ?: '4.4-SNAPSHOT'
   nexusBaseUrl = project.findProperty('nexusBaseUrl') ?: 'https://nexus.adaptris.net/nexus'
   mavenPublishUrl = project.findProperty('mavenPublishUrl') ?: nexusBaseUrl + '/content/repositories/snapshots'
   javadocsBaseUrl = nexusBaseUrl + "/content/sites/javadocs/com/adaptris"
@@ -28,11 +28,12 @@ ext {
 
   organizationName = "Adaptris Ltd"
   organizationUrl = "http://interlok.adaptris.net"
-  slf4jVersion = '1.7.32'
-  nettyVersion='4.1.70.Final'
-  grpcVersion='1.42.0'
-  protobufVersion='3.19.1'
-  mockitoVersion='4.0.0'
+  slf4jVersion = '1.7.35'
+  nettyVersion = '4.1.73.Final'
+  grpcVersion = '1.44.0'
+  gaxVersion = '2.6.1'
+  protobufVersion = '3.19.3'
+  mockitoVersion = '4.3.1'
 }
 
 ext.gitBranchNameOrTimestamp = { branchName ->
@@ -121,14 +122,14 @@ dependencies {
   api  ("com.adaptris:interlok-common:$interlokCoreVersion") { changing= true}
   api  ("com.adaptris:interlok-oauth-gcloud:$interlokCoreVersion") { changing= true}
 
-  api ("com.google.cloud:google-cloud-pubsub:1.114.7") {
+  api ("com.google.cloud:google-cloud-pubsub:1.115.1") {
     exclude group: "com.fasterxml.jackson.core", module: "jackson-databind"
     exclude group: "com.apache.httpcomponents", module: "httpclient"
     exclude group: "io.grpc", module: "grpc-netty-shaded"
   }
   api ("org.apache.httpcomponents:httpclient:4.5.13")
   api ("commons-codec:commons-codec:1.15")
-  api ("com.fasterxml.jackson.core:jackson-databind:2.13.0")
+  api ("com.fasterxml.jackson.core:jackson-databind:2.13.1")
   api ("com.google.guava:guava:31.0.1-jre")
 
   // Minimal netty specification
@@ -162,9 +163,9 @@ dependencies {
   testImplementation ("org.mockito:mockito-core:$mockitoVersion")
   testImplementation ("org.mockito:mockito-inline:$mockitoVersion")
   testImplementation  ("org.apache.geronimo.specs:geronimo-jms_1.1_spec:1.1.1")
-  testImplementation  ("com.jayway.jsonpath:json-path:2.6.0")
-  testImplementation  ("com.google.api.grpc:grpc-google-cloud-pubsub-v1:1.96.7")
-  testImplementation  ("com.google.api:gax-grpc:1.60:testlib")
+  testImplementation  ("com.jayway.jsonpath:json-path:2.7.0")
+  testImplementation  ("com.google.api.grpc:grpc-google-cloud-pubsub-v1:1.97.1")
+  testImplementation  ("com.google.api:gax-grpc:$gaxVersion:testlib")
 
   javadoc("com.adaptris:interlok-core-apt:$interlokCoreVersion") { changing= true}
   offlineJavadocPackages ("com.adaptris:interlok-core:$interlokCoreVersion:javadoc@jar") { changing= true}
@@ -272,8 +273,9 @@ publishing {
       artifact sourcesJar { classifier "sources" }
 
       pom.withXml {
-        asNode().appendNode("description", componentDesc)
         asNode().appendNode("name", componentName)
+		asNode().appendNode("description", componentDesc)
+		asNode().appendNode("url", "https://interlok.adaptris.net/interlok-docs/#/")
         def properties = asNode().appendNode("properties")
         properties.appendNode("target", "3.6.3+")
         properties.appendNode("tags", "google,gcloud")
@@ -297,20 +299,16 @@ publishing {
 spotbugsMain {
   effort = "max"
   reportLevel = "high"
-  // showProgress = "true"
-  effort = "max"
-  // Ignore failures?
-  // ignoreFailures = false
   reports {
     xml {
-      enabled = false
+      required.set(false)
     }
     html {
-      enabled = true
+      required.set(true)
+      stylesheet = 'default.xsl'
     }
   }
   includeFilter = new File("$rootDir/gradle/spotbugs-filter.xml")
-  // excludeFilter = new File("$rootDir/gradle/spotbugs-exclude.xml")
 }
 
 dependencyCheck  {
