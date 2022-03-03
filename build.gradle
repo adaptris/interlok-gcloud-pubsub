@@ -149,7 +149,7 @@ dependencies {
   implementation  ("io.grpc:grpc-auth:$grpcVersion")
   implementation  ("io.grpc:grpc-alts:$grpcVersion")
 
-  implementation  ("com.google.code.gson:gson:2.8.9")
+  implementation  ("com.google.code.gson:gson:2.9.0")
   // Required because we attempt to create a protobuf message in PUSH_RESPONSE_TO_INTERLOK
   implementation ("com.google.protobuf:protobuf-java-util:$protobufVersion")
   implementation ("com.google.protobuf:protobuf-java:$protobufVersion")
