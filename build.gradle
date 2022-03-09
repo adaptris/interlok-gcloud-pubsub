@@ -33,7 +33,7 @@ ext {
   grpcVersion = '1.44.1'
   gaxVersion = '2.6.1'
   protobufVersion = '3.19.4'
-  mockitoVersion = '4.3.1'
+  mockitoVersion = '4.4.0'
 }
 
 ext.gitBranchNameOrTimestamp = { branchName ->
