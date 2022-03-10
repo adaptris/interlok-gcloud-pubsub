@@ -29,7 +29,7 @@ ext {
   organizationName = "Adaptris Ltd"
   organizationUrl = "http://interlok.adaptris.net"
   slf4jVersion = '1.7.36'
-  nettyVersion = '4.1.74.Final'
+  nettyVersion = '4.1.75.Final'
   grpcVersion = '1.44.1'
   gaxVersion = '2.6.1'
   protobufVersion = '3.19.4'
