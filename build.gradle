@@ -34,6 +34,7 @@ ext {
   gaxVersion = '2.6.1'
   protobufVersion = '3.19.4'
   mockitoVersion = '4.4.0'
+  jacksonVersion = '2.13.2.20220324'
 }
 
 ext.gitBranchNameOrTimestamp = { branchName ->
@@ -129,7 +130,9 @@ dependencies {
   }
   api ("org.apache.httpcomponents:httpclient:4.5.13")
   api ("commons-codec:commons-codec:1.15")
-  api ("com.fasterxml.jackson.core:jackson-databind:2.13.2")
+  // Dependency to platform/BOM
+  implementation (platform("com.fasterxml.jackson:jackson-bom:$jacksonVersion"))
+  api ("com.fasterxml.jackson.core:jackson-databind")
   api ("com.google.guava:guava:31.1-jre")
 
   // Minimal netty specification
