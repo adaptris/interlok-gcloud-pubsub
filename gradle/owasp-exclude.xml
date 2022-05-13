@@ -27,4 +27,12 @@
       <packageUrl regex="true">^pkg:maven/com\.google\.api\.grpc/proto\-google\-iam\-v1@.*$</packageUrl>
       <cpe>cpe:/a:grpc:grpc</cpe>
    </suppress>
+   <suppress>
+      <notes><![CDATA[
+      file name: google-http-client-gson-1.41.7.jar
+	  False positive as there is no issue in google-http-client-gson but in com.google.code.gson:gson < 2.8.9
+      ]]></notes>
+      <packageUrl regex="true">^pkg:maven/com\.google\.http\-client/google\-http\-client\-gson@.*$</packageUrl>
+      <cve>CVE-2022-25647</cve>
+   </suppress>
 </suppressions>
