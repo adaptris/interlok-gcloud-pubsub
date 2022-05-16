@@ -34,7 +34,7 @@ ext {
   gaxVersion = '2.6.1'
   protobufVersion = '3.20.1'
   mockitoVersion = '4.5.1'
-  jacksonVersion = '2.13.2.20220328'
+  jacksonVersion = '2.13.3'
 }
 
 ext.gitBranchNameOrTimestamp = { branchName ->
