@@ -33,7 +33,7 @@ ext {
   grpcVersion = '1.48.1'
   gaxVersion = '2.6.1'
   protobufVersion = '3.21.5'
-  mockitoVersion = '4.6.1'
+  mockitoVersion = '4.7.0'
   jacksonVersion = '2.13.3'
 }
 
