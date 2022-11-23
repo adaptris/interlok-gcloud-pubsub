@@ -29,12 +29,12 @@ ext {
   organizationName = "Adaptris Ltd"
   organizationUrl = "http://interlok.adaptris.net"
   slf4jVersion = '2.0.3'
-  nettyVersion = '4.1.82.Final'
+  nettyVersion = '4.1.85.Final'
   grpcVersion = '1.50.0'
   gaxVersion = '2.6.1'
   protobufVersion = '3.21.7'
-  mockitoVersion = '4.8.0'
-  jacksonVersion = '2.14.0'
+  mockitoVersion = '4.9.0'
+  jacksonVersion = '2.14.1'
 }
 
 ext.gitBranchNameOrTimestamp = { branchName ->
