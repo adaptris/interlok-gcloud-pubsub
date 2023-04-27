@@ -2,15 +2,15 @@ plugins {
   id 'java-library'
   id 'maven-publish'
   id 'jacoco'
-  id 'com.github.spotbugs' version '5.0.13'
+  id 'com.github.spotbugs' version '5.0.14'
   id "io.freefair.lombok" version "6.5.1"
-  id 'org.owasp.dependencycheck' version '7.4.4'
+  id 'org.owasp.dependencycheck' version '8.2.1'
   id 'project-report'
 }
 
 ext {
-  interlokCoreVersion = project.findProperty('interlokCoreVersion') ?: '4.7-SNAPSHOT'
-  releaseVersion = project.findProperty('releaseVersion') ?: '4.7-SNAPSHOT'
+  interlokCoreVersion = project.findProperty('interlokCoreVersion') ?: '4.8-SNAPSHOT'
+  releaseVersion = project.findProperty('releaseVersion') ?: '4.8-SNAPSHOT'
   nexusBaseUrl = project.findProperty('nexusBaseUrl') ?: 'https://nexus.adaptris.net/nexus'
   mavenPublishUrl = project.findProperty('mavenPublishUrl') ?: nexusBaseUrl + '/content/repositories/snapshots'
   javadocsBaseUrl = nexusBaseUrl + "/content/sites/javadocs/com/adaptris"
@@ -34,7 +34,7 @@ ext {
   gaxVersion = '2.6.1'
   protobufVersion = '3.21.7'
   mockitoVersion = '4.9.0'
-  jacksonVersion = '2.14.1'
+  jacksonVersion = '2.14.2'
 }
 
 ext.gitBranchNameOrTimestamp = { branchName ->
@@ -123,12 +123,12 @@ dependencies {
   api  ("com.adaptris:interlok-common:$interlokCoreVersion") { changing= true}
   api  ("com.adaptris:interlok-oauth-gcloud:$interlokCoreVersion") { changing= true}
 
-  api ("com.google.cloud:google-cloud-pubsub:1.121.1") {
+  api ("com.google.cloud:google-cloud-pubsub:1.123.8") {
     exclude group: "com.fasterxml.jackson.core", module: "jackson-databind"
     exclude group: "com.apache.httpcomponents", module: "httpclient"
     exclude group: "io.grpc", module: "grpc-netty-shaded"
   }
-  api ("org.apache.httpcomponents:httpclient:4.5.13")
+  api ("org.apache.httpcomponents:httpclient:4.5.14")
   api ("commons-codec:commons-codec:1.15")
   // Dependency to platform/BOM
   implementation (platform("com.fasterxml.jackson:jackson-bom:$jacksonVersion"))
@@ -166,8 +166,8 @@ dependencies {
   testImplementation ("org.mockito:mockito-core:$mockitoVersion")
   testImplementation ("org.mockito:mockito-inline:$mockitoVersion")
   testImplementation  ("org.apache.geronimo.specs:geronimo-jms_1.1_spec:1.1.1")
-  testImplementation  ("com.jayway.jsonpath:json-path:2.7.0")
-  testImplementation  ("com.google.api.grpc:grpc-google-cloud-pubsub-v1:1.102.20")
+  testImplementation  ("com.jayway.jsonpath:json-path:2.8.0")
+  testImplementation  ("com.google.api.grpc:grpc-google-cloud-pubsub-v1:1.105.8")
   testImplementation  ("com.google.api:gax-grpc:$gaxVersion:testlib")
 
   javadoc("com.adaptris:interlok-core-apt:$interlokCoreVersion") { changing= true}
@@ -322,6 +322,7 @@ dependencyCheck  {
   failBuildOnCVSS = 7.0
   analyzers {
     assemblyEnabled=false
+    knownExploitedURL=project.findProperty('dependencyCheckKnownExploitedURL')
   }
 }
 
