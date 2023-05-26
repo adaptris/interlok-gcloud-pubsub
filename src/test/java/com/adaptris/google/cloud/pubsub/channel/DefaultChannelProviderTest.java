@@ -1,13 +1,13 @@
 package com.adaptris.google.cloud.pubsub.channel;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.adaptris.core.util.LifecycleHelper;
 import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
@@ -27,7 +27,7 @@ public class DefaultChannelProviderTest {
   }
 
   @Test
-  public void testStopClose() throws Exception{
+  public void testStopClose() throws Exception {
     DefaultChannelProvider provider = spy(new DefaultChannelProvider());
     LifecycleHelper.stopAndClose(provider);
     verify(provider, times(1)).stop();

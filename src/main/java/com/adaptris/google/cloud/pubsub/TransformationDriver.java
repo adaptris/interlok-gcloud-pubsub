@@ -21,4 +21,5 @@ public interface TransformationDriver {
    *           Thrown if there is a problem with the transformation.
    */
   public void transform(AdaptrisMessage input, TransformationDirection direction, MetadataFilter metadataFilter) throws ServiceException;
+
 }

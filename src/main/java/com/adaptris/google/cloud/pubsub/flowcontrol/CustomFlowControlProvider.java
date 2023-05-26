@@ -25,7 +25,7 @@ public class CustomFlowControlProvider extends DefaultFlowControlProvider {
     if (getLimitExceededBehavior() != null) {
       flowControlSettingsBuilder.setLimitExceededBehavior(getLimitExceededBehavior());
     }
-    if (getMaxOutstandingElementCount() != null){
+    if (getMaxOutstandingElementCount() != null) {
       flowControlSettingsBuilder.setMaxOutstandingElementCount(getMaxOutstandingElementCount());
     }
     if (getMaxOutstandingRequestBytes() != null) {
@@ -35,7 +35,7 @@ public class CustomFlowControlProvider extends DefaultFlowControlProvider {
   }
 
   @Override
-  public void apply(Subscriber.Builder subscriberBuilder){
+  public void apply(Subscriber.Builder subscriberBuilder) {
     subscriberBuilder.setFlowControlSettings(getFlowControlSettings());
   }
 
@@ -66,4 +66,5 @@ public class CustomFlowControlProvider extends DefaultFlowControlProvider {
   FlowControlSettings getFlowControlSettings() {
     return flowControlSettings;
   }
+
 }

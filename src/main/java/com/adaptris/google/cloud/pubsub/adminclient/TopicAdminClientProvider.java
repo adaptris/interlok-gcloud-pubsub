@@ -1,10 +1,10 @@
 package com.adaptris.google.cloud.pubsub.adminclient;
 
+import java.io.IOException;
+
 import com.adaptris.core.CoreException;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.cloud.pubsub.v1.TopicAdminSettings;
-
-import java.io.IOException;
 
 public class TopicAdminClientProvider extends AdminClientProvider {
 
@@ -12,14 +12,15 @@ public class TopicAdminClientProvider extends AdminClientProvider {
 
   @Override
   public void init() throws CoreException {
-    if(getChannelProvider() == null){
+    if (getChannelProvider() == null) {
       throw new CoreException("ChannelProvider can not be null");
     }
-    if(getCredentialsProvider() == null){
+    if (getCredentialsProvider() == null) {
       throw new CoreException("CredentialsProvider can not be null");
     }
     try {
-      topicAdminClient = TopicAdminClient.create(TopicAdminSettings.newBuilder().setTransportChannelProvider(getChannelProvider()).setCredentialsProvider(getCredentialsProvider()).build());
+      topicAdminClient = TopicAdminClient.create(TopicAdminSettings.newBuilder().setTransportChannelProvider(getChannelProvider())
+          .setCredentialsProvider(getCredentialsProvider()).build());
     } catch (IOException e) {
       throw new CoreException("Failed to create SubscriptionAdminClient", e);
     }
@@ -27,7 +28,7 @@ public class TopicAdminClientProvider extends AdminClientProvider {
 
   @Override
   public void close() {
-    if(topicAdminClient != null) {
+    if (topicAdminClient != null) {
       try {
         topicAdminClient.close();
       } catch (Exception e) {
@@ -36,7 +37,8 @@ public class TopicAdminClientProvider extends AdminClientProvider {
     }
   }
 
-  public TopicAdminClient getTopicAdminClient(){
+  public TopicAdminClient getTopicAdminClient() {
     return topicAdminClient;
   }
+
 }

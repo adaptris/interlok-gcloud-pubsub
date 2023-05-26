@@ -1,13 +1,13 @@
 package com.adaptris.google.cloud.pubsub;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.EnumSet;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.AdaptrisMessageFactory;
@@ -24,42 +24,43 @@ public class GoogleCloudPubSubTransformServiceTest extends TransformServiceExamp
 
   private Configuration jsonConfig;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     jsonConfig = new Configuration.ConfigurationBuilder().jsonProvider(new JsonSmartJsonProvider())
         .mappingProvider(new JacksonMappingProvider()).options(EnumSet.noneOf(Option.class)).build();
   }
 
   @Test
-  public void testConstruct(){
+  public void testConstruct() {
     GoogleCloudPubSubTransformService service = new GoogleCloudPubSubTransformService();
     assertNotNull(service.getDirection());
     assertEquals(TransformationDirection.INTERLOK_TO_PUBLISH_REQUEST, service.getDirection());
     assertNotNull(service.getDriver());
     assertTrue(service.getDriver() instanceof DefaultGoogleCloudPubSubTransformationDriver);
     assertNotNull(service.getMetadataFilter());
-    assertTrue(service.getMetadataFilter() instanceof  NoOpMetadataFilter);
+    assertTrue(service.getMetadataFilter() instanceof NoOpMetadataFilter);
     service = new GoogleCloudPubSubTransformService(TransformationDirection.PULL_RESPONSE_TO_INTERLOK);
     assertNotNull(service.getDirection());
     assertEquals(TransformationDirection.PULL_RESPONSE_TO_INTERLOK, service.getDirection());
     assertNotNull(service.getDriver());
-    assertTrue(service.getDriver() instanceof  DefaultGoogleCloudPubSubTransformationDriver);
+    assertTrue(service.getDriver() instanceof DefaultGoogleCloudPubSubTransformationDriver);
     assertNotNull(service.getMetadataFilter());
-    assertTrue(service.getMetadataFilter() instanceof  NoOpMetadataFilter);
-    service = new GoogleCloudPubSubTransformService(TransformationDirection.PULL_RESPONSE_TO_INTERLOK, new DefaultGoogleCloudPubSubTransformationDriver());
+    assertTrue(service.getMetadataFilter() instanceof NoOpMetadataFilter);
+    service = new GoogleCloudPubSubTransformService(TransformationDirection.PULL_RESPONSE_TO_INTERLOK,
+        new DefaultGoogleCloudPubSubTransformationDriver());
     assertNotNull(service.getDirection());
     assertEquals(TransformationDirection.PULL_RESPONSE_TO_INTERLOK, service.getDirection());
     assertNotNull(service.getDriver());
-    assertTrue(service.getDriver() instanceof  DefaultGoogleCloudPubSubTransformationDriver);
+    assertTrue(service.getDriver() instanceof DefaultGoogleCloudPubSubTransformationDriver);
     assertNotNull(service.getMetadataFilter());
-    assertTrue(service.getMetadataFilter() instanceof  NoOpMetadataFilter);
+    assertTrue(service.getMetadataFilter() instanceof NoOpMetadataFilter);
   }
 
   @Test
   public void testDefaultServiceExecute() throws Exception {
-    AdaptrisMessage msg =  AdaptrisMessageFactory.getDefaultInstance().newMessage("Hello World");
+    AdaptrisMessage msg = AdaptrisMessageFactory.getDefaultInstance().newMessage("Hello World");
     msg.addMetadata("foo", "bar");
-    execute(new GoogleCloudPubSubTransformService(),msg);
+    execute(new GoogleCloudPubSubTransformService(), msg);
     ReadContext context = JsonPath.parse(msg.getInputStream(), jsonConfig);
     assertNotNull(context.read("$.messages.[0].data"));
     assertEquals("SGVsbG8gV29ybGQ=", context.read("$.messages.[0].data"));

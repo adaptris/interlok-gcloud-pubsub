@@ -1,15 +1,15 @@
 package com.adaptris.google.cloud.pubsub;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.AdaptrisMessageFactory;
@@ -25,17 +25,17 @@ public class GoogleCloudPubSubResponseProducerTest extends ExampleProducerCase {
     GoogleCloudPubSubResponseProducer producer = new GoogleCloudPubSubResponseProducer();
     assertNotNull(producer.getReplyProvider());
     assertTrue(producer.getReplyProvider() instanceof ConfiguredReplyProvider);
-    assertEquals(ReplyProvider.AckReply.NACK, ((ConfiguredReplyProvider)producer.getReplyProvider()).getReply());
+    assertEquals(ReplyProvider.AckReply.NACK, ((ConfiguredReplyProvider) producer.getReplyProvider()).getReply());
     producer = new GoogleCloudPubSubResponseProducer(ReplyProvider.AckReply.ACK);
     assertNotNull(producer.getReplyProvider());
     assertTrue(producer.getReplyProvider() instanceof ConfiguredReplyProvider);
-    assertEquals(ReplyProvider.AckReply.ACK, ((ConfiguredReplyProvider)producer.getReplyProvider()).getReply());
+    assertEquals(ReplyProvider.AckReply.ACK, ((ConfiguredReplyProvider) producer.getReplyProvider()).getReply());
   }
 
   @Test
   public void testProduceNullMetadata() throws Exception {
     GoogleCloudPubSubResponseProducer producer = spy(new GoogleCloudPubSubResponseProducer());
-    AdaptrisMessage msg =  AdaptrisMessageFactory.getDefaultInstance().newMessage();
+    AdaptrisMessage msg = AdaptrisMessageFactory.getDefaultInstance().newMessage();
     producer.produce(msg);
     verify(producer, never()).getReplyProvider();
   }
@@ -44,9 +44,9 @@ public class GoogleCloudPubSubResponseProducerTest extends ExampleProducerCase {
   public void testProduceNack() throws Exception {
     GoogleCloudPubSubResponseProducer producer = spy(new GoogleCloudPubSubResponseProducer());
     producer.setReplyProvider(new ConfiguredReplyProvider(ReplyProvider.AckReply.NACK));
-    AdaptrisMessage msg =  AdaptrisMessageFactory.getDefaultInstance().newMessage();
+    AdaptrisMessage msg = AdaptrisMessageFactory.getDefaultInstance().newMessage();
     AckReplyConsumer ackReplyConsumer = mock(AckReplyConsumer.class);
-    msg.addObjectHeader(Constants.REPLY_KEY,ackReplyConsumer);
+    msg.addObjectHeader(Constants.REPLY_KEY, ackReplyConsumer);
     producer.produce(msg);
     verify(producer, times(1)).getReplyProvider();
     verify(ackReplyConsumer, times(1)).nack();
@@ -57,9 +57,9 @@ public class GoogleCloudPubSubResponseProducerTest extends ExampleProducerCase {
   public void testProduceAck() throws Exception {
     GoogleCloudPubSubResponseProducer producer = spy(new GoogleCloudPubSubResponseProducer());
     producer.setReplyProvider(new ConfiguredReplyProvider(ReplyProvider.AckReply.ACK));
-    AdaptrisMessage msg =  AdaptrisMessageFactory.getDefaultInstance().newMessage();
+    AdaptrisMessage msg = AdaptrisMessageFactory.getDefaultInstance().newMessage();
     AckReplyConsumer ackReplyConsumer = mock(AckReplyConsumer.class);
-    msg.addObjectHeader(Constants.REPLY_KEY,ackReplyConsumer);
+    msg.addObjectHeader(Constants.REPLY_KEY, ackReplyConsumer);
     producer.produce(msg);
     verify(producer, times(1)).getReplyProvider();
     verify(ackReplyConsumer, times(1)).ack();
@@ -89,7 +89,7 @@ public class GoogleCloudPubSubResponseProducerTest extends ExampleProducerCase {
   public void testGetReplyProvider() throws Exception {
     GoogleCloudPubSubResponseProducer producer = new GoogleCloudPubSubResponseProducer();
     producer.setReplyProvider(new MetadataReplyProvider());
-    assertTrue(producer.getReplyProvider() instanceof  MetadataReplyProvider);
+    assertTrue(producer.getReplyProvider() instanceof MetadataReplyProvider);
   }
 
   @Override

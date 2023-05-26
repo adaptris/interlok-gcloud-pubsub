@@ -15,28 +15,25 @@ public class GoogleCloudPubSubConnectionErrorHandler extends ConnectionErrorHand
   @Override
   public void handleConnectionException() {
     GoogleCloudPubSubConnection connection = retrieveConnection(GoogleCloudPubSubConnection.class);
-    if(!connection.getConnectionState().isStopOrClose()) {
+    if (!connection.getConnectionState().isStopOrClose()) {
       super.restartAffectedComponents();
     }
   }
 
   @Override
   public void init() throws CoreException {
-
   }
 
   @Override
   public void start() throws CoreException {
-
   }
 
   @Override
   public void stop() {
-
   }
 
   @Override
   public void close() {
-
   }
+
 }

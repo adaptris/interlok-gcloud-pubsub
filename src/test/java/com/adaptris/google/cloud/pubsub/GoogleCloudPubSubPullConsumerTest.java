@@ -1,14 +1,14 @@
 package com.adaptris.google.cloud.pubsub;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import com.adaptris.core.AdaptrisMessage;
@@ -58,21 +58,21 @@ public class GoogleCloudPubSubPullConsumerTest extends ExampleConsumerCase {
   }
 
   @Test
-  public void testTopic(){
+  public void testTopic() {
     GoogleCloudPubSubPullConsumer consumer = new GoogleCloudPubSubPullConsumer();
     consumer.setTopic("topic-name");
     assertEquals("topic-name", consumer.getTopicName());
   }
 
   @Test
-  public void testSubscriptionName(){
+  public void testSubscriptionName() {
     GoogleCloudPubSubPullConsumer consumer = new GoogleCloudPubSubPullConsumer();
     consumer.setSubscriptionName("sub-name");
     assertEquals("sub-name", consumer.getSubscriptionName());
   }
 
   @Test
-  public void testAckDeadline(){
+  public void testAckDeadline() {
     GoogleCloudPubSubPullConsumer consumer = new GoogleCloudPubSubPullConsumer();
     assertEquals(10000, consumer.getAckDeadline().toMilliseconds());
     assertEquals(10, consumer.getAckDeadlineSeconds());
@@ -82,7 +82,7 @@ public class GoogleCloudPubSubPullConsumerTest extends ExampleConsumerCase {
   }
 
   @Test
-  public void testCreateSubscription(){
+  public void testCreateSubscription() {
     GoogleCloudPubSubPullConsumer consumer = new GoogleCloudPubSubPullConsumer();
     assertTrue(consumer.getCreateSubscription());
     consumer.setCreateSubscription(false);
@@ -90,7 +90,7 @@ public class GoogleCloudPubSubPullConsumerTest extends ExampleConsumerCase {
   }
 
   @Test
-  public void testAutoAcknowledge(){
+  public void testAutoAcknowledge() {
     GoogleCloudPubSubPullConsumer consumer = new GoogleCloudPubSubPullConsumer();
     assertTrue(consumer.getAutoAcknowledge());
     consumer.setAutoAcknowledge(false);
@@ -98,14 +98,15 @@ public class GoogleCloudPubSubPullConsumerTest extends ExampleConsumerCase {
   }
 
   @Test
-  public void testLifecycle() throws Exception{
+  public void testLifecycle() throws Exception {
     GoogleCloudPubSubPullConsumer consumer = new GoogleCloudPubSubPullConsumer();
     consumer.setSubscriptionName("subscription-name");
     consumer.setTopic("topic-name");
     GoogleCloudPubSubConnection connection = Mockito.mock(GoogleCloudPubSubConnection.class);
     Mockito.doReturn(connection).when(connection).retrieveConnection(GoogleCloudPubSubConnection.class);
     Mockito.doReturn("project-name").when(connection).getProjectName();
-    ProjectSubscriptionName subscription = ProjectSubscriptionName.newBuilder().setProject("project-name").setSubscription("subscription-name").build();
+    ProjectSubscriptionName subscription = ProjectSubscriptionName.newBuilder().setProject("project-name")
+        .setSubscription("subscription-name").build();
     Mockito.doReturn(subscription).when(connection).createSubscription(consumer);
     Subscriber subscriber = Mockito.mock(Subscriber.class);
     Mockito.doReturn(subscriber).when(subscriber).startAsync();
@@ -124,14 +125,15 @@ public class GoogleCloudPubSubPullConsumerTest extends ExampleConsumerCase {
   }
 
   @Test
-  public void testStopWithNull() throws Exception{
+  public void testStopWithNull() throws Exception {
     GoogleCloudPubSubPullConsumer consumer = new GoogleCloudPubSubPullConsumer();
     consumer.setSubscriptionName("subscription-name");
     consumer.setTopic("topic-name");
     GoogleCloudPubSubConnection connection = Mockito.mock(GoogleCloudPubSubConnection.class);
     Mockito.doReturn(connection).when(connection).retrieveConnection(GoogleCloudPubSubConnection.class);
     Mockito.doReturn("project-name").when(connection).getProjectName();
-    ProjectSubscriptionName subscription = ProjectSubscriptionName.newBuilder().setProject("project-name").setSubscription("subscription-name").build();
+    ProjectSubscriptionName subscription = ProjectSubscriptionName.newBuilder().setProject("project-name")
+        .setSubscription("subscription-name").build();
     Mockito.doReturn(subscription).when(connection).createSubscription(consumer);
     Subscriber subscriber = Mockito.mock(Subscriber.class);
     Mockito.doReturn(subscriber).when(subscriber).startAsync();
@@ -141,14 +143,15 @@ public class GoogleCloudPubSubPullConsumerTest extends ExampleConsumerCase {
   }
 
   @Test
-  public void testCloseException() throws Exception{
+  public void testCloseException() throws Exception {
     GoogleCloudPubSubPullConsumer consumer = Mockito.spy(new GoogleCloudPubSubPullConsumer());
     consumer.setSubscriptionName("subscription-name");
     consumer.setTopic("topic-name");
     GoogleCloudPubSubConnection connection = Mockito.mock(GoogleCloudPubSubConnection.class);
     Mockito.doReturn(connection).when(connection).retrieveConnection(GoogleCloudPubSubConnection.class);
     Mockito.doReturn("project-name").when(connection).getProjectName();
-    ProjectSubscriptionName subscription = ProjectSubscriptionName.newBuilder().setProject("project-name").setSubscription("subscription-name").build();
+    ProjectSubscriptionName subscription = ProjectSubscriptionName.newBuilder().setProject("project-name")
+        .setSubscription("subscription-name").build();
     Mockito.doReturn(subscription).when(connection).createSubscription(consumer);
     Subscriber subscriber = Mockito.mock(Subscriber.class);
     Mockito.doReturn(subscriber).when(subscriber).startAsync();
@@ -169,14 +172,11 @@ public class GoogleCloudPubSubPullConsumerTest extends ExampleConsumerCase {
     consumer.registerAdaptrisMessageListener(stub);
     ByteString byteString = ByteString.copyFrom("Hello World".getBytes());
     AckReplyConsumer ackReplyConsumer = Mockito.mock(AckReplyConsumer.class);
-    PubsubMessage psm = PubsubMessage.newBuilder()
-        .setData(byteString)
-        .setMessageId("123")
-        .putAttributes("prop1", "value1")
+    PubsubMessage psm = PubsubMessage.newBuilder().setData(byteString).setMessageId("123").putAttributes("prop1", "value1")
         .putAttributes("prop2", "value2").build();
     consumer.receiveMessage(psm, ackReplyConsumer);
     waitForMessages(stub, 1);
-    assertEquals(1,stub.getMessages().size());
+    assertEquals(1, stub.getMessages().size());
     AdaptrisMessage message = stub.getMessages().get(0);
     assertEquals("Hello World", message.getContent());
     assertEquals("topic-name", message.getMetadataValue("gcloud_topic"));
@@ -198,19 +198,15 @@ public class GoogleCloudPubSubPullConsumerTest extends ExampleConsumerCase {
     MockMessageListener stub = new MockMessageListener();
     consumer.registerAdaptrisMessageListener(stub);
     ByteString byteString = ByteString.copyFrom("Hello World".getBytes());
-    PubsubMessage psm = PubsubMessage.newBuilder()
-        .setData(byteString)
-        .setMessageId("123")
-        .setPublishTime(Timestamp.newBuilder().setSeconds(1497951924L))
-        .putAttributes("prop1", "value1")
-        .putAttributes("prop2", "value2")
+    PubsubMessage psm = PubsubMessage.newBuilder().setData(byteString).setMessageId("123")
+        .setPublishTime(Timestamp.newBuilder().setSeconds(1497951924L)).putAttributes("prop1", "value1").putAttributes("prop2", "value2")
         .build();
     AckReplyConsumer ackReplyConsumer = Mockito.mock(AckReplyConsumer.class);
 
     consumer.receiveMessage(psm, ackReplyConsumer);
 
     waitForMessages(stub, 1);
-    assertEquals(1,stub.getMessages().size());
+    assertEquals(1, stub.getMessages().size());
     AdaptrisMessage message = stub.getMessages().get(0);
     assertEquals("Hello World", message.getContent());
     assertEquals("topic-name", message.getMetadataValue("gcloud_topic"));
@@ -233,19 +229,15 @@ public class GoogleCloudPubSubPullConsumerTest extends ExampleConsumerCase {
     MockMessageListener stub = new MockMessageListener();
     consumer.registerAdaptrisMessageListener(stub);
     ByteString byteString = ByteString.copyFrom("Hello World".getBytes());
-    PubsubMessage psm = PubsubMessage.newBuilder()
-        .setData(byteString)
-        .setMessageId("123")
-        .setPublishTime(Timestamp.newBuilder().setSeconds(1497951924L))
-        .putAttributes("prop1", "value1")
-        .putAttributes("prop2", "value2")
+    PubsubMessage psm = PubsubMessage.newBuilder().setData(byteString).setMessageId("123")
+        .setPublishTime(Timestamp.newBuilder().setSeconds(1497951924L)).putAttributes("prop1", "value1").putAttributes("prop2", "value2")
         .build();
     AckReplyConsumer ackReplyConsumer = Mockito.mock(AckReplyConsumer.class);
 
     consumer.receiveMessage(psm, ackReplyConsumer);
 
     waitForMessages(stub, 1);
-    assertEquals(1,stub.getMessages().size());
+    assertEquals(1, stub.getMessages().size());
     AdaptrisMessage message = stub.getMessages().get(0);
     assertEquals("Hello World", message.getContent());
     assertEquals("topic-name", message.getMetadataValue("gcloud_topic"));
@@ -261,7 +253,6 @@ public class GoogleCloudPubSubPullConsumerTest extends ExampleConsumerCase {
     assertEquals(ackReplyConsumer, obj);
     Mockito.verify(ackReplyConsumer, Mockito.never()).ack();
   }
-
 
   @Override
   protected Object retrieveObjectForSampleConfig() {

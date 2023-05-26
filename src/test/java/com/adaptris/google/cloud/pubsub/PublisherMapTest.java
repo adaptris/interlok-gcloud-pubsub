@@ -1,14 +1,14 @@
 package com.adaptris.google.cloud.pubsub;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.google.cloud.pubsub.v1.Publisher;
 
@@ -18,7 +18,7 @@ public class PublisherMapTest {
   public void testMaxEntries() throws Exception {
     PublisherMap publisherMap = new PublisherMap();
     assertEquals(PublisherMap.DEFAULT_MAX_ENTRIES, publisherMap.getMaxEntries());
-    publisherMap  = new PublisherMap(5);
+    publisherMap = new PublisherMap(5);
     assertEquals(5, publisherMap.getMaxEntries());
   }
 
@@ -88,6 +88,5 @@ public class PublisherMapTest {
     assertTrue(publisherMap.containsKey("key6"));
     verify(publisher, times(1)).shutdown();
   }
-
 
 }

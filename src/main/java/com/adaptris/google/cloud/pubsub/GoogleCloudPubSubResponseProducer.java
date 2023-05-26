@@ -24,14 +24,9 @@ import lombok.Setter;
  * @config google-cloud-pubsub-response-producer
  */
 @XStreamAlias("google-cloud-pubsub-response-producer")
-@ComponentProfile(summary = "Publish a ack/nack message to Google pubsub (when auto-acknowledge=false on the consumer)", tag = "producer,gcloud,messaging", recommended =
-{
-    NullConnection.class
-})
-@DisplayOrder(order =
-{
-    "replyProvider"
-})
+@ComponentProfile(summary = "Publish a ack/nack message to Google pubsub (when auto-acknowledge=false on the consumer)", tag = "producer,gcloud,messaging", recommended = {
+    NullConnection.class })
+@DisplayOrder(order = { "replyProvider" })
 public class GoogleCloudPubSubResponseProducer extends ProduceOnlyProducerImp {
 
   @Valid
@@ -43,19 +38,18 @@ public class GoogleCloudPubSubResponseProducer extends ProduceOnlyProducerImp {
   @Setter
   private ReplyProvider replyProvider;
 
-  public GoogleCloudPubSubResponseProducer(){
+  public GoogleCloudPubSubResponseProducer() {
     setReplyProvider(new ConfiguredReplyProvider(ReplyProvider.AckReply.NACK));
   }
 
-  public GoogleCloudPubSubResponseProducer(ReplyProvider.AckReply reply){
+  public GoogleCloudPubSubResponseProducer(ReplyProvider.AckReply reply) {
     setReplyProvider(new ConfiguredReplyProvider(reply));
   }
 
   @Override
   protected void doProduce(AdaptrisMessage msg, String ignored) throws ProduceException {
-    AckReplyConsumer ackReplyConsumer =
-        (AckReplyConsumer) msg.getObjectHeaders().get(Constants.REPLY_KEY);
-    if (ackReplyConsumer == null){
+    AckReplyConsumer ackReplyConsumer = (AckReplyConsumer) msg.getObjectHeaders().get(Constants.REPLY_KEY);
+    if (ackReplyConsumer == null) {
       log.debug("No AckReplyConsumer in object metadata, nothing to do");
       return;
     }
@@ -71,4 +65,5 @@ public class GoogleCloudPubSubResponseProducer extends ProduceOnlyProducerImp {
   public String endpoint(AdaptrisMessage msg) throws ProduceException {
     return null;
   }
+
 }

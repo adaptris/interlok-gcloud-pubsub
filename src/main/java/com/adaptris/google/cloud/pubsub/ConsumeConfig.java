@@ -57,8 +57,8 @@ public abstract class ConsumeConfig extends AdaptrisMessageConsumerImp {
   @Getter
   @Setter
   private String topic;
-  
-  public ConsumeConfig(){
+
+  public ConsumeConfig() {
     setAckDeadline(new TimeInterval(10L, TimeUnit.SECONDS));
   }
 
@@ -78,9 +78,9 @@ public abstract class ConsumeConfig extends AdaptrisMessageConsumerImp {
     return toIntExact(TimeUnit.MILLISECONDS.toSeconds(ackDeadline.toMilliseconds()));
   }
 
-
   @Override
   protected String newThreadName() {
     return DestinationHelper.threadName(retrieveAdaptrisMessageListener());
   }
+
 }

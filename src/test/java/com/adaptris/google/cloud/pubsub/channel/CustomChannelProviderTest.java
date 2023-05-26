@@ -1,18 +1,18 @@
 package com.adaptris.google.cloud.pubsub.channel;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.adaptris.core.CoreException;
 import com.adaptris.core.util.LifecycleHelper;
@@ -48,7 +48,7 @@ public class CustomChannelProviderTest {
   }
 
   @Test
-  public void testStopClose() throws Exception{
+  public void testStopClose() throws Exception {
     CustomChannelProvider provider = spy(new CustomChannelProvider());
     LifecycleHelper.stopAndClose(provider);
     verify(provider, times(1)).stop();
@@ -95,11 +95,11 @@ public class CustomChannelProviderTest {
     provider.validateArguments();
   }
 
-  private void validateArgumentsFail(CustomChannelProvider provider, String message){
+  private void validateArgumentsFail(CustomChannelProvider provider, String message) {
     try {
       provider.validateArguments();
       fail();
-    } catch (CoreException expected){
+    } catch (CoreException expected) {
       assertEquals(message, expected.getMessage());
     }
   }

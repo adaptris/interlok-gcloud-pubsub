@@ -2,6 +2,7 @@ package com.adaptris.google.cloud.pubsub;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+
 import com.adaptris.annotation.ComponentProfile;
 import com.adaptris.core.AdaptrisMessage;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -19,15 +20,15 @@ public class MetadataReplyProvider implements ReplyProvider {
   @NotNull
   private AckReply defaultReply;
 
-  public MetadataReplyProvider(){
+  public MetadataReplyProvider() {
     this(null);
   }
 
-  public MetadataReplyProvider(String metadataKey){
+  public MetadataReplyProvider(String metadataKey) {
     this(metadataKey, AckReply.NACK);
   }
 
-  public MetadataReplyProvider(String metadataKey, AckReply defaultReply){
+  public MetadataReplyProvider(String metadataKey, AckReply defaultReply) {
     setMetadataKey(metadataKey);
     setDefaultReply(defaultReply);
   }
@@ -52,4 +53,5 @@ public class MetadataReplyProvider implements ReplyProvider {
   public AckReply getDefaultReply() {
     return defaultReply;
   }
+
 }

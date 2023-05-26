@@ -18,6 +18,14 @@
  */
 package com.adaptris.google.cloud.pubsub;
 
+import java.io.IOException;
+import java.util.Arrays;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+
 import com.adaptris.google.cloud.pubsub.mocks.MockPublisher;
 import com.adaptris.google.cloud.pubsub.mocks.MockSubscriber;
 import com.google.api.gax.core.CredentialsProvider;
@@ -29,10 +37,6 @@ import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
 import com.google.cloud.pubsub.v1.SubscriptionAdminSettings;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.cloud.pubsub.v1.TopicAdminSettings;
-import org.junit.*;
-
-import java.io.IOException;
-import java.util.Arrays;
 
 public class ServiceHelperBase {
 
@@ -42,7 +46,7 @@ public class ServiceHelperBase {
 
   static MockPublisher mockPublisher;
   static MockSubscriber mockSubscriber;
-  //private static MockIAMPolicy mockIAMPolicy;
+  // private static MockIAMPolicy mockIAMPolicy;
   static MockServiceHelper serviceHelper;
 
   SubscriptionAdminClient subscriptionAdminClient;
@@ -50,41 +54,34 @@ public class ServiceHelperBase {
   TransportChannelProvider channelProvider;
   CredentialsProvider credentialsProvider;
 
-
-  @BeforeClass
+  @BeforeAll
   public static void startStaticServer() {
     mockSubscriber = new MockSubscriber();
     mockPublisher = new MockPublisher();
-    serviceHelper = new MockServiceHelper("in-process-1", Arrays.<MockGrpcService>asList(mockPublisher, mockSubscriber));
+    serviceHelper = new MockServiceHelper("in-process-1", Arrays.<MockGrpcService> asList(mockPublisher, mockSubscriber));
     serviceHelper.start();
   }
 
-  @AfterClass
+  @AfterAll
   public static void stopServer() {
     serviceHelper.stop();
   }
 
-  @Before
+  @BeforeEach
   public void setUp() throws IOException {
     serviceHelper.reset();
     channelProvider = serviceHelper.createChannelProvider();
     credentialsProvider = new NoCredentialsProvider();
-    SubscriptionAdminSettings settings =
-        SubscriptionAdminSettings.newBuilder()
-            .setTransportChannelProvider(channelProvider)
-            .setCredentialsProvider(credentialsProvider)
-            .build();
+    SubscriptionAdminSettings settings = SubscriptionAdminSettings.newBuilder().setTransportChannelProvider(channelProvider)
+        .setCredentialsProvider(credentialsProvider).build();
     subscriptionAdminClient = SubscriptionAdminClient.create(settings);
 
-    TopicAdminSettings topicAdminSettings =
-        TopicAdminSettings.newBuilder()
-            .setTransportChannelProvider(serviceHelper.createChannelProvider())
-            .setCredentialsProvider(new NoCredentialsProvider())
-            .build();
+    TopicAdminSettings topicAdminSettings = TopicAdminSettings.newBuilder()
+        .setTransportChannelProvider(serviceHelper.createChannelProvider()).setCredentialsProvider(new NoCredentialsProvider()).build();
     topicAdminClient = TopicAdminClient.create(topicAdminSettings);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     subscriptionAdminClient.close();
   }

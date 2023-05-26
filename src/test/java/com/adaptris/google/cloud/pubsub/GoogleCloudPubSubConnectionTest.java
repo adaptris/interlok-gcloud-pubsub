@@ -1,5 +1,15 @@
 package com.adaptris.google.cloud.pubsub;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
 import com.adaptris.core.CoreException;
 import com.adaptris.core.util.LifecycleHelper;
 import com.adaptris.google.cloud.pubsub.adminclient.SubscriptionAdminClientProvider;
@@ -13,10 +23,6 @@ import com.adaptris.google.cloud.pubsub.credentials.NoCredentialsProvider;
 import com.adaptris.google.cloud.pubsub.flowcontrol.CustomFlowControlProvider;
 import com.adaptris.google.cloud.pubsub.flowcontrol.DefaultFlowControlProvider;
 import com.google.api.gax.grpc.InstantiatingGrpcChannelProvider;
-import org.junit.Test;
-import org.mockito.Mockito;
-
-import static org.junit.Assert.*;
 
 public class GoogleCloudPubSubConnectionTest {
 
@@ -48,11 +54,11 @@ public class GoogleCloudPubSubConnectionTest {
     connection.prepareConnection();
   }
 
-  private void prepareFail(GoogleCloudPubSubConnection connection, String message){
+  private void prepareFail(GoogleCloudPubSubConnection connection, String message) {
     try {
       connection.prepareConnection();
       fail();
-    } catch (CoreException expected){
+    } catch (CoreException expected) {
       assertEquals(message, expected.getMessage());
     }
   }
@@ -109,7 +115,7 @@ public class GoogleCloudPubSubConnectionTest {
   }
 
   @Test
-  public void testConnectionStateIsStopOrClose(){
+  public void testConnectionStateIsStopOrClose() {
     assertFalse(ConnectionConfig.ConnectionState.Initialising.isStopOrClose());
     assertFalse(ConnectionConfig.ConnectionState.Initialised.isStopOrClose());
     assertFalse(ConnectionConfig.ConnectionState.Starting.isStopOrClose());
@@ -121,7 +127,7 @@ public class GoogleCloudPubSubConnectionTest {
   }
 
   @Test
-  public void testGetSubscriptionAdminClient(){
+  public void testGetSubscriptionAdminClient() {
     GoogleCloudPubSubConnection connection = new GoogleCloudPubSubConnection();
     SubscriptionAdminClientProvider provider = Mockito.mock(SubscriptionAdminClientProvider.class);
     connection.setSubscriptionAdminClientProvider(provider);
@@ -130,7 +136,7 @@ public class GoogleCloudPubSubConnectionTest {
   }
 
   @Test
-  public void testGetTopicAdminClient(){
+  public void testGetTopicAdminClient() {
     GoogleCloudPubSubConnection connection = new GoogleCloudPubSubConnection();
     TopicAdminClientProvider provider = Mockito.mock(TopicAdminClientProvider.class);
     connection.setTopicAdminClientProvider(provider);
@@ -139,7 +145,7 @@ public class GoogleCloudPubSubConnectionTest {
   }
 
   @Test
-  public void testGetFlowControlProvider(){
+  public void testGetFlowControlProvider() {
     GoogleCloudPubSubConnection connection = new GoogleCloudPubSubConnection();
     assertNotNull(connection.getFlowControlProvider());
     assertTrue(connection.getFlowControlProvider() instanceof DefaultFlowControlProvider);

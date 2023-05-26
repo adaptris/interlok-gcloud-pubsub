@@ -1,5 +1,16 @@
 package com.adaptris.google.cloud.pubsub;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.EnumSet;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.AdaptrisMessageFactory;
 import com.adaptris.core.ServiceException;
@@ -10,18 +21,12 @@ import com.jayway.jsonpath.Option;
 import com.jayway.jsonpath.ReadContext;
 import com.jayway.jsonpath.spi.json.JsonSmartJsonProvider;
 import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.EnumSet;
-
-import static org.junit.Assert.*;
 
 public class TransformationDirectionTest {
 
   private Configuration jsonConfig;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     jsonConfig = new Configuration.ConfigurationBuilder().jsonProvider(new JsonSmartJsonProvider())
         .mappingProvider(new JacksonMappingProvider()).options(EnumSet.noneOf(Option.class)).build();
@@ -55,10 +60,11 @@ public class TransformationDirectionTest {
     assertEquals("1497951924", msg.getMetadataValue("gcloud_publishTimeSeconds"));
   }
 
-  @Test(expected = ServiceException.class)
+  @Test
   public void transform_PULL_RESPONSE_TO_INTERLOK_Exception() throws Exception {
     final AdaptrisMessage msg = AdaptrisMessageFactory.getDefaultInstance().newMessage(pullResponseInvalid);
-    TransformationDirection.PULL_RESPONSE_TO_INTERLOK.transform(msg, new NoOpMetadataFilter());
+
+    assertThrows(ServiceException.class, () -> TransformationDirection.PULL_RESPONSE_TO_INTERLOK.transform(msg, new NoOpMetadataFilter()));
   }
 
   @Test

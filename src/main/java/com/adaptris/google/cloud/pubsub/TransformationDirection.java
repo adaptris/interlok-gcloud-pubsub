@@ -2,6 +2,7 @@ package com.adaptris.google.cloud.pubsub;
 
 import java.io.IOException;
 import java.io.Reader;
+
 import com.adaptris.annotation.InputFieldHint;
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.MetadataCollection;
@@ -22,7 +23,7 @@ import com.google.pubsub.v1.PullResponse;
 import com.google.pubsub.v1.ReceivedMessage;
 
 /**
- * Direction enum; Google Cloud Pub/Sub JSON <-> Interlok Messsage.
+ * Direction enum; Google Cloud Pub/Sub JSON &lt;-&gt; Interlok Messsage.
  */
 public enum TransformationDirection {
 
@@ -37,7 +38,7 @@ public enum TransformationDirection {
         ByteString byteString = ByteString.copyFrom(message.getPayload());
         PubsubMessage.Builder psmBuilder = PubsubMessage.newBuilder().setData(byteString);
         MetadataCollection filtered = metadataFilter.filter(message);
-        for (MetadataElement e : filtered){
+        for (MetadataElement e : filtered) {
           psmBuilder.putAttributes(e.getKey(), e.getValue());
         }
         PublishRequest.Builder publishRequest = PublishRequest.newBuilder();
@@ -49,7 +50,6 @@ public enum TransformationDirection {
       }
     }
   },
-
 
   /**
    * Pull Response to Interlok Message
@@ -67,12 +67,11 @@ public enum TransformationDirection {
         ReceivedMessage receivedMessage = pullResponse.getReceivedMessages(0);
         message.addMetadata("gcloud_ackId", receivedMessage.getAckId());
         pubSubMessageParser(message, metadataFilter, receivedMessage.getMessage());
-      } catch (IOException e){
+      } catch (IOException e) {
         throw new ServiceException(e);
       }
     }
   },
-
 
   /**
    * Push Response to Interlok Message
@@ -88,7 +87,7 @@ public enum TransformationDirection {
         PubsubMessage.Builder pubsubMessage = PubsubMessage.newBuilder();
         JsonFormat.parser().merge(messageStr, pubsubMessage);
         pubSubMessageParser(message, metadataFilter, pubsubMessage.build());
-      } catch (IOException e){
+      } catch (IOException e) {
         throw new ServiceException(e);
       }
     }
@@ -96,15 +95,18 @@ public enum TransformationDirection {
 
   public abstract void transform(AdaptrisMessage message, MetadataFilter metadataFilter) throws ServiceException;
 
-  private static void pubSubMessageParser(AdaptrisMessage message, MetadataFilter metadataFilter, PubsubMessage pubsubMessage) throws IOException {
-    MetadataCollection filtered = metadataFilter.filter(MetadataHelper.convertFromProperties(KeyValuePairBag.asProperties(new KeyValuePairSet(pubsubMessage.getAttributesMap()))));
+  private static void pubSubMessageParser(AdaptrisMessage message, MetadataFilter metadataFilter, PubsubMessage pubsubMessage)
+      throws IOException {
+    MetadataCollection filtered = metadataFilter
+        .filter(MetadataHelper.convertFromProperties(KeyValuePairBag.asProperties(new KeyValuePairSet(pubsubMessage.getAttributesMap()))));
     for (MetadataElement e : filtered) {
       message.addMetadata(e);
     }
     message.addMetadata("gcloud_messageId", pubsubMessage.getMessageId());
-    if(pubsubMessage.hasPublishTime()) {
+    if (pubsubMessage.hasPublishTime()) {
       message.addMetadata("gcloud_publishTimeSeconds", String.valueOf(pubsubMessage.getPublishTime().getSeconds()));
     }
     message.setPayload(pubsubMessage.getData().toByteArray());
   }
+
 }

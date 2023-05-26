@@ -33,4 +33,5 @@ public abstract class CredentialsProvider implements ComponentLifecycle {
   public com.google.api.gax.core.CredentialsProvider getCredentialsProvider() {
     return credentialsProvider;
   }
+
 }
