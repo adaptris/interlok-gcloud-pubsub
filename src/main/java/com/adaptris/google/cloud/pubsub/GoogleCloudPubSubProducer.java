@@ -34,6 +34,7 @@ import com.google.protobuf.ByteString;
 import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.PubsubMessage;
 import com.google.pubsub.v1.Topic;
+import com.google.pubsub.v1.TopicName;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 import lombok.AccessLevel;
@@ -45,14 +46,9 @@ import lombok.Setter;
  * @config google-cloud-pubsub-producer
  */
 @XStreamAlias("google-cloud-pubsub-producer")
-@ComponentProfile(summary = "Publish a message to Google pubsub", tag = "producer,gcloud,messaging", recommended =
-{
-    GoogleCloudPubSubConnection.class
-})
-@DisplayOrder(order =
-{
-    "topic", "createTopic", "publisherCacheLimit", "metadataFilter"
-})
+@ComponentProfile(summary = "Publish a message to Google pubsub", tag = "producer,gcloud,messaging", recommended = {
+    GoogleCloudPubSubConnection.class })
+@DisplayOrder(order = { "topic", "createTopic", "publisherCacheLimit", "metadataFilter" })
 @NoArgsConstructor
 public class GoogleCloudPubSubProducer extends ProduceOnlyProducerImp {
 
@@ -91,8 +87,7 @@ public class GoogleCloudPubSubProducer extends ProduceOnlyProducerImp {
   private transient Map<String, Publisher> publisherCache;
 
   @Override
-  protected void doProduce(AdaptrisMessage adaptrisMessage, String endpoint)
-      throws ProduceException {
+  protected void doProduce(AdaptrisMessage adaptrisMessage, String endpoint) throws ProduceException {
     try {
       Publisher publisher;
       if (publisherCache.containsKey(endpoint)) {
@@ -100,10 +95,8 @@ public class GoogleCloudPubSubProducer extends ProduceOnlyProducerImp {
         publisher = publisherCache.get(endpoint);
       } else {
         log.trace("No publisher found for key [{}]", endpoint);
-        publisher = Publisher.newBuilder(createOrGetTopicName(adaptrisMessage, endpoint))
-            .setChannelProvider(channelProvider)
-            .setCredentialsProvider(credentialsProvider)
-            .build();
+        publisher = Publisher.newBuilder(createOrGetTopicName(adaptrisMessage, endpoint)).setChannelProvider(channelProvider)
+            .setCredentialsProvider(credentialsProvider).build();
         publisherCache.put(endpoint, publisher);
       }
       ApiFuture<String> messageId = publisher.publish(createPubsubMessage(adaptrisMessage));
@@ -113,10 +106,8 @@ public class GoogleCloudPubSubProducer extends ProduceOnlyProducerImp {
     }
   }
 
-  @SuppressWarnings("deprecation")
-  ProjectTopicName createOrGetTopicName(AdaptrisMessage adaptrisMessage, String endpoint)
-      throws CoreException {
-    ProjectTopicName topicName = ProjectTopicName.of(projectName, endpoint);
+  TopicName createOrGetTopicName(AdaptrisMessage adaptrisMessage, String endpoint) throws CoreException {
+    TopicName topicName = TopicName.of(projectName, endpoint);
     if (!createTopic()) {
       return topicName;
     }
@@ -135,11 +126,11 @@ public class GoogleCloudPubSubProducer extends ProduceOnlyProducerImp {
     }
   }
 
-  PubsubMessage createPubsubMessage(AdaptrisMessage adaptrisMessage){
+  PubsubMessage createPubsubMessage(AdaptrisMessage adaptrisMessage) {
     ByteString byteString = ByteString.copyFrom(adaptrisMessage.getPayload());
     PubsubMessage.Builder psmBuilder = PubsubMessage.newBuilder().setData(byteString);
     MetadataCollection filtered = metadataFilter().filter(adaptrisMessage);
-    for (MetadataElement e : filtered){
+    for (MetadataElement e : filtered) {
       psmBuilder.putAttributes(e.getKey(), e.getValue());
     }
     return psmBuilder.build();
@@ -188,8 +179,7 @@ public class GoogleCloudPubSubProducer extends ProduceOnlyProducerImp {
   }
 
   private int publisherCacheLimit() {
-    return NumberUtils.toIntDefaultIfNull(getPublisherCacheLimit(),
-        PublisherMap.DEFAULT_MAX_ENTRIES);
+    return NumberUtils.toIntDefaultIfNull(getPublisherCacheLimit(), PublisherMap.DEFAULT_MAX_ENTRIES);
   }
 
   @Override

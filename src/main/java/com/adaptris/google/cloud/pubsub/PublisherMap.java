@@ -2,8 +2,10 @@ package com.adaptris.google.cloud.pubsub;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.google.cloud.pubsub.v1.Publisher;
 
 public class PublisherMap extends LinkedHashMap<String, Publisher> {
@@ -16,22 +18,22 @@ public class PublisherMap extends LinkedHashMap<String, Publisher> {
 
   private final int maxEntries;
 
-  public PublisherMap(){
+  public PublisherMap() {
     this(DEFAULT_MAX_ENTRIES);
   }
 
-  public PublisherMap(int maxEntries){
+  public PublisherMap(int maxEntries) {
     this.maxEntries = maxEntries;
   }
 
   @Override
   protected boolean removeEldestEntry(Map.Entry<String, Publisher> eldest) {
-    if (size() > maxEntries){
+    if (size() > maxEntries) {
       try {
         if (eldest.getValue() != null) {
           eldest.getValue().shutdown();
         }
-      } catch (Exception ignored){
+      } catch (Exception ignored) {
         log.trace("Publisher failed to shutdown", ignored);
       }
       return true;
@@ -43,4 +45,5 @@ public class PublisherMap extends LinkedHashMap<String, Publisher> {
   public int getMaxEntries() {
     return maxEntries;
   }
+
 }

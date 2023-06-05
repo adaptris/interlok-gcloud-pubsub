@@ -18,15 +18,15 @@
  */
 package com.adaptris.google.cloud.pubsub;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.AdaptrisMessageFactory;
@@ -67,7 +67,7 @@ public class PubsubProducerTest extends ServiceHelperBase {
     final AdaptrisMessage msg = AdaptrisMessageFactory.getDefaultInstance().newMessage();
     producer.init();
     producer.start();
-    ProjectTopicName topicName = producer.createOrGetTopicName(msg, producer.endpoint(msg));
+    TopicName topicName = producer.createOrGetTopicName(msg, producer.endpoint(msg));
     producer.stop();
     producer.close();
 
@@ -81,9 +81,7 @@ public class PubsubProducerTest extends ServiceHelperBase {
   @Test
   @SuppressWarnings("all")
   public void testCreateOrGetTopicName_GetWithCreate() throws Exception {
-    Topic expectedResponse = Topic.newBuilder()
-        .setName(ProjectTopicName.of(PROJECT, TOPIC).toString())
-        .build();
+    Topic expectedResponse = Topic.newBuilder().setName(ProjectTopicName.of(PROJECT, TOPIC).toString()).build();
     mockPublisher.addResponse(expectedResponse);
 
     GoogleCloudPubSubConnection connection = new GoogleCloudPubSubConnection();
@@ -99,7 +97,7 @@ public class PubsubProducerTest extends ServiceHelperBase {
     final AdaptrisMessage msg = AdaptrisMessageFactory.getDefaultInstance().newMessage();
     producer.init();
     producer.start();
-    ProjectTopicName topicName = producer.createOrGetTopicName(msg, producer.endpoint(msg));
+    TopicName topicName = producer.createOrGetTopicName(msg, producer.endpoint(msg));
     producer.stop();
     producer.close();
 
@@ -115,9 +113,7 @@ public class PubsubProducerTest extends ServiceHelperBase {
   public void testCreateOrGetTopicName_GetWithCreate_NotFound() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.NOT_FOUND);
     mockPublisher.addException(exception);
-    Topic expectedResponse = Topic.newBuilder()
-        .setName(ProjectTopicName.of(PROJECT, TOPIC).toString())
-        .build();
+    Topic expectedResponse = Topic.newBuilder().setName(ProjectTopicName.of(PROJECT, TOPIC).toString()).build();
     mockPublisher.addResponse(expectedResponse);
 
     GoogleCloudPubSubConnection connection = new GoogleCloudPubSubConnection();
@@ -133,7 +129,7 @@ public class PubsubProducerTest extends ServiceHelperBase {
     final AdaptrisMessage msg = AdaptrisMessageFactory.getDefaultInstance().newMessage();
     producer.init();
     producer.start();
-    ProjectTopicName topicName = producer.createOrGetTopicName(msg, producer.endpoint(msg));
+    TopicName topicName = producer.createOrGetTopicName(msg, producer.endpoint(msg));
     producer.stop();
     producer.close();
 
@@ -166,20 +162,17 @@ public class PubsubProducerTest extends ServiceHelperBase {
     try {
       TopicName topicName = producer.createOrGetTopicName(msg, producer.endpoint(msg));
       fail("No exception thrown");
-    } catch (CoreException e){
+    } catch (CoreException e) {
       assertEquals("Failed to get Topic", e.getMessage());
     }
     producer.stop();
     producer.close();
   }
 
-
   @Test
   @SuppressWarnings("all")
   public void testPublish() throws Exception {
-    PublishResponse expectedResponse = PublishResponse.newBuilder()
-        .addMessageIds("1234")
-        .build();
+    PublishResponse expectedResponse = PublishResponse.newBuilder().addMessageIds("1234").build();
     mockPublisher.addResponse(expectedResponse);
     mockPublisher.addResponse(expectedResponse);
 
@@ -253,6 +246,5 @@ public class PubsubProducerTest extends ServiceHelperBase {
     producer.stop();
     producer.close();
   }
-
 
 }

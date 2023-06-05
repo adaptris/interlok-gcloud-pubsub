@@ -21,14 +21,15 @@ public interface ReplyProvider {
 
     public abstract void execute(AckReplyConsumer consumer);
 
-    public static AckReply valueOf(String name, AckReply defaultValue){
+    public static AckReply valueOf(String name, AckReply defaultValue) {
       try {
         return AckReply.valueOf(name);
-      } catch (NullPointerException | IllegalArgumentException e){
+      } catch (NullPointerException | IllegalArgumentException e) {
         return defaultValue;
       }
     }
   }
 
   public AckReply getAckReply(AdaptrisMessage message);
+
 }

@@ -1,23 +1,22 @@
 package com.adaptris.google.cloud.pubsub.credentials;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.adaptris.core.CoreException;
 import com.adaptris.core.oauth.gcloud.Credentials;
 import com.adaptris.core.util.LifecycleHelper;
 import com.adaptris.google.cloud.pubsub.stubs.StubCredentials;
-
 
 public class FixedCredentialsProviderTest {
 
@@ -51,13 +50,13 @@ public class FixedCredentialsProviderTest {
     try {
       provider.init();
       fail();
-    } catch (CoreException expected){
+    } catch (CoreException expected) {
       assertEquals("credentials is invalid", expected.getMessage());
     }
   }
 
   @Test
-  public void testStopClose() throws Exception{
+  public void testStopClose() throws Exception {
     Credentials credentials = spy(new StubCredentials());
     FixedCredentialsProvider provider = spy(new FixedCredentialsProvider(credentials));
     LifecycleHelper.stopAndClose(provider);

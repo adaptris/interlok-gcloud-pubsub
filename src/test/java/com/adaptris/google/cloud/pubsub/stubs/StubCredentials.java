@@ -1,6 +1,5 @@
 package com.adaptris.google.cloud.pubsub.stubs;
 
-
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -18,7 +17,7 @@ public class StubCredentials implements Credentials {
 
   GoogleCredentials credentials;
 
-  public StubCredentials() throws Exception{
+  public StubCredentials() throws Exception {
     credentials = mock(GoogleCredentials.class);
     when(credentials.refreshAccessToken()).thenReturn(new AccessToken(ACCESS_TOKEN, EXPIRATION));
   }
@@ -30,21 +29,18 @@ public class StubCredentials implements Credentials {
 
   @Override
   public void init() throws CoreException {
-
   }
 
   @Override
   public void start() throws CoreException {
-
   }
 
   @Override
   public void stop() {
-
   }
 
   @Override
   public void close() {
-
   }
+
 }

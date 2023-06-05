@@ -17,9 +17,11 @@
 package com.adaptris.google.cloud.pubsub.mocks;
 
 import java.util.List;
+
 import com.google.api.core.BetaApi;
 import com.google.api.gax.grpc.testing.MockGrpcService;
 import com.google.protobuf.AbstractMessage;
+
 import io.grpc.ServerServiceDefinition;
 
 @javax.annotation.Generated("by GAPIC")
@@ -55,4 +57,5 @@ public class MockPublisher implements MockGrpcService {
   public void reset() {
     serviceImpl.reset();
   }
+
 }

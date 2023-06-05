@@ -1,12 +1,11 @@
 package com.adaptris.google.cloud.pubsub.credentials;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 import com.adaptris.core.CoreException;
 import com.adaptris.core.oauth.gcloud.Credentials;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 /**
  * @config fixed-credentials-provider
@@ -18,10 +17,10 @@ public class FixedCredentialsProvider extends CredentialsProvider {
   @NotNull
   private Credentials credentials;
 
-  public FixedCredentialsProvider(){
+  public FixedCredentialsProvider() {
   }
 
-  public FixedCredentialsProvider(Credentials credentials){
+  public FixedCredentialsProvider(Credentials credentials) {
     setCredentials(credentials);
   }
 
@@ -32,7 +31,7 @@ public class FixedCredentialsProvider extends CredentialsProvider {
 
   @Override
   public void init() throws CoreException {
-    if (getCredentials() == null){
+    if (getCredentials() == null) {
       throw new CoreException("credentials is invalid");
     }
     getCredentials().init();
@@ -61,4 +60,5 @@ public class FixedCredentialsProvider extends CredentialsProvider {
   public Credentials getCredentials() {
     return credentials;
   }
+
 }

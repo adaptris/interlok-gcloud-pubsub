@@ -15,4 +15,5 @@ public class DefaultGoogleCloudPubSubTransformationDriver implements Transformat
   public void transform(AdaptrisMessage input, TransformationDirection direction, MetadataFilter metadataFilter) throws ServiceException {
     direction.transform(input, metadataFilter);
   }
+
 }

@@ -48,7 +48,6 @@ public class GoogleCloudPubSubTransformService extends ServiceImp {
     this();
     setDriver(driver);
     setDirection(direction);
-
   }
 
   @Override
@@ -91,4 +90,5 @@ public class GoogleCloudPubSubTransformService extends ServiceImp {
   public MetadataFilter getMetadataFilter() {
     return metadataFilter;
   }
+
 }

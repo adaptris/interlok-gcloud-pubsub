@@ -1,7 +1,9 @@
 package com.adaptris.google.cloud.pubsub;
 
 import static com.adaptris.core.AdaptrisMessageFactory.defaultIfNull;
+
 import java.util.Map;
+
 import com.adaptris.annotation.ComponentProfile;
 import com.adaptris.annotation.DisplayOrder;
 import com.adaptris.core.AdaptrisMessage;
@@ -17,23 +19,15 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * @config google-cloud-pubsub-pull-consumer
  */
 @XStreamAlias("google-cloud-pubsub-pull-consumer")
-@ComponentProfile(summary = "Receive a message to Google pubsub", tag = "consumer,gcloud,messaging", metadata =
-{
-    "gcloud_topic", "gcloud_projectName", "gcloud_subscriptionName", "gcloud_publishTime"
-}, recommended =
-{
-    GoogleCloudPubSubConnection.class
-})
-@DisplayOrder(order =
-{
-    "topic", "subscriptionName", "ackDeadline", "createSubscription", "autoAcknowledge"
-})
+@ComponentProfile(summary = "Receive a message to Google pubsub", tag = "consumer,gcloud,messaging", metadata = { "gcloud_topic",
+    "gcloud_projectName", "gcloud_subscriptionName", "gcloud_publishTime" }, recommended = { GoogleCloudPubSubConnection.class })
+@DisplayOrder(order = { "topic", "subscriptionName", "ackDeadline", "createSubscription", "autoAcknowledge" })
 public class GoogleCloudPubSubPullConsumer extends ConsumeConfig implements MessageReceiver {
 
   private transient Subscriber subscriber = null;
   private transient String projectName;
 
-  public GoogleCloudPubSubPullConsumer(){
+  public GoogleCloudPubSubPullConsumer() {
     super();
   }
 
@@ -67,7 +61,6 @@ public class GoogleCloudPubSubPullConsumer extends ConsumeConfig implements Mess
     }
   }
 
-
   @Override
   public void receiveMessage(PubsubMessage pubsubMessage, AckReplyConsumer consumer) {
     AdaptrisMessage adaptrisMessage = defaultIfNull(getMessageFactory()).newMessage(pubsubMessage.getData().toByteArray());
@@ -75,13 +68,13 @@ public class GoogleCloudPubSubPullConsumer extends ConsumeConfig implements Mess
     adaptrisMessage.addMetadata("gcloud_projectName", getProjectName());
     adaptrisMessage.addMetadata("gcloud_subscriptionName", getSubscriptionName());
     adaptrisMessage.addMetadata("gcloud_messageId", pubsubMessage.getMessageId());
-    if(pubsubMessage.hasPublishTime()) {
+    if (pubsubMessage.hasPublishTime()) {
       adaptrisMessage.addMetadata("gcloud_publishTime", String.valueOf(pubsubMessage.getPublishTime().getSeconds()));
     }
     for (Map.Entry<String, String> e : pubsubMessage.getAttributesMap().entrySet()) {
       adaptrisMessage.addMetadata(e.getKey(), e.getValue());
     }
-    if(getAutoAcknowledge()) {
+    if (getAutoAcknowledge()) {
       consumer.ack();
     } else {
       adaptrisMessage.addObjectHeader(Constants.REPLY_KEY, consumer);

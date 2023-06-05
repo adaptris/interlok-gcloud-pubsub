@@ -1,10 +1,11 @@
 package com.adaptris.google.cloud.pubsub;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
+
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.AdaptrisMessageFactory;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class ConfiguredReplyProviderTest {
 
@@ -19,7 +20,7 @@ public class ConfiguredReplyProviderTest {
 
   @Test
   public void testGetAckReply() throws Exception {
-    AdaptrisMessage msg =  AdaptrisMessageFactory.getDefaultInstance().newMessage();
+    AdaptrisMessage msg = AdaptrisMessageFactory.getDefaultInstance().newMessage();
     ConfiguredReplyProvider provider = new ConfiguredReplyProvider();
     provider.setReply(ReplyProvider.AckReply.NACK);
     assertEquals(ReplyProvider.AckReply.NACK, provider.getAckReply(msg));

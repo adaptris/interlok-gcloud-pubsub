@@ -11,7 +11,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 public class DefaultFlowControlProvider extends FlowControlProvider {
 
   @Override
-  public void apply(Subscriber.Builder subscriberBuilder){
-
+  public void apply(Subscriber.Builder subscriberBuilder) {
   }
+
 }

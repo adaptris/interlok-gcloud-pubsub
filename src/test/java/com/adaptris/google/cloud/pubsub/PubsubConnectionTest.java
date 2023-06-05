@@ -18,15 +18,15 @@
  */
 package com.adaptris.google.cloud.pubsub;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.adaptris.core.CoreException;
 import com.adaptris.google.cloud.pubsub.adminclient.SubscriptionAdminClientProvider;
@@ -55,13 +55,8 @@ public class PubsubConnectionTest extends ServiceHelperBase {
     TopicName topic = ProjectTopicName.of(PROJECT, TOPIC);
     int ackDeadlineSeconds2 = -921632575;
     boolean retainAckedMessages = false;
-    Subscription expectedResponse =
-        Subscription.newBuilder()
-        .setName(name.toString())
-        .setTopic(topic.toString())
-        .setAckDeadlineSeconds(ackDeadlineSeconds2)
-        .setRetainAckedMessages(retainAckedMessages)
-        .build();
+    Subscription expectedResponse = Subscription.newBuilder().setName(name.toString()).setTopic(topic.toString())
+        .setAckDeadlineSeconds(ackDeadlineSeconds2).setRetainAckedMessages(retainAckedMessages).build();
     mockSubscriber.addResponse(expectedResponse);
 
     GoogleCloudPubSubConnection connection = new GoogleCloudPubSubConnection();
@@ -80,7 +75,8 @@ public class PubsubConnectionTest extends ServiceHelperBase {
     assertEquals(1, actualRequests.size());
     GetSubscriptionRequest actualRequest = (GetSubscriptionRequest) actualRequests.get(0);
 
-    assertEquals(String.format("projects/%s/subscriptions/%s",connection.getProjectName(), consumer.getSubscriptionName()), actualRequest.getSubscription());
+    assertEquals(String.format("projects/%s/subscriptions/%s", connection.getProjectName(), consumer.getSubscriptionName()),
+        actualRequest.getSubscription());
   }
 
   @Test
@@ -90,13 +86,8 @@ public class PubsubConnectionTest extends ServiceHelperBase {
     TopicName topic = ProjectTopicName.of(PROJECT, TOPIC);
     int ackDeadlineSeconds2 = -921632575;
     boolean retainAckedMessages = false;
-    Subscription expectedResponse =
-        Subscription.newBuilder()
-        .setName(name.toString())
-        .setTopic(topic.toString())
-        .setAckDeadlineSeconds(ackDeadlineSeconds2)
-        .setRetainAckedMessages(retainAckedMessages)
-        .build();
+    Subscription expectedResponse = Subscription.newBuilder().setName(name.toString()).setTopic(topic.toString())
+        .setAckDeadlineSeconds(ackDeadlineSeconds2).setRetainAckedMessages(retainAckedMessages).build();
     mockSubscriber.addResponse(expectedResponse);
 
     GoogleCloudPubSubConnection connection = new GoogleCloudPubSubConnection();
@@ -111,7 +102,7 @@ public class PubsubConnectionTest extends ServiceHelperBase {
     try {
       connection.createSubscription(consumer);
       fail("No exception raised");
-    } catch (CoreException e){
+    } catch (CoreException e) {
       assertTrue(e.getMessage().contains("Existing subscription topics do not match"));
     }
   }
@@ -134,7 +125,7 @@ public class PubsubConnectionTest extends ServiceHelperBase {
     try {
       connection.createSubscription(consumer);
       fail("No exception raised");
-    } catch (CoreException e){
+    } catch (CoreException e) {
       assertEquals("Failed to retrieve Topic", e.getMessage());
     }
   }
@@ -157,7 +148,7 @@ public class PubsubConnectionTest extends ServiceHelperBase {
     try {
       connection.createSubscription(consumer);
       fail("No exception raised");
-    } catch (CoreException e){
+    } catch (CoreException e) {
       assertEquals("Failed to retrieve Topic", e.getMessage());
     }
   }
@@ -171,13 +162,8 @@ public class PubsubConnectionTest extends ServiceHelperBase {
     TopicName topic = ProjectTopicName.of(PROJECT, TOPIC);
     int ackDeadlineSeconds2 = -921632575;
     boolean retainAckedMessages = false;
-    Subscription expectedResponse =
-        Subscription.newBuilder()
-        .setName(name.toString())
-        .setTopic(topic.toString())
-        .setAckDeadlineSeconds(ackDeadlineSeconds2)
-        .setRetainAckedMessages(retainAckedMessages)
-        .build();
+    Subscription expectedResponse = Subscription.newBuilder().setName(name.toString()).setTopic(topic.toString())
+        .setAckDeadlineSeconds(ackDeadlineSeconds2).setRetainAckedMessages(retainAckedMessages).build();
     mockSubscriber.addResponse(expectedResponse);
 
     GoogleCloudPubSubConnection connection = new GoogleCloudPubSubConnection();
@@ -196,12 +182,12 @@ public class PubsubConnectionTest extends ServiceHelperBase {
     assertEquals(1, actualRequests.size());
     Subscription actualRequest = (Subscription) actualRequests.get(0);
 
-    assertEquals(String.format("projects/%s/subscriptions/%s", connection.getProjectName(), consumer.getSubscriptionName()), actualRequest.getName());
+    assertEquals(String.format("projects/%s/subscriptions/%s", connection.getProjectName(), consumer.getSubscriptionName()),
+        actualRequest.getName());
     assertEquals(String.format("projects/%s/topics/%s", connection.getProjectName(), consumer.getTopicName()), actualRequest.getTopic());
     assertEquals(PushConfig.getDefaultInstance(), actualRequest.getPushConfig());
     assertEquals(consumer.getAckDeadlineSeconds(), actualRequest.getAckDeadlineSeconds());
   }
-
 
   @Test
   @SuppressWarnings("all")
@@ -254,13 +240,8 @@ public class PubsubConnectionTest extends ServiceHelperBase {
     TopicName topic = ProjectTopicName.of(PROJECT, TOPIC);
     int ackDeadlineSeconds2 = -921632575;
     boolean retainAckedMessages = false;
-    Subscription expectedResponse =
-        Subscription.newBuilder()
-        .setName(name.toString())
-        .setTopic(topic.toString())
-        .setAckDeadlineSeconds(ackDeadlineSeconds2)
-        .setRetainAckedMessages(retainAckedMessages)
-        .build();
+    Subscription expectedResponse = Subscription.newBuilder().setName(name.toString()).setTopic(topic.toString())
+        .setAckDeadlineSeconds(ackDeadlineSeconds2).setRetainAckedMessages(retainAckedMessages).build();
     mockSubscriber.addResponse(expectedResponse);
 
     GoogleCloudPubSubConnection connection = new GoogleCloudPubSubConnection();
@@ -296,13 +277,8 @@ public class PubsubConnectionTest extends ServiceHelperBase {
     TopicName topic = ProjectTopicName.of(PROJECT, TOPIC);
     int ackDeadlineSeconds2 = -921632575;
     boolean retainAckedMessages = false;
-    Subscription expectedResponse =
-        Subscription.newBuilder()
-        .setName(name.toString())
-        .setTopic(topic.toString())
-        .setAckDeadlineSeconds(ackDeadlineSeconds2)
-        .setRetainAckedMessages(retainAckedMessages)
-        .build();
+    Subscription expectedResponse = Subscription.newBuilder().setName(name.toString()).setTopic(topic.toString())
+        .setAckDeadlineSeconds(ackDeadlineSeconds2).setRetainAckedMessages(retainAckedMessages).build();
     mockSubscriber.addResponse(expectedResponse);
 
     GoogleCloudPubSubConnection connection = new GoogleCloudPubSubConnection();
@@ -327,11 +303,10 @@ public class PubsubConnectionTest extends ServiceHelperBase {
 
     assertEquals(PROJECT, ProjectSubscriptionName.parse(subscriber.getSubscriptionNameString()).getProject());
     assertEquals(SUBSCRIPTION, ProjectSubscriptionName.parse(subscriber.getSubscriptionNameString()).getSubscription());
-    //check for listener
+    // check for listener
 
     List<AbstractMessage> actualRequests = mockSubscriber.getRequests();
     assertEquals(1, actualRequests.size());
   }
-
 
 }
