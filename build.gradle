@@ -133,7 +133,7 @@ dependencies {
   // Dependency to platform/BOM
   implementation (platform("com.fasterxml.jackson:jackson-bom:$jacksonVersion"))
   api ("com.fasterxml.jackson.core:jackson-databind")
-  api ("com.google.guava:guava:32.0.0-jre")
+  api ("com.google.guava:guava:32.0.1-jre")
 
   // Minimal netty specification
   implementation ("io.netty:netty-handler:$nettyVersion")
