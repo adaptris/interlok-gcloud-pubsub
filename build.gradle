@@ -116,6 +116,11 @@ configurations {
 
 configurations.all {
   resolutionStrategy.cacheChangingModulesFor 0, "seconds"
+  // Our dependency graph contains the hacky listenablefuture, Gradle will now report that those libraries contain duplicates of Guava classes.
+  // We need to tell Gradle to select Guava. https://github.com/google/guava/releases/tag/v32.1.0
+  resolutionStrategy.capabilitiesResolution.withCapability("com.google.guava:listenablefuture") {
+    select("com.google.guava:guava:0")
+  }
 }
 
 dependencies {
