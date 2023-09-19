@@ -156,6 +156,7 @@ dependencies {
   // in 1.29.0; gradle dependencies was required.
   implementation  ("io.grpc:grpc-auth:$grpcVersion")
   implementation  ("io.grpc:grpc-alts:$grpcVersion")
+  implementation  ("io.grpc:grpc-context:$grpcVersion")
   implementation  ("io.grpc:grpc-inprocess:$grpcVersion")
 
   implementation  ("com.google.code.gson:gson:2.10.1")
