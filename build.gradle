@@ -31,7 +31,7 @@ ext {
   slf4jVersion = '2.0.9'
   nettyVersion = '4.1.97.Final'
   grpcVersion = '1.58.0'
-  gaxVersion = '2.6.1'
+  gaxVersion = '2.33.0'
   protobufVersion = '3.24.3'
   mockitoVersion = '5.2.0'
   jacksonVersion = '2.15.2'
@@ -128,7 +128,7 @@ dependencies {
   api  ("com.adaptris:interlok-common:$interlokCoreVersion") { changing= true}
   api  ("com.adaptris:interlok-oauth-gcloud:$interlokCoreVersion") { changing= true}
 
-  api ("com.google.cloud:google-cloud-pubsub:1.124.2") {
+  api ("com.google.cloud:google-cloud-pubsub:1.125.1") {
     exclude group: "com.fasterxml.jackson.core", module: "jackson-databind"
     exclude group: "com.apache.httpcomponents", module: "httpclient"
     exclude group: "io.grpc", module: "grpc-netty-shaded"
@@ -156,6 +156,7 @@ dependencies {
   // in 1.29.0; gradle dependencies was required.
   implementation  ("io.grpc:grpc-auth:$grpcVersion")
   implementation  ("io.grpc:grpc-alts:$grpcVersion")
+  implementation  ("io.grpc:grpc-inprocess:$grpcVersion")
 
   implementation  ("com.google.code.gson:gson:2.10.1")
   // Required because we attempt to create a protobuf message in PUSH_RESPONSE_TO_INTERLOK
@@ -172,7 +173,7 @@ dependencies {
   testImplementation ("org.mockito:mockito-inline:$mockitoVersion")
   testImplementation  ("org.apache.geronimo.specs:geronimo-jms_1.1_spec:1.1.1")
   testImplementation  ("com.jayway.jsonpath:json-path:2.8.0")
-  testImplementation  ("com.google.api.grpc:grpc-google-cloud-pubsub-v1:1.106.2")
+  testImplementation  ("com.google.api.grpc:grpc-google-cloud-pubsub-v1:1.107.1")
   testImplementation  ("com.google.api:gax-grpc:$gaxVersion:testlib")
 
   javadoc("com.adaptris:interlok-core-apt:$interlokCoreVersion") { changing= true}
