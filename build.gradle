@@ -151,6 +151,8 @@ dependencies {
   implementation ("io.grpc:grpc-netty:$grpcVersion")
   implementation ("io.grpc:grpc-protobuf:$grpcVersion")
   implementation ("io.grpc:grpc-stub:$grpcVersion")
+  implementation ("io.grpc:grpc-googleapis:$grpcVersion")
+  implementation ("io.grpc:grpc-services:$grpcVersion")
 
   // Some things appear to be pinned at 1.28.1 which refers to a missing class
   // in 1.29.0; gradle dependencies was required.
