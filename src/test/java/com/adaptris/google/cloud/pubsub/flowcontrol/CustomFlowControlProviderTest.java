@@ -1,16 +1,15 @@
 package com.adaptris.google.cloud.pubsub.flowcontrol;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+import org.junit.jupiter.api.Test;
+
 import com.google.api.gax.batching.FlowControlSettings;
 import com.google.api.gax.batching.FlowController;
-import com.google.cloud.pubsub.v1.AckReplyConsumer;
 import com.google.cloud.pubsub.v1.MessageReceiver;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.pubsub.v1.ProjectSubscriptionName;
-import com.google.pubsub.v1.PubsubMessage;
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 /**
  * @author mwarman
@@ -18,7 +17,7 @@ import static org.junit.Assert.assertNull;
 public class CustomFlowControlProviderTest {
 
   @Test
-  public void construct() throws Exception{
+  public void construct() throws Exception {
     CustomFlowControlProvider flowControlProvider = new CustomFlowControlProvider();
     assertNull(flowControlProvider.getMaxOutstandingRequestBytes());
     assertNull(flowControlProvider.getMaxOutstandingElementCount());
@@ -33,7 +32,7 @@ public class CustomFlowControlProviderTest {
     assertEquals(1024L, flowControlProvider.getMaxOutstandingRequestBytes().longValue());
     flowControlProvider.init();
     FlowControlSettings flowControlSettings = flowControlProvider.getFlowControlSettings();
-    assertEquals(1024L,flowControlSettings.getMaxOutstandingRequestBytes().longValue());
+    assertEquals(1024L, flowControlSettings.getMaxOutstandingRequestBytes().longValue());
     assertEquals(FlowController.LimitExceededBehavior.Block, flowControlSettings.getLimitExceededBehavior());
     assertNull(flowControlSettings.getMaxOutstandingElementCount());
   }
@@ -71,12 +70,10 @@ public class CustomFlowControlProviderTest {
     flowControlProvider.setMaxOutstandingRequestBytes(1024L);
     flowControlProvider.setLimitExceededBehavior(FlowController.LimitExceededBehavior.Block);
     flowControlProvider.init();
-    Subscriber.Builder subscriberBuilder = Subscriber.newBuilder(ProjectSubscriptionName.of("project", "subscription"), new MessageReceiver() {
-      @Override
-      public void receiveMessage(PubsubMessage message, AckReplyConsumer consumer) {
+    Subscriber.Builder subscriberBuilder = Subscriber.newBuilder(ProjectSubscriptionName.of("project", "subscription"),
+        (MessageReceiver) (message, consumer) -> {
 
-      }
-    });
+        });
     flowControlProvider.apply(subscriberBuilder);
     Subscriber subscriber = subscriberBuilder.build();
     assertEquals(FlowController.LimitExceededBehavior.Block, subscriber.getFlowControlSettings().getLimitExceededBehavior());

@@ -30,35 +30,33 @@ public class CustomChannelProvider extends ChannelProvider {
   @InputFieldDefault(value = "true")
   private Boolean usePlaintext = true;
 
-  public CustomChannelProvider(){
+  public CustomChannelProvider() {
   }
 
-  public CustomChannelProvider(String address){
+  public CustomChannelProvider(String address) {
     this();
     setAddress(address);
   }
 
-  public CustomChannelProvider(String address, Boolean usePlaintext){
+  public CustomChannelProvider(String address, Boolean usePlaintext) {
     this(address);
     setUsePlaintext(usePlaintext);
   }
 
   @Override
   void validateArguments() throws CoreException {
-    if (StringUtils.isEmpty(getAddress())){
+    if (StringUtils.isEmpty(getAddress())) {
       throw new CoreException("Address is invalid");
     }
-    if (getUsePlaintext() == null){
+    if (getUsePlaintext() == null) {
       throw new CoreException("Use Plaintext is invalid");
     }
   }
 
   @Override
   TransportChannelProvider createChannelProvider() {
-    ManagedChannelBuilder<?> channelBuilder = ManagedChannelBuilder
-        .forTarget(getAddress())
-        .maxInboundMessageSize(MAX_INBOUND_MESSAGE_SIZE);
-    if(getUsePlaintext()){
+    ManagedChannelBuilder<?> channelBuilder = ManagedChannelBuilder.forTarget(getAddress()).maxInboundMessageSize(MAX_INBOUND_MESSAGE_SIZE);
+    if (getUsePlaintext()) {
       channelBuilder.usePlaintext();
     }
     ManagedChannel channel = channelBuilder.build();
@@ -80,4 +78,5 @@ public class CustomChannelProvider extends ChannelProvider {
   public void setUsePlaintext(Boolean usePlaintext) {
     this.usePlaintext = usePlaintext;
   }
+
 }

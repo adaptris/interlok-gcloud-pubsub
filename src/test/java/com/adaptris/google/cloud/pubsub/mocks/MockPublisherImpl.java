@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+
 import com.google.api.core.BetaApi;
 import com.google.protobuf.AbstractMessage;
 import com.google.protobuf.Empty;
@@ -33,6 +34,7 @@ import com.google.pubsub.v1.PublishResponse;
 import com.google.pubsub.v1.PublisherGrpc.PublisherImplBase;
 import com.google.pubsub.v1.Topic;
 import com.google.pubsub.v1.UpdateTopicRequest;
+
 import io.grpc.stub.StreamObserver;
 
 @javax.annotation.Generated("by GAPIC")
@@ -55,7 +57,7 @@ public class MockPublisherImpl extends PublisherImplBase {
   }
 
   public void setResponses(List<AbstractMessage> responses) {
-    this.responses = new LinkedList<Object>(responses);
+    this.responses = new LinkedList<>(responses);
   }
 
   public void addException(Exception exception) {
@@ -124,8 +126,7 @@ public class MockPublisherImpl extends PublisherImplBase {
   }
 
   @Override
-  public void listTopics(
-      ListTopicsRequest request, StreamObserver<ListTopicsResponse> responseObserver) {
+  public void listTopics(ListTopicsRequest request, StreamObserver<ListTopicsResponse> responseObserver) {
     Object response = responses.remove();
     if (response instanceof ListTopicsResponse) {
       requests.add(request);
@@ -139,8 +140,7 @@ public class MockPublisherImpl extends PublisherImplBase {
   }
 
   @Override
-  public void listTopicSubscriptions(
-      ListTopicSubscriptionsRequest request,
+  public void listTopicSubscriptions(ListTopicSubscriptionsRequest request,
       StreamObserver<ListTopicSubscriptionsResponse> responseObserver) {
     Object response = responses.remove();
     if (response instanceof ListTopicSubscriptionsResponse) {
@@ -167,4 +167,5 @@ public class MockPublisherImpl extends PublisherImplBase {
       responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
     }
   }
+
 }

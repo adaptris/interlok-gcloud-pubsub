@@ -6,7 +6,7 @@ public class MockCredentialsProvider extends CredentialsProvider {
 
   private transient com.google.api.gax.core.CredentialsProvider credentialsProvider;
 
-  public MockCredentialsProvider(com.google.api.gax.core.CredentialsProvider credentialsProvider){
+  public MockCredentialsProvider(com.google.api.gax.core.CredentialsProvider credentialsProvider) {
     this.credentialsProvider = credentialsProvider;
   }
 
@@ -14,4 +14,5 @@ public class MockCredentialsProvider extends CredentialsProvider {
   com.google.api.gax.core.CredentialsProvider createCredentialsProvider() throws CoreException {
     return credentialsProvider;
   }
+
 }

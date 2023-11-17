@@ -1,14 +1,14 @@
 package com.adaptris.google.cloud.pubsub;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.AdaptrisMessageFactory;
@@ -37,8 +37,8 @@ public class GoogleCloudPubSubProducerTest extends ExampleProducerCase {
   public void testClose() throws Exception {
     PublisherMap publisherMap = new PublisherMap(5);
     Publisher publisher = mock(Publisher.class);
-    publisherMap.put("key1",publisher);
-    publisherMap.put("key2",null);
+    publisherMap.put("key1", publisher);
+    publisherMap.put("key2", null);
 
     GoogleCloudPubSubProducer producer = new GoogleCloudPubSubProducer();
     producer.setPublisherCache(publisherMap);
@@ -53,8 +53,8 @@ public class GoogleCloudPubSubProducerTest extends ExampleProducerCase {
     PublisherMap publisherMap = new PublisherMap(5);
     Publisher publisher = mock(Publisher.class);
     doThrow(new IllegalArgumentException()).when(publisher).shutdown();
-    publisherMap.put("key1",publisher);
-    publisherMap.put("key2",null);
+    publisherMap.put("key1", publisher);
+    publisherMap.put("key2", null);
     GoogleCloudPubSubProducer producer = new GoogleCloudPubSubProducer();
     producer.setPublisherCache(publisherMap);
     producer.close();
@@ -62,9 +62,8 @@ public class GoogleCloudPubSubProducerTest extends ExampleProducerCase {
 
   }
 
-
   @Test
-  public void testCreatePubsubMessage() throws Exception{
+  public void testCreatePubsubMessage() throws Exception {
     GoogleCloudPubSubProducer producer = new GoogleCloudPubSubProducer();
     final AdaptrisMessage msg = AdaptrisMessageFactory.getDefaultInstance().newMessage("Hello World");
     msg.addMetadata("foo", "bar");

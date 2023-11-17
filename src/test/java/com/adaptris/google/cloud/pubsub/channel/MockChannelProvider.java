@@ -10,7 +10,7 @@ public class MockChannelProvider extends ChannelProvider {
 
   private transient TransportChannelProvider channelProvider;
 
-  public MockChannelProvider(TransportChannelProvider channelProvider){
+  public MockChannelProvider(TransportChannelProvider channelProvider) {
     this.channelProvider = channelProvider;
   }
 
@@ -18,4 +18,5 @@ public class MockChannelProvider extends ChannelProvider {
   TransportChannelProvider createChannelProvider() throws CoreException {
     return channelProvider;
   }
+
 }

@@ -1,7 +1,7 @@
 package com.adaptris.google.cloud.pubsub;
 
 import com.adaptris.core.util.LifecycleHelper;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 public class GoogleCloudPubSubConnectionErrorHandlerTest {

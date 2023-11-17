@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+
 import com.google.api.core.BetaApi;
 import com.google.protobuf.AbstractMessage;
 import com.google.protobuf.Empty;
@@ -44,6 +45,7 @@ import com.google.pubsub.v1.SubscriberGrpc.SubscriberImplBase;
 import com.google.pubsub.v1.Subscription;
 import com.google.pubsub.v1.UpdateSnapshotRequest;
 import com.google.pubsub.v1.UpdateSubscriptionRequest;
+
 import io.grpc.stub.StreamObserver;
 
 @javax.annotation.Generated("by GAPIC")
@@ -66,7 +68,7 @@ public class MockSubscriberImpl extends SubscriberImplBase {
   }
 
   public void setResponses(List<AbstractMessage> responses) {
-    this.responses = new LinkedList<Object>(responses);
+    this.responses = new LinkedList<>(responses);
   }
 
   public void addException(Exception exception) {
@@ -79,8 +81,7 @@ public class MockSubscriberImpl extends SubscriberImplBase {
   }
 
   @Override
-  public void createSubscription(
-      Subscription request, StreamObserver<Subscription> responseObserver) {
+  public void createSubscription(Subscription request, StreamObserver<Subscription> responseObserver) {
     Object response = responses.remove();
     if (response instanceof Subscription) {
       requests.add(request);
@@ -94,8 +95,7 @@ public class MockSubscriberImpl extends SubscriberImplBase {
   }
 
   @Override
-  public void getSubscription(
-      GetSubscriptionRequest request, StreamObserver<Subscription> responseObserver) {
+  public void getSubscription(GetSubscriptionRequest request, StreamObserver<Subscription> responseObserver) {
     Object response = responses.remove();
     if (response instanceof Subscription) {
       requests.add(request);
@@ -109,8 +109,7 @@ public class MockSubscriberImpl extends SubscriberImplBase {
   }
 
   @Override
-  public void updateSubscription(
-      UpdateSubscriptionRequest request, StreamObserver<Subscription> responseObserver) {
+  public void updateSubscription(UpdateSubscriptionRequest request, StreamObserver<Subscription> responseObserver) {
     Object response = responses.remove();
     if (response instanceof Subscription) {
       requests.add(request);
@@ -124,9 +123,7 @@ public class MockSubscriberImpl extends SubscriberImplBase {
   }
 
   @Override
-  public void listSubscriptions(
-      ListSubscriptionsRequest request,
-      StreamObserver<ListSubscriptionsResponse> responseObserver) {
+  public void listSubscriptions(ListSubscriptionsRequest request, StreamObserver<ListSubscriptionsResponse> responseObserver) {
     Object response = responses.remove();
     if (response instanceof ListSubscriptionsResponse) {
       requests.add(request);
@@ -140,8 +137,7 @@ public class MockSubscriberImpl extends SubscriberImplBase {
   }
 
   @Override
-  public void deleteSubscription(
-      DeleteSubscriptionRequest request, StreamObserver<Empty> responseObserver) {
+  public void deleteSubscription(DeleteSubscriptionRequest request, StreamObserver<Empty> responseObserver) {
     Object response = responses.remove();
     if (response instanceof Empty) {
       requests.add(request);
@@ -155,8 +151,7 @@ public class MockSubscriberImpl extends SubscriberImplBase {
   }
 
   @Override
-  public void modifyAckDeadline(
-      ModifyAckDeadlineRequest request, StreamObserver<Empty> responseObserver) {
+  public void modifyAckDeadline(ModifyAckDeadlineRequest request, StreamObserver<Empty> responseObserver) {
     Object response = responses.remove();
     if (response instanceof Empty) {
       requests.add(request);
@@ -198,38 +193,35 @@ public class MockSubscriberImpl extends SubscriberImplBase {
   }
 
   @Override
-  public StreamObserver<StreamingPullRequest> streamingPull(
-      final StreamObserver<StreamingPullResponse> responseObserver) {
+  public StreamObserver<StreamingPullRequest> streamingPull(final StreamObserver<StreamingPullResponse> responseObserver) {
     final Object response = responses.remove();
-    StreamObserver<StreamingPullRequest> requestObserver =
-        new StreamObserver<StreamingPullRequest>() {
-          @Override
-          public void onNext(StreamingPullRequest value) {
-            if (response instanceof StreamingPullResponse) {
-              responseObserver.onNext((StreamingPullResponse) response);
-            } else if (response instanceof Exception) {
-              responseObserver.onError((Exception) response);
-            } else {
-              responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
-            }
-          }
+    StreamObserver<StreamingPullRequest> requestObserver = new StreamObserver<>() {
+      @Override
+      public void onNext(StreamingPullRequest value) {
+        if (response instanceof StreamingPullResponse) {
+          responseObserver.onNext((StreamingPullResponse) response);
+        } else if (response instanceof Exception) {
+          responseObserver.onError((Exception) response);
+        } else {
+          responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+        }
+      }
 
-          @Override
-          public void onError(Throwable t) {
-            responseObserver.onError(t);
-          }
+      @Override
+      public void onError(Throwable t) {
+        responseObserver.onError(t);
+      }
 
-          @Override
-          public void onCompleted() {
-            responseObserver.onCompleted();
-          }
-        };
+      @Override
+      public void onCompleted() {
+        responseObserver.onCompleted();
+      }
+    };
     return requestObserver;
   }
 
   @Override
-  public void modifyPushConfig(
-      ModifyPushConfigRequest request, StreamObserver<Empty> responseObserver) {
+  public void modifyPushConfig(ModifyPushConfigRequest request, StreamObserver<Empty> responseObserver) {
     Object response = responses.remove();
     if (response instanceof Empty) {
       requests.add(request);
@@ -243,8 +235,7 @@ public class MockSubscriberImpl extends SubscriberImplBase {
   }
 
   @Override
-  public void listSnapshots(
-      ListSnapshotsRequest request, StreamObserver<ListSnapshotsResponse> responseObserver) {
+  public void listSnapshots(ListSnapshotsRequest request, StreamObserver<ListSnapshotsResponse> responseObserver) {
     Object response = responses.remove();
     if (response instanceof ListSnapshotsResponse) {
       requests.add(request);
@@ -258,8 +249,7 @@ public class MockSubscriberImpl extends SubscriberImplBase {
   }
 
   @Override
-  public void createSnapshot(
-      CreateSnapshotRequest request, StreamObserver<Snapshot> responseObserver) {
+  public void createSnapshot(CreateSnapshotRequest request, StreamObserver<Snapshot> responseObserver) {
     Object response = responses.remove();
     if (response instanceof Snapshot) {
       requests.add(request);
@@ -273,8 +263,7 @@ public class MockSubscriberImpl extends SubscriberImplBase {
   }
 
   @Override
-  public void updateSnapshot(UpdateSnapshotRequest request,
-      StreamObserver<Snapshot> responseObserver) {
+  public void updateSnapshot(UpdateSnapshotRequest request, StreamObserver<Snapshot> responseObserver) {
     Object response = responses.remove();
     if (response instanceof Snapshot) {
       requests.add(request);
@@ -288,8 +277,7 @@ public class MockSubscriberImpl extends SubscriberImplBase {
   }
 
   @Override
-  public void deleteSnapshot(
-      DeleteSnapshotRequest request, StreamObserver<Empty> responseObserver) {
+  public void deleteSnapshot(DeleteSnapshotRequest request, StreamObserver<Empty> responseObserver) {
     Object response = responses.remove();
     if (response instanceof Empty) {
       requests.add(request);
@@ -315,4 +303,5 @@ public class MockSubscriberImpl extends SubscriberImplBase {
       responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
     }
   }
+
 }

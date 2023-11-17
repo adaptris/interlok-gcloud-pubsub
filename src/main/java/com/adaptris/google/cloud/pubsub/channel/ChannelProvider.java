@@ -13,7 +13,6 @@ public abstract class ChannelProvider implements ComponentLifecycle {
   abstract TransportChannelProvider createChannelProvider() throws CoreException;
 
   void validateArguments() throws CoreException {
-
   }
 
   @Override
@@ -41,4 +40,5 @@ public abstract class ChannelProvider implements ComponentLifecycle {
   public TransportChannelProvider getChannelProvider() {
     return channelProvider;
   }
+
 }

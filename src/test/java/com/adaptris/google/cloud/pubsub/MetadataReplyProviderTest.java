@@ -1,11 +1,12 @@
 package com.adaptris.google.cloud.pubsub;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+import org.junit.jupiter.api.Test;
+
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.AdaptrisMessageFactory;
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 public class MetadataReplyProviderTest {
 
@@ -24,7 +25,7 @@ public class MetadataReplyProviderTest {
 
   @Test
   public void testGetAckReply() throws Exception {
-    AdaptrisMessage msg =  AdaptrisMessageFactory.getDefaultInstance().newMessage();
+    AdaptrisMessage msg = AdaptrisMessageFactory.getDefaultInstance().newMessage();
     MetadataReplyProvider provider;
     provider = new MetadataReplyProvider(null, ReplyProvider.AckReply.ACK);
     assertEquals(ReplyProvider.AckReply.ACK, provider.getAckReply(msg));
