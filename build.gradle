@@ -2,9 +2,9 @@ plugins {
   id "java-library"
   id "maven-publish"
   id "jacoco"
-  id "com.github.spotbugs" version "5.2.1"
+  id "com.github.spotbugs" version "6.0.6"
   id "org.sonarqube" version "4.4.1.3373"
-  id "org.owasp.dependencycheck" version "8.4.2"
+  id "org.owasp.dependencycheck" version "9.0.8"
   id "io.freefair.lombok" version "8.4"
 }
 
@@ -28,13 +28,13 @@ ext {
 
   organizationName = "Adaptris Ltd"
   organizationUrl = "http://interlok.adaptris.net"
-  slf4jVersion = '2.0.9'
-  nettyVersion = '4.1.100.Final'
-  grpcVersion = '1.59.0'
+  slf4jVersion = '2.0.11'
+  nettyVersion = '4.1.104.Final'
+  grpcVersion = '1.61.0'
   gaxVersion = '2.33.0'
-  protobufVersion = '3.24.4'
+  protobufVersion = '3.25.2'
   mockitoVersion = '5.2.0'
-  jacksonVersion = '2.15.3'
+  jacksonVersion = '2.16.1'
 }
 
 ext.gitBranchNameOrTimestamp = { branchName ->
@@ -136,7 +136,7 @@ dependencies {
   api  ("com.adaptris:interlok-common:$interlokCoreVersion") { changing= true}
   api  ("com.adaptris:interlok-oauth-gcloud:$interlokCoreVersion") { changing= true}
 
-  api ("com.google.cloud:google-cloud-pubsub:1.125.9") {
+  api ("com.google.cloud:google-cloud-pubsub:1.125.13") {
     exclude group: "com.fasterxml.jackson.core", module: "jackson-databind"
     exclude group: "com.apache.httpcomponents", module: "httpclient"
     exclude group: "io.grpc", module: "grpc-netty-shaded"
@@ -177,14 +177,14 @@ dependencies {
 
   annotationProcessor ("com.adaptris:interlok-core-apt:$interlokCoreVersion") {changing= true}
 
-  testImplementation ("org.junit.jupiter:junit-jupiter-engine:5.10.0")
+  testImplementation ("org.junit.jupiter:junit-jupiter-engine:5.10.1")
   testImplementation ("org.slf4j:slf4j-simple:$slf4jVersion")
   testImplementation ("com.adaptris:interlok-stubs:$interlokCoreVersion") { changing= true }
   testImplementation ("org.mockito:mockito-core:$mockitoVersion")
   testImplementation ("org.mockito:mockito-inline:$mockitoVersion")
   testImplementation  ("org.apache.geronimo.specs:geronimo-jms_1.1_spec:1.1.1")
   testImplementation  ("com.jayway.jsonpath:json-path:2.8.0")
-  testImplementation  ("com.google.api.grpc:grpc-google-cloud-pubsub-v1:1.107.9")
+  testImplementation  ("com.google.api.grpc:grpc-google-cloud-pubsub-v1:1.107.13")
   testImplementation  ("com.google.api:gax-grpc:$gaxVersion:testlib")
 
   javadoc("com.adaptris:interlok-core-apt:$interlokCoreVersion") { changing= true}
@@ -312,8 +312,8 @@ publishing {
 }
 
 spotbugsMain {
-  effort = "max"
-  reportLevel = "high"
+  effort = com.github.spotbugs.snom.Effort.valueOf("MAX")
+  reportLevel = com.github.spotbugs.snom.Confidence.valueOf("HIGH")
   reports {
     xml {
       required.set(false)
