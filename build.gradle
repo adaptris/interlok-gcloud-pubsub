@@ -32,7 +32,7 @@ ext {
   nettyVersion = '4.1.107.Final'
   grpcVersion = '1.62.2'
   gaxVersion = '2.33.0'
-  protobufVersion = '3.25.3'
+  protobufVersion = '4.26.0'
   mockitoVersion = '5.2.0'
   jacksonVersion = '2.16.2'
 }
