@@ -161,7 +161,7 @@ dependencies {
   implementation  ("io.grpc:grpc-context:$grpcVersion")
   implementation  ("io.grpc:grpc-inprocess:$grpcVersion")
 
-  implementation  ("com.google.code.gson:gson:2.10.1")
+  implementation  ("com.google.code.gson:gson:2.11.0")
   // Required because we attempt to create a protobuf message in PUSH_RESPONSE_TO_INTERLOK
   implementation ("com.google.protobuf:protobuf-java-util:$protobufVersion")
   implementation ("com.google.protobuf:protobuf-java:$protobufVersion")
