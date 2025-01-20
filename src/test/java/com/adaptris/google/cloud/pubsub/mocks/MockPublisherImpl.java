@@ -37,7 +37,7 @@ import com.google.pubsub.v1.UpdateTopicRequest;
 
 import io.grpc.stub.StreamObserver;
 
-@javax.annotation.Generated("by GAPIC")
+@jakarta.annotation.Generated("by GAPIC")
 @BetaApi
 public class MockPublisherImpl extends PublisherImplBase {
   private List<AbstractMessage> requests;

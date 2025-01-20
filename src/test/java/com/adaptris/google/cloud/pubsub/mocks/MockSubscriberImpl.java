@@ -48,7 +48,7 @@ import com.google.pubsub.v1.UpdateSubscriptionRequest;
 
 import io.grpc.stub.StreamObserver;
 
-@javax.annotation.Generated("by GAPIC")
+@jakarta.annotation.Generated("by GAPIC")
 @BetaApi
 public class MockSubscriberImpl extends SubscriberImplBase {
   private List<AbstractMessage> requests;
