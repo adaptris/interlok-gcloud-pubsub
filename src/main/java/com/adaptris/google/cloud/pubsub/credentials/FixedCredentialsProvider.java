@@ -1,7 +1,7 @@
 package com.adaptris.google.cloud.pubsub.credentials;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 import com.adaptris.core.CoreException;
 import com.adaptris.core.oauth.gcloud.Credentials;
