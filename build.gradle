@@ -178,11 +178,12 @@ dependencies {
   annotationProcessor ("com.adaptris:interlok-core-apt:$interlokCoreVersion") {changing= true}
 
   testImplementation ("org.junit.jupiter:junit-jupiter-engine:5.12.2")
-    testImplementation ("org.junit.platform:junit-platform-launcher:1.12.1")
+  testImplementation ("org.junit.platform:junit-platform-launcher:1.12.1")
   testImplementation ("org.slf4j:slf4j-simple:$slf4jVersion")
   testImplementation ("com.adaptris:interlok-stubs:$interlokCoreVersion") { changing= true }
   testImplementation ("org.mockito:mockito-core:$mockitoVersion")
   testImplementation ("org.mockito:mockito-inline:$mockitoVersion")
+
   testImplementation  ("org.apache.geronimo.specs:geronimo-jms_1.1_spec:1.1.1")
   testImplementation  ("com.jayway.jsonpath:json-path:2.8.0")
   testImplementation  ("com.google.api.grpc:grpc-google-cloud-pubsub-v1:1.121.3")
@@ -340,6 +341,9 @@ dependencyCheck  {
   }
   analyzers {
     assemblyEnabled=false
+    kev {
+      url = project.findProperty('dependencyCheckKnownExploitedURL')
+    }
   }
 }
 
