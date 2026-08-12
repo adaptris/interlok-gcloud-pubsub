@@ -2,7 +2,7 @@ plugins {
   id "java-library"
   id "maven-publish"
   id "jacoco"
-  id "com.github.spotbugs" version "6.5.4"
+  id "com.github.spotbugs" version "6.5.10"
   id "org.sonarqube" version "6.3.1.5724"
   id "org.owasp.dependencycheck" version "12.2.2"
   id "io.freefair.lombok" version "8.14.2"
@@ -28,13 +28,13 @@ ext {
 
   organizationName = "Adaptris Ltd"
   organizationUrl = "http://interlok.adaptris.net"
-  slf4jVersion = '2.0.17'
-  nettyVersion = '4.2.13.Final'
-  grpcVersion = '1.81.0'
+  slf4jVersion = '2.0.18'
+  nettyVersion = '4.2.17.Final'
+  grpcVersion = '1.83.1'
   gaxVersion = '2.33.0'
-  protobufVersion = '4.34.1'
+  protobufVersion = '4.35.1'
   mockitoVersion = '5.2.0'
-  jacksonVersion = '2.21.3'
+  jacksonVersion = '2.22.1'
 }
 
 ext.gitBranchNameOrTimestamp = { branchName ->
@@ -136,13 +136,13 @@ dependencies {
   api  ("com.adaptris:interlok-common:$interlokCoreVersion") { changing= true}
   api  ("com.adaptris:interlok-oauth-gcloud:$interlokCoreVersion") { changing= true}
 
-  api ("com.google.cloud:google-cloud-pubsub:1.150.2") {
+  api ("com.google.cloud:google-cloud-pubsub:1.153.0") {
     exclude group: "com.fasterxml.jackson.core", module: "jackson-databind"
     exclude group: "com.apache.httpcomponents", module: "httpclient"
     exclude group: "io.grpc", module: "grpc-netty-shaded"
   }
   api ("org.apache.httpcomponents:httpclient:4.5.14")
-  api ("commons-codec:commons-codec:1.20.0")
+  api ("commons-codec:commons-codec:1.22.1")
   // Dependency to platform/BOM
   implementation (platform("com.fasterxml.jackson:jackson-bom:$jacksonVersion"))
   api ("com.fasterxml.jackson.core:jackson-databind")
@@ -186,7 +186,7 @@ dependencies {
 
   testImplementation  ("org.apache.geronimo.specs:geronimo-jms_1.1_spec:1.1.1")
   testImplementation  ("com.jayway.jsonpath:json-path:2.8.0")
-  testImplementation  ("com.google.api.grpc:grpc-google-cloud-pubsub-v1:1.132.2")
+  testImplementation  ("com.google.api.grpc:grpc-google-cloud-pubsub-v1:1.153.0")
   testImplementation  ("com.google.api:gax-grpc:$gaxVersion:testlib")
 
   javadoc("com.adaptris:interlok-core-apt:$interlokCoreVersion") { changing= true}

@@ -54,4 +54,18 @@
     ]]></notes>
     <packageUrl regex="true">^pkg:maven/org\.eclipse\.jetty(\.http2|\.websocket)?/.+@10\.0\.26$</packageUrl>
     <cve>CVE-2026-2332</cve>
-  </suppress></suppressions>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+      dev.cel:protobuf:0.13.0 is a transitive artifact in the google-cloud-pubsub dependency graph.
+      Suppressed until upstream dependency alignment provides a fixed transitive version.
+    ]]></notes>
+    <packageUrl regex="true">^pkg:maven/dev\.cel/protobuf@0\.13\.0$</packageUrl>
+    <cve>CVE-2015-5237</cve>
+    <cve>CVE-2021-22569</cve>
+    <cve>CVE-2021-22570</cve>
+    <cve>CVE-2022-3171</cve>
+    <cve>CVE-2024-7254</cve>
+    <cve>CVE-2026-0994</cve>
+  </suppress>
+</suppressions>
