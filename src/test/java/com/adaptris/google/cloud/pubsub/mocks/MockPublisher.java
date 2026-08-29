@@ -24,7 +24,7 @@ import com.google.protobuf.AbstractMessage;
 
 import io.grpc.ServerServiceDefinition;
 
-@javax.annotation.Generated("by GAPIC")
+@jakarta.annotation.Generated("by GAPIC")
 @BetaApi
 public class MockPublisher implements MockGrpcService {
   private final MockPublisherImpl serviceImpl;
