@@ -136,7 +136,7 @@ dependencies {
   api  ("com.adaptris:interlok-common:$interlokCoreVersion") { changing= true}
   api  ("com.adaptris:interlok-oauth-gcloud:$interlokCoreVersion") { changing= true}
 
-  api ("com.google.cloud:google-cloud-pubsub:1.153.0") {
+  api ("com.google.cloud:google-cloud-pubsub:1.154.0") {
     exclude group: "com.fasterxml.jackson.core", module: "jackson-databind"
     exclude group: "com.apache.httpcomponents", module: "httpclient"
     exclude group: "io.grpc", module: "grpc-netty-shaded"
@@ -186,7 +186,7 @@ dependencies {
 
   testImplementation  ("org.apache.geronimo.specs:geronimo-jms_1.1_spec:1.1.1")
   testImplementation  ("com.jayway.jsonpath:json-path:2.8.0")
-  testImplementation  ("com.google.api.grpc:grpc-google-cloud-pubsub-v1:1.153.0")
+  testImplementation  ("com.google.api.grpc:grpc-google-cloud-pubsub-v1:1.154.0")
   testImplementation  ("com.google.api:gax-grpc:$gaxVersion:testlib")
 
   javadoc("com.adaptris:interlok-core-apt:$interlokCoreVersion") { changing= true}
