@@ -57,10 +57,15 @@
   </suppress>
   <suppress>
     <notes><![CDATA[
-      dev.cel:protobuf:0.13.0 is a transitive artifact in the google-cloud-pubsub dependency graph.
-      Suppressed until upstream dependency alignment provides a fixed transitive version.
+      False positives for dev.cel:protobuf:0.13.0 and 0.13.1, the CEL Java Protobuf adapter,
+      incorrectly identified as Google's protobuf / protobuf-java runtime by artifact name.
+      The adapter does not bundle com.google.protobuf runtime classes; its POM declares
+      com.google.protobuf:protobuf-java as a separate dependency.
+      https://repo.maven.apache.org/maven2/dev/cel/protobuf/0.13.1/protobuf-0.13.1.pom
+      The runtime resolves to protobuf-java:4.36.2, which is not affected by these CVEs
+      and remains independently scanned. Upgrading the CEL adapter cannot fix this CPE mismatch.
     ]]></notes>
-    <packageUrl regex="true">^pkg:maven/dev\.cel/protobuf@0\.13\.0$</packageUrl>
+    <packageUrl regex="true">^pkg:maven/dev\.cel/protobuf@0\.13\.[01]$</packageUrl>
     <cve>CVE-2015-5237</cve>
     <cve>CVE-2021-22569</cve>
     <cve>CVE-2021-22570</cve>
