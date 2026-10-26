@@ -119,7 +119,7 @@ configurations.all {
   // Our dependency graph contains the hacky listenablefuture, Gradle will now report that those libraries contain duplicates of Guava classes.
   // We need to tell Gradle to select Guava. https://github.com/google/guava/releases/tag/v32.1.0
   resolutionStrategy.capabilitiesResolution.withCapability("com.google.guava:listenablefuture") {
-    select("com.google.guava:guava:0")
+    select("com.google.guava:guava:23.0")
   }
 }
 
@@ -138,7 +138,7 @@ dependencies {
   // Dependency to platform/BOM
   implementation (platform("com.fasterxml.jackson:jackson-bom:$jacksonVersion"))
   api ("com.fasterxml.jackson.core:jackson-databind")
-  api ("com.google.guava:guava:32.1.1-jre")
+  api ("com.google.guava:guava:23.0")
 
   // Minimal netty specification
   implementation ("io.netty:netty-handler:$nettyVersion")
